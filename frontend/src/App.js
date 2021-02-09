@@ -27,7 +27,7 @@ class App extends Component {
 
   render() {
     return (
-      <AdminLTE title={["ITCube", "Consulting"]} titleShort={["ITC", "C"]} theme="blue" sidebar={this.getSidebar(this.state.client_list, this.state.company_id)}>
+      <AdminLTE title={[this.state.company_id]} titleShort={this.state.company_id} theme="blue" sidebar={this.getSidebar(this.state.client_list, this.state.company_id)}>
         {this.state.client_list.map((item) => <Dashboard path={"/company"+this.state.company_id+"user"+item.id} title={item.name} />)}
       </AdminLTE>
     );
