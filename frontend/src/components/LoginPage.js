@@ -1,19 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { ToastProvider, useToasts } from 'react-toast-notifications'
 import { login } from '../ActionCreator';
-import DashboardWrap from './DashboardWrap';
+import Dashboard from './Dashboard';
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => ({
-  Login: (email, password) => {
-    //control email-psw on database and retrieve the company name
-    let company_name = "ITCube Consulting";
-    dispatch(login(company_name))
+const mapDispatchToProps =  dispatch => {
+  return{
+    Login: (company_name) => {
+      dispatch(login(company_name))
+    }
   }
-})
+}
 
 
 /**
@@ -22,7 +23,9 @@ const mapDispatchToProps = dispatch => ({
  */
 const mapStateToProps = state => {
   return {
+    client_list: state.client_list,
     company_id: state.company_id
+
   }
 }
 
@@ -31,6 +34,7 @@ const mapStateToProps = state => {
  * @param {*} props 
  */
 const LoginPage = (props) => {
+
   const [state, setState] = React.useState({
     emailLogin: "",
     pswLogin: ""
@@ -52,49 +56,48 @@ const LoginPage = (props) => {
     console.log(evt.target.value);
     setState({ pswLogin: evt.target.value });
   }
+
+  const { addToast } = useToasts()
+
+  const LoginController = (email, psw) => {
+    //check connection
+    //check on db
+    let error = 0;
+    let company_name = "ITCube Consulting";
+    if (error==0){
+      props.Login(company_name);
+    }else{
+      addToast("Error on login", {appearance: 'error',autoDismiss: true});
+    } 
+  }
+
   return (
     (props.company_id===null) 
     ?
-      <div class="container">
-        <div class="row">
-          <div class="col-md-5">
-            <form>
-              <div class="form-group">
-                <label for="LoginEmail1">Indirizzo email</label>
-                <input type="email" value={state.emailLogin} class="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder="Email" onChange={handleEmailLogin}/>
-              </div>
-              <div class="form-group">
-                <label for="LoginPassword1">Password</label>
-                <input type="password" value={state.pswLogin} class="form-control" id="LoginPassword1" placeholder="Password" onChange={handlePswLogin} />
-              </div>
-              <button class="btn btn-primary" onClick={() => props.Login(state.emailLogin, state.pswLogin)}>Login</button>
-            </form>
-          </div>
-          <div class="col-md-5 col-md-offset-2">
-            <form>
-              <div class="form-group">
-                <label for="exampleInputEmail1">Indirizzo email</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
-              </div>
-              <div class="form-group">
-                <label for="exampleInputEmail2">Indirizzo email per le comunicazioni</label>
-                <input type="email" class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp" placeholder="Email" />
-              </div>
-              <div class="form-group">
-                <label for="exampleInputRagioneSociale">Ragione Sociale</label>
-                <input type="email" class="form-control" id="exampleInputRagioneSociale" aria-describedby="emailHelp" placeholder="Ragione Sociale" />
-              </div>
-              <button type="submit" class="btn btn-primary">Registrati</button>
-            </form>
+      <ToastProvider>
+        <div class="container">
+          <div class="row">
+            <br />
+            <div class="col-md-6 col-md-offset-3">
+              <form>
+                <div class="form-group">
+                  <label for="LoginEmail1">Indirizzo email</label>
+                  <input type="email" value={state.emailLogin} class="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder="Email" onChange={handleEmailLogin}/>
+                </div>
+                <div class="form-group">
+                  <label for="LoginPassword1">Password</label>
+                  <input type="password" value={state.pswLogin} class="form-control" id="LoginPassword1" placeholder="Password" onChange={handlePswLogin} />
+                </div>
+              </form>
+              <button class="btn btn-primary" onClick={() => LoginController(state.emailLogin, state.pswLogin)}>Accedi</button>
+            </div>
           </div>
         </div>
-      </div>
+      </ToastProvider>
     :
-      <DashboardWrap />
+      <ToastProvider>
+        {props.client_list.map((item) => <Dashboard path={"/company"+props.company_id+"user"+item.id} title={item.name} />)}
+      </ToastProvider>
   );
 }
 

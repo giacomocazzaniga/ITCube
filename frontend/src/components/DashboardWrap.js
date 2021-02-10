@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import AdminLTE, { Sidebar } from 'adminlte-2-react';
+import { ToastProvider, useToasts } from 'react-toast-notifications'
 import Dashboard from "./Dashboard";
 
 /**
@@ -38,10 +39,13 @@ const getSidebar = (client_list, company_id) =>{
  * @param {*} props 
  */
 const DashboardWrap = (props) => {
+  const { addToast } = useToasts()
   return (
-    <AdminLTE title={[props.company_id]} titleShort={props.company_id} theme="blue" sidebar={getSidebar(props.client_list, props.company_id)}>
-      {props.client_list.map((item) => <Dashboard path={"/company"+props.company_id+"user"+item.id} title={item.name} />)}
-    </AdminLTE>
+    <ToastProvider>
+      <AdminLTE title={[props.company_id]} titleShort={props.company_id} theme="blue" sidebar={getSidebar(props.client_list, props.company_id)}>
+        {props.client_list.map((item) => <Dashboard path={"/company"+props.company_id+"user"+item.id} title={item.name} />)}
+      </AdminLTE>
+    </ToastProvider>
   );
 }
 

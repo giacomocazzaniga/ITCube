@@ -12,12 +12,14 @@ const initialState = {
       id : "2",
       name : "Macchina di Francesco"
     }
-  ]
+  ],
+  logged: false
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
-      company_id: action.company_id
+      company_id: action.company_id,
+      logged: true
     });
   }
 
@@ -28,7 +30,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['company_id', 'client_list']
+  blacklist: ['company_id', 'client_list', 'logged']
 };
 
 export default persistReducer(persistConfig, rootReducer);
