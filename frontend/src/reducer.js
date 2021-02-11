@@ -3,22 +3,15 @@ import { persistReducer } from 'redux-persist';
 import * as types from './ActionTypes';
 
 const initialState = {
-  company_id : null,//"ITCube Consulting",
-  client_list : [
-    {
-      id : "1",
-      name : "Macchina di Massimiliano"
-    }, {
-      id : "2",
-      name : "Macchina di Francesco"
-    }
-  ],
+  company_id : null,
+  client_list : [],
   logged: false
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
       company_id: action.company_id,
+      client_list: action.client_list,
       logged: true
     });
   }

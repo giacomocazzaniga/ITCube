@@ -50,8 +50,8 @@ const App = (props) => {
           {props.client_list.map((item) => <Dashboard path={"/company"+props.company_id+"user"+item.id} title={item.name} />)}
         </AdminLTE>
       : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
-          <LoginPage path="/accedi" title="Accedi" />
-          <SignUpPage path="/registrati" title="Registrati" />
+          <ToastProvider path="/accedi" title="Accedi"><LoginPage /></ToastProvider>
+          <ToastProvider path="/registrati" title="Registrati"><SignUpPage /></ToastProvider>
         </AdminLTE>
       }
       

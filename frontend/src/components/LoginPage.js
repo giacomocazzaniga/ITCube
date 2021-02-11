@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ToastProvider, useToasts } from 'react-toast-notifications'
+import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { login } from '../ActionCreator';
+import { url_login } from '../REST';
 import Dashboard from './Dashboard';
+
+const axios = require('axios');
 
 /**
  * connect the actions to the component
@@ -10,8 +13,8 @@ import Dashboard from './Dashboard';
  */
 const mapDispatchToProps =  dispatch => {
   return{
-    Login: (company_name) => {
-      dispatch(login(company_name))
+    Login: (company_name, client_list) => {
+      dispatch(login(company_name, client_list))
     }
   }
 }
@@ -53,22 +56,24 @@ const LoginPage = (props) => {
    * @param {*} evt 
    */
   const handlePswLogin = (evt) => {
-    console.log(evt.target.value);
     setState({ pswLogin: evt.target.value });
   }
 
-  const { addToast } = useToasts()
+  const { addToast } = useToasts();
 
   const LoginController = (email, psw) => {
-    //check connection
-    //check on db
-    let error = 0;
-    let company_name = "ITCube Consulting";
-    if (error==0){
-      props.Login(company_name);
-    }else{
-      addToast("Error on login", {appearance: 'error',autoDismiss: true});
-    } 
+    axios.post(url_login, {
+      email: email,
+      password: psw
+    })
+    .then(function (response) {
+      let company_name = response.data.company_id;
+      let client_list = response.data.client_list;
+      props.Login(company_name, client_list);
+    })
+    .catch(function (error) {
+      addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+    });
   }
 
   return (
