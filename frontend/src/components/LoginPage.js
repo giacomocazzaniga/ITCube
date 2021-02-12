@@ -13,8 +13,8 @@ const axios = require('axios');
  */
 const mapDispatchToProps =  dispatch => {
   return{
-    Login: (company_name, client_list) => {
-      dispatch(login(company_name, client_list))
+    Login: (nome_company, client_list, token) => {
+      dispatch(login(nome_company, client_list, token))
     }
   }
 }
@@ -27,7 +27,7 @@ const mapDispatchToProps =  dispatch => {
 const mapStateToProps = state => {
   return {
     client_list: state.client_list,
-    company_id: state.company_id
+    nome_company: state.nome_company
 
   }
 }
@@ -67,9 +67,8 @@ const LoginPage = (props) => {
       password: psw
     })
     .then(function (response) {
-      let company_name = response.data.company_id;
-      let client_list = response.data.client_list;
-      props.Login(company_name, client_list);
+      //i campi json di risposta vanno gestiti qui
+      props.Login(response.data.nome_company, response.data.client, response.data.token);
     })
     .catch(function (error) {
       addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
@@ -77,7 +76,7 @@ const LoginPage = (props) => {
   }
 
   return (
-    (props.company_id===null) 
+    (props.nome_company===null) 
     ?
       <ToastProvider>
         <div class="container">
@@ -101,7 +100,7 @@ const LoginPage = (props) => {
       </ToastProvider>
     :
       <ToastProvider>
-        {props.client_list.map((item) => <Dashboard path={"/company"+props.company_id+"user"+item.id} title={item.name} />)}
+        {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} title={item.nome_client} />)}
       </ToastProvider>
   );
 }

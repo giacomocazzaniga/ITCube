@@ -22,16 +22,16 @@ const mapDispatchToProps =  dispatch => {
 const mapStateToProps = state => {
   return {
     client_list: state.client_list,
-    company_id: state.company_id,
+    nome_company: state.nome_company,
     logged: state.logged
   }
 }
 
 const { Item } = Sidebar;
 
-const getSidebar = (client_list, company_id) =>{
+const getSidebar = (client_list, nome_company) =>{
   let item_list = [];
-  client_list.map((item) => (item_list = [item_list, <Item key={item.id} text={item.name} to={"/company"+company_id+"user"+item.id} />]));
+  client_list.map((item) => (item_list = [item_list, <Item key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} />]));
   return item_list;
 }
 
@@ -46,8 +46,8 @@ const App = (props) => {
   return (
     <ToastProvider>
       {props.logged==true 
-      ? <AdminLTE title={[props.company_id]} titleShort={props.company_id} theme="blue" sidebar={getSidebar(props.client_list, props.company_id)}>
-          {props.client_list.map((item) => <Dashboard path={"/company"+props.company_id+"user"+item.id} title={item.name} />)}
+      ? <AdminLTE title={[props.nome_company]} titleShort={props.nome_company} theme="blue" sidebar={getSidebar(props.client_list, props.nome_company)}>
+          {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} title={item.nome_client} />)}
         </AdminLTE>
       : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
           <ToastProvider path="/accedi" title="Accedi"><LoginPage /></ToastProvider>

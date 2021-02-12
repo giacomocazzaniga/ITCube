@@ -1,7 +1,13 @@
 import * as types from './ActionTypes';
 
-export const login = (company_name, client_list) => ({
+export const login = (nome_company, client_list, token) => ({
   type: types.LOGIN,
-  company_id: company_name,
-  client_list: client_list
+  nome_company: nome_company,
+  client_list: client_list,
+  token: token
+})
+export const signUp = (message, messageCode) => ({
+  type: types.SIGNUP,
+  message: message,
+  messageCode: messageCode
 })

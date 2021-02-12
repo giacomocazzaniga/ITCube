@@ -3,16 +3,26 @@ import { persistReducer } from 'redux-persist';
 import * as types from './ActionTypes';
 
 const initialState = {
-  company_id : null,
+  message : "",
+  messageCode : 0,
+  nome_company : null,
   client_list : [],
-  logged: false
+  logged: false,
+  token : null
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
-      company_id: action.company_id,
+      nome_company: action.nome_company,
       client_list: action.client_list,
-      logged: true
+      logged: true,
+      token: action.token
+    });
+  }
+  if (action.type === types.SIGNUP) {
+    return Object.assign({}, state, {
+      message: action.message,
+      messageCode: action.messageCode
     });
   }
 
@@ -23,7 +33,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['company_id', 'client_list', 'logged']
+  blacklist: ['nome_company', 'client_list', 'logged', 'token']
 };
 
 export default persistReducer(persistConfig, rootReducer);

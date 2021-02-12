@@ -37,23 +37,36 @@ app.get('/elenco_client', function (req, res) {
 
 app.post('/login', function (req, res) {
   result = {
-    "company_id":"ITCube Consulting",
-    "client_list" : [
+    "nome_company":"ITCube Consulting",
+    "id_company": "1",
+    "client" : [
       {
-        "id" : "1",
-        "name" : "Macchina di Massimiliano"
+        "id_client" : "1",
+        "nome_client" : "Macchina di Massimiliano",
+        "MAC_address" : "00-50-FC-A0-67-2C",
+        "codice_licenza" : "1234-5678-1234-5678",
+        "classe_licenza" : "0",
+        "nome_tipologia_licenza" : "Free"
       }, {
-        "id" : "2",
-        "name" : "Macchina di Francesco"
-      }, {
-        "id" : "3",
-        "name" : "Macchina di Matteo"
-      }, {
-        "id" : "4",
-        "name" : "Macchina di Stefano"
+        "id_client" : "2",
+        "nome_client" : "Macchina di Francesco",
+        "MAC_address" : "00-56-SC-E4-C2-WC",
+        "codice_licenza" : "1234-5678-1234-5678",
+        "classe_licenza" : "0",
+        "nome_tipologia_licenza" : "Free"
       }
-    ]
+    ],
+    "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
   };
+  res.send(result);
+});
+
+app.post('/signup', function (req, res) {
+  result = {
+    "message": "fakeResponse",
+    "messageCode": "1"
+  };
+  console.log("signup");
   res.send(result);
 });
 
