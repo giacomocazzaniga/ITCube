@@ -54,7 +54,6 @@ const App = (props) => {
           <ToastProvider path="/registrati" title="Registrati"><SignUpPage /></ToastProvider>
         </AdminLTE>
       }
-      
     </ToastProvider>
   );
 }
