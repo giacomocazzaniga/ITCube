@@ -58,7 +58,7 @@ app.post('/login', function (req, res) {
         "nome_tipologia_licenza" : "Free"
       }, {
         "id_client" : "3",
-        "nome_client" : "LinuxServer-12",
+        "nome_client" : "SERVER-3512",
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
         "classe_licenza" : "2",
