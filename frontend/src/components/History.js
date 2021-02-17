@@ -25,7 +25,7 @@ const History = (props) => {
           series={props.apex.series}
           type="area"
           width="100%"
-          height="250"
+          height="183"
         />
       </div>
     </Box>

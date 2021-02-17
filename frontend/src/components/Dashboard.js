@@ -6,6 +6,7 @@ import Communications from './Communications';
 import History from './History';
 import Drive from './Drive';
 import ServicesList from './ServicesList';
+import ClientInfo from './ClientInfo';
 
 /**
  * connect the actions to the component
@@ -98,6 +99,9 @@ const Dashboard = (props) => {
         <Communications />
         <History apex={props.apex}/>
       </Col>
+      <Col md={4} xs={6}>
+        <ClientInfo nome_client={props.title} MAC_address={props.MAC_address} codice_licenza={props.codice_licenza} nome_tipologia_licenza={props.nome_tipologia_licenza}/>
+      </Col>
       {props.drives.map((drive) =>  
         <Col md={4} xs={6}>
           <Drive driveLabel={drive.driveLabel} occupiedSpace={drive.occupiedSpace} lastUpdate={drive.lastUpdate} totalSpace={drive.totalSpace}/>
@@ -106,6 +110,7 @@ const Dashboard = (props) => {
       <Col md={4} xs={6}>
         <ServicesList active={props.servicesOverview.active} running={props.servicesOverview.running} problems={props.servicesOverview.problems} warnings={props.servicesOverview.warnings}/>
       </Col>
+      
     </Row>
   </Content>);
 }

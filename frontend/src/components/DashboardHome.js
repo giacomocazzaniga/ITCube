@@ -4,6 +4,7 @@ import { Content, Row, Col } from 'adminlte-2-react';
 import TrafficLightButtons from './TrafficLightButtons';
 import History from './History';
 import LicensesList from './LicensesList';
+import UserData from './UserData';
 
 /**
  * connect the actions to the component
@@ -19,6 +20,8 @@ const mapStateToProps = state => {
   return {
     client_list: state.client_list,
     nome_company: state.nome_company,
+    email: state.email,
+    emailNotify: state.emailNotify,
     token: state.token,
     logged: state.logged,
     clientOverview: {
@@ -114,6 +117,9 @@ const DashboardHome = (props) => {
       </Col>
       <Col md={8} xs={12}>
         <History apex={props.apex}/>
+      </Col>
+      <Col xs={12} md={6}>
+        <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company}/>
       </Col>
     </Row>
   </Content>);

@@ -49,10 +49,10 @@ const App = (props) => {
   return (
     <ToastProvider>
       {props.logged==true 
-      ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/account"} /><Header text="Lista dei client"></Header><Searchbar includeButton="true" placeholder="Cerca..." />{getSidebar(props.client_list, props.nome_company)}</>}>
+      ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.nome_company} /><Header text="Lista dei client"></Header><Searchbar includeButton="true" placeholder="Cerca..." />{getSidebar(props.client_list, props.nome_company)}</>}>
           <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
           <DashboardAccount path={"/account"} title="Account" />
-          {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} title={item.nome_client} />)}
+          {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} title={item.nome_client} MAC_address={item.MAC_address} codice_licenza={item.codice_licenza} nome_tipologia_licenza={item.nome_tipologia_licenza}/>)}
         </AdminLTE>
       : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
           <ToastProvider path="/accedi" title="Accedi"><LoginPage /></ToastProvider>
