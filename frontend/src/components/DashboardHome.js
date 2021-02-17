@@ -2,10 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Content, Row, Col } from 'adminlte-2-react';
 import TrafficLightButtons from './TrafficLightButtons';
-import Communications from './Communications';
 import History from './History';
-import Drive from './Drive';
-import ServicesList from './ServicesList';
+import LicensesList from './LicensesList';
 
 /**
  * connect the actions to the component
@@ -24,30 +22,47 @@ const mapStateToProps = state => {
     token: state.token,
     logged: state.logged,
     clientOverview: {
-      problems: 3,
-      warnings: 12,
-      running: 44
-    },
-    drives: [
-      {
-        driveLabel: "C",
-        occupiedSpace: 93,
-        totalSpace: 250,
-        lastUpdate: "12 Feb 17:54"
-      },
-      {
-        driveLabel: "D",
-        occupiedSpace: 22,
-        totalSpace: 250,
-        lastUpdate: "12 Feb 18:01"
-      },
-    ],
-    servicesOverview: {
-      active: 83,
-      running: 44,
       problems: 2,
-      warnings: 11
+      warnings: 2,
+      running: 26
     },
+    licenses: [
+      {
+        codice: "ATRJ-95SX-LQQ6-IRRV",
+        classe: 0,
+        nome_tipologia: "Free"
+      },
+      {
+        codice: "ZQCQ-B0EC-TW8N-YZFT",
+        classe: 0,
+        nome_tipologia: "Free"
+      },
+      {
+        codice: "SQVH-F0H2-ZDHH-3GLR",
+        classe: 1,
+        nome_tipologia: "Premium"
+      },
+      {
+        codice: "LE1P-42KI-PY9L-1FZP",
+        classe: 2,
+        nome_tipologia: "Pro"
+      },
+      {
+        codice: "TLCU-UMMR-83JL-YORW",
+        classe: 0,
+        nome_tipologia: "Free"
+      },
+      {
+        codice: "WIC3-9FST-SLDX-XUMA",
+        classe: 1,
+        nome_tipologia: "Premium"
+      },
+      {
+        codice: "VXLL-RPEA-5HMH-GEEQ",
+        classe: 2,
+        nome_tipologia: "Pro"
+      }
+    ],
     apex: {
       lastUpdate: "12 Feb 18:00",
       options: {
@@ -76,13 +91,13 @@ const mapStateToProps = state => {
       colors: ["#dd4b39", "#f39c12"],
       series: [
         {
-          name: "Warnings",
-          data: [15, 16, 10, 9, 3, 2, 8, 3, 16, 14, 12, 10, 12],
+          name: "Client con warnings",
+          data: [2, 1, 1, 0, 0, 0, 4, 2, 4, 5, 6, 3, 2],
           color: "#f39c12"
         },
         {
-          name: "Problemi",
-          data: [5, 4, 5, 8, 3, 3, 3, 5, 4, 2, 1, 0, 3],
+          name: "Client con problemi",
+          data: [2, 4, 1, 0, 0, 0, 0, 2, 4, 2, 1, 1, 2],
           color: "#dd4b39"
         }
       ]
@@ -90,21 +105,15 @@ const mapStateToProps = state => {
   }
 }
 
-const Dashboard = (props) => {
+const DashboardHome = (props) => {
   return (<Content title={props.title} browserTitle={props.title}>
     <Row>
-      <TrafficLightButtons titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
-      <Col md={8} xs={12}>
-        <Communications />
-        <History apex={props.apex}/>
+      <TrafficLightButtons titles={["Client con problemi", "Client con warnings", "Client senza problemi e warnings"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
+      <Col xs={12} md={4}>
+        <LicensesList title="Gestione delle licenze" list={props.licenses}/>
       </Col>
-      {props.drives.map((drive) =>  
-        <Col md={4} xs={6}>
-          <Drive driveLabel={drive.driveLabel} occupiedSpace={drive.occupiedSpace} lastUpdate={drive.lastUpdate} totalSpace={drive.totalSpace}/>
-        </Col>
-      )}
-      <Col md={4} xs={6}>
-        <ServicesList active={props.servicesOverview.active} running={props.servicesOverview.running} problems={props.servicesOverview.problems} warnings={props.servicesOverview.warnings}/>
+      <Col md={8} xs={12}>
+        <History apex={props.apex}/>
       </Col>
     </Row>
   </Content>);
@@ -112,4 +121,4 @@ const Dashboard = (props) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Dashboard);
+)(DashboardHome);

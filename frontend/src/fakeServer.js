@@ -39,21 +39,30 @@ app.post('/login', function (req, res) {
   result = {
     "nome_company":"ITCube Consulting",
     "id_company": "1",
+    "email": "francesco.done@itcubeconsulting.it",
+    "emailNotify": "alert@itcubeconsulting.it",
     "client" : [
       {
         "id_client" : "1",
-        "nome_client" : "Macchina di Massimiliano",
+        "nome_client" : "DESKTOP-3874",
         "MAC_address" : "00-50-FC-A0-67-2C",
-        "codice_licenza" : "1234-5678-1234-5678",
+        "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
         "classe_licenza" : "0",
         "nome_tipologia_licenza" : "Free"
       }, {
         "id_client" : "2",
-        "nome_client" : "Macchina di Francesco",
+        "nome_client" : "DESKTOP-2230",
         "MAC_address" : "00-56-SC-E4-C2-WC",
-        "codice_licenza" : "1234-5678-1234-5678",
+        "codice_licenza" : "ZQCQ-B0EC-TW8N-YZFT",
         "classe_licenza" : "0",
         "nome_tipologia_licenza" : "Free"
+      }, {
+        "id_client" : "3",
+        "nome_client" : "LinuxServer-12",
+        "MAC_address" : "00-41-5E-E4-2Z-C2",
+        "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
+        "classe_licenza" : "2",
+        "nome_tipologia_licenza" : "Pro"
       }
     ],
     "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"

@@ -5,15 +5,20 @@ import * as types from './ActionTypes';
 const initialState = {
   message : "",
   messageCode : 0,
-  nome_company : null,
+  nome_company : null, //ragione sociale
+  email : null,
+  emailNotify : null,
   client_list : [],
   logged: false,
-  token : null
+  token : null,
+  licensesList : [{name: 'Free', id: 0},{name: 'Premium', id: 1},{name: 'Pro', id: 2}]
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
       nome_company: action.nome_company,
+      email: action.email,
+      emailNotify: action.emailNotify,
       client_list: action.client_list,
       logged: true,
       token: action.token
@@ -25,6 +30,16 @@ export function rootReducer(state = initialState, action) {
       messageCode: action.messageCode
     });
   }
+  if (action.type === types.ADDLICENSE) {
+    return Object.assign({}, state, {
+      licensesList: action.license
+    });
+  }
+  if (action.type === types.REMOVELICENSE) {
+    return Object.assign({}, state, {
+      licensesList: action.license
+    });
+  }
 
   //returning the state
   return state;
@@ -33,7 +48,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'client_list', 'logged', 'token']
+  blacklist: ['nome_company', 'client_list', 'logged', 'token', 'licensesList']
 };
 
 export default persistReducer(persistConfig, rootReducer);

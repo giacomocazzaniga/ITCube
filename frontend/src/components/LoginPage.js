@@ -4,6 +4,8 @@ import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { login } from '../ActionCreator';
 import { url_login } from '../REST';
 import Dashboard from './Dashboard';
+import DashboardHome from './DashboardHome';
+
 
 const axios = require('axios');
 
@@ -13,8 +15,8 @@ const axios = require('axios');
  */
 const mapDispatchToProps =  dispatch => {
   return{
-    Login: (nome_company, client_list, token) => {
-      dispatch(login(nome_company, client_list, token))
+    Login: (nome_company, email, emailNotify, client_list, token) => {
+      dispatch(login(nome_company, email, emailNotify, client_list, token))
     }
   }
 }
@@ -68,7 +70,7 @@ const LoginPage = (props) => {
     })
     .then(function (response) {
       //i campi json di risposta vanno gestiti qui
-      props.Login(response.data.nome_company, response.data.client, response.data.token);
+      props.Login(response.data.nome_company, response.data.email, response.data.emailNotify, response.data.client, response.data.token);
     })
     .catch(function (error) {
       addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
@@ -100,6 +102,7 @@ const LoginPage = (props) => {
       </ToastProvider>
     :
       <ToastProvider>
+        <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
         {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} title={item.nome_client} />)}
       </ToastProvider>
   );
