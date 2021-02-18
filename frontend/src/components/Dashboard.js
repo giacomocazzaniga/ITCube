@@ -100,7 +100,7 @@ const Dashboard = (props) => {
         <History apex={props.apex}/>
       </Col>
       <Col md={4} xs={6}>
-        <ClientInfo nome_client={props.title} MAC_address={props.MAC_address} codice_licenza={props.codice_licenza} nome_tipologia_licenza={props.nome_tipologia_licenza}/>
+        <ClientInfo client={props.client}/>
       </Col>
       {props.drives.map((drive) =>  
         <Col md={4} xs={6}>

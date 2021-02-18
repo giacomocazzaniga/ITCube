@@ -18,12 +18,14 @@ const mapStateToProps = state => ({});
 
 const ClientInfo = (props) => {
   return (
-    <Box title="Informazioni sul client" type="primary" collapsable collapsed>
+    <Box title="Informazioni sul client" type="primary" collapsable>
       <Col md={12} xs={12}>
-        <h4><b>Nome: </b>{props.nome_client}</h4>
-        <h4><b>MAC address: </b>{props.MAC_address}</h4>
-        <h4><b>Licenza: </b>{props.codice_licenza}</h4>
-        <h4><b>Tipologia Licenza: </b>{props.nome_tipologia_licenza}</h4>
+        <h4><b>Nome: </b>{props.client.nome_client}</h4>
+        <h4><b>Tipologia: </b>{props.client.tipo_client}</h4>
+        <h4><b>MAC address: </b>{props.client.MAC_address}</h4>
+        <h4><b>Licenza: </b>{props.client.codice_licenza}</h4>
+        <h4><b>Tipologia Licenza: </b>{props.client.nome_tipologia_licenza}</h4>
+        <h4><b>Gruppo di lavoro: </b>{props.client.category}</h4>
       </Col>
     </Box>
   );

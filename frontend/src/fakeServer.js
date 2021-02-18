@@ -45,6 +45,8 @@ app.post('/login', function (req, res) {
       {
         "id_client" : "1",
         "nome_client" : "DESKTOP-3874",
+        "tipo_client" : "Client",
+        "category" : "Sviluppo",
         "MAC_address" : "00-50-FC-A0-67-2C",
         "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
         "classe_licenza" : "0",
@@ -52,6 +54,8 @@ app.post('/login', function (req, res) {
       }, {
         "id_client" : "2",
         "nome_client" : "DESKTOP-2230",
+        "tipo_client" : "Client",
+        "category" : "Sviluppo",
         "MAC_address" : "00-56-SC-E4-C2-WC",
         "codice_licenza" : "ZQCQ-B0EC-TW8N-YZFT",
         "classe_licenza" : "0",
@@ -59,6 +63,8 @@ app.post('/login', function (req, res) {
       }, {
         "id_client" : "3",
         "nome_client" : "SERVER-3512",
+        "tipo_client" : "Server",
+        "category" : "Produzione",
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
         "classe_licenza" : "2",
