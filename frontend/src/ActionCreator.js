@@ -21,3 +21,7 @@ export const removeLicense = (license) => ({
   type: types.REMOVELICENSE,
   license: license
 })
+export const searchClient = (client_name) => ({
+  type: types.SEARCHCLIENT,
+  client_name: client_name
+})

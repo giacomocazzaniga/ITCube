@@ -69,6 +69,24 @@ app.post('/login', function (req, res) {
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
         "classe_licenza" : "2",
         "nome_tipologia_licenza" : "Pro"
+      }, {
+        "id_client" : "4",
+        "nome_client" : "DESKTOP-3562",
+        "tipo_client" : "Client",
+        "category" : "Produzione",
+        "MAC_address" : "00-41-5E-E4-2Z-C2",
+        "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
+        "classe_licenza" : "2",
+        "nome_tipologia_licenza" : "Pro"
+      }, {
+        "id_client" : "5",
+        "nome_client" : "SERVER-8290",
+        "tipo_client" : "Server",
+        "category" : "Sviluppo",
+        "MAC_address" : "00-41-5E-E4-2Z-C2",
+        "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
+        "classe_licenza" : "2",
+        "nome_tipologia_licenza" : "Pro"
       }
     ],
     "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
