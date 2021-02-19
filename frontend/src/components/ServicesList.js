@@ -33,7 +33,7 @@ const ServicesList = (props) => {
         >
           <div style={{position:"absolute", top: "-379px", "z-index": 999999, left: "50%"}}>
             <p>Modal</p>
-            <button onClick={closeModal}>Exit</button>
+            <button onClick={closeModal}>Close</button>
           </div>
         </Modal>
       </Col>
