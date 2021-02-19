@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { connect } from 'react-redux';
 import { Content, Row, Col } from 'adminlte-2-react';
 import TrafficLightButtons from './TrafficLightButtons';
@@ -110,7 +110,6 @@ const Dashboard = (props) => {
       <Col md={4} xs={6}>
         <ServicesList active={props.servicesOverview.active} running={props.servicesOverview.running} problems={props.servicesOverview.problems} warnings={props.servicesOverview.warnings}/>
       </Col>
-      
     </Row>
   </Content>);
 }
