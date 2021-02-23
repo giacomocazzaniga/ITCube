@@ -108,7 +108,7 @@ const Dashboard = (props) => {
         </Col>
       )}
       <Col md={4} xs={6}>
-        <ServicesList active={props.servicesOverview.active} running={props.servicesOverview.running} problems={props.servicesOverview.problems} warnings={props.servicesOverview.warnings}/>
+        <ServicesList selected={props.title} services={props.client.servizi}/>
       </Col>
     </Row>
   </Content>);

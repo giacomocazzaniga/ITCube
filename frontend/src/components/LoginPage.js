@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
-import { login } from '../ActionCreator';
+import { login, placesList, categoriesList } from '../ActionCreator';
 import { url_login } from '../REST';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
@@ -16,6 +16,11 @@ const axios = require('axios');
 const mapDispatchToProps =  dispatch => {
   return{
     Login: (nome_company, email, emailNotify, client_list, token) => {
+      dispatch(login(nome_company, email, emailNotify, client_list, token))
+    },
+    LoginWithPlacesCategories: (nome_company, email, emailNotify, client_list, token, places_list, categories_list) => {
+      dispatch(categoriesList(categories_list))
+      dispatch(placesList(places_list))
       dispatch(login(nome_company, email, emailNotify, client_list, token))
     }
   }
@@ -70,7 +75,7 @@ const LoginPage = (props) => {
     })
     .then(function (response) {
       //i campi json di risposta vanno gestiti qui
-      props.Login(response.data.nome_company, response.data.email, response.data.emailNotify, response.data.client, response.data.token);
+      props.LoginWithPlacesCategories(response.data.nome_company, response.data.email, response.data.emailNotify, response.data.client, response.data.token, response.data.sedi, response.data.categories);
     })
     .catch(function (error) {
       addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});

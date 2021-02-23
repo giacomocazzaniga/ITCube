@@ -40,3 +40,18 @@
 .search-wrapper {
   height: 39px !important;
 }
+
+.clickable{
+  cursor: pointer !important;
+}
+
+.modalWrapper {
+  position: absolute !important;
+  top: -520px !important;
+  z-index: 999999 !important;
+  left: 23% !important;
+  width: 70% !important;
+  -webkit-box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
+  -moz-box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
+  box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
+}

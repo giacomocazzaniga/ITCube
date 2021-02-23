@@ -25,3 +25,19 @@ export const searchClient = (client_name) => ({
   type: types.SEARCHCLIENT,
   client_name: client_name
 })
+export const placesList = (places_list) => ({
+  type: types.PLACESLIST,
+  places_list: places_list
+})
+export const categoriesList = (categories_list) => ({
+  type: types.CATEGORIESLIST,
+  categories_list: categories_list
+})
+export const categoryVsPlace = (toggle) => ({
+  type: types.CATEGORYVSPLACE,
+  category_vs_place: toggle
+})
+export const servicesList = (servicesList) => ({
+  type: types.SERVICESLIST,
+  servicesList: servicesList
+})

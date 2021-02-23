@@ -50,7 +50,14 @@ app.post('/login', function (req, res) {
         "MAC_address" : "00-50-FC-A0-67-2C",
         "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
         "classe_licenza" : "0",
-        "nome_tipologia_licenza" : "Free"
+        "nome_tipologia_licenza" : "Free",
+        "sede" : "Venezia",
+        "servizi" : {
+          "attivi" : "83",
+          "esecuzione" : "44",
+          "problemi" : "2",
+          "warnings" : "11"
+        }
       }, {
         "id_client" : "2",
         "nome_client" : "DESKTOP-2230",
@@ -59,7 +66,14 @@ app.post('/login', function (req, res) {
         "MAC_address" : "00-56-SC-E4-C2-WC",
         "codice_licenza" : "ZQCQ-B0EC-TW8N-YZFT",
         "classe_licenza" : "0",
-        "nome_tipologia_licenza" : "Free"
+        "nome_tipologia_licenza" : "Free",
+        "sede" : "Venezia",
+        "servizi" : {
+          "attivi" : "83",
+          "esecuzione" : "44",
+          "problemi" : "2",
+          "warnings" : "11"
+        }
       }, {
         "id_client" : "3",
         "nome_client" : "SERVER-3512",
@@ -68,7 +82,14 @@ app.post('/login', function (req, res) {
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
         "classe_licenza" : "2",
-        "nome_tipologia_licenza" : "Pro"
+        "nome_tipologia_licenza" : "Pro",
+        "sede" : "Milano",
+        "servizi" : {
+          "attivi" : "83",
+          "esecuzione" : "44",
+          "problemi" : "2",
+          "warnings" : "11"
+        }
       }, {
         "id_client" : "4",
         "nome_client" : "DESKTOP-3562",
@@ -77,7 +98,14 @@ app.post('/login', function (req, res) {
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
         "classe_licenza" : "2",
-        "nome_tipologia_licenza" : "Pro"
+        "nome_tipologia_licenza" : "Pro",
+        "sede" : "Milano",
+        "servizi" : {
+          "attivi" : "83",
+          "esecuzione" : "44",
+          "problemi" : "2",
+          "warnings" : "11"
+        }
       }, {
         "id_client" : "5",
         "nome_client" : "SERVER-8290",
@@ -86,10 +114,86 @@ app.post('/login', function (req, res) {
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
         "classe_licenza" : "2",
-        "nome_tipologia_licenza" : "Pro"
+        "nome_tipologia_licenza" : "Pro",
+        "sede" : "Torino",
+        "servizi" : {
+          "attivi" : "83",
+          "esecuzione" : "44",
+          "problemi" : "2",
+          "warnings" : "11"
+        }
       }
     ],
+    "sedi" : [
+      {"nome" : "Venezia",
+       "n_client" : 2},
+      {"nome" : "Milano",
+      "n_client" : 2},
+      {"nome" : "Torino",
+       "n_client" : 1},
+    ],
+    "categories" : [
+      {"nome" : "Sviluppo",
+       "n_client" : 3},
+      {"nome" : "Produzione",
+      "n_client" : 2}
+    ],
     "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+  };
+  res.send(result);
+});
+
+app.post('/listasedi', function (req, res) {
+  result = {
+    "sedi" : [
+      {"nome" : "Venezia",
+       "n_client" : 2},
+      {"nome" : "Milano",
+      "n_client" : 2},
+      {"nome" : "Torino",
+       "n_client" : 1},
+    ],
+    "token" : ""
+  };
+  res.send(result);
+});
+
+app.post('/listagruppi', function (req, res) {
+  result = {
+    "categories" : [
+      {"nome" : "Sviluppo",
+       "n_client" : 3},
+      {"nome" : "Produzione",
+      "n_client" : 2}
+    ],
+    "token" : ""
+  };
+  res.send(result);
+});
+
+app.post('/listaservizi', function (req, res) {
+  result = {
+    "servizi" : [
+      {"nome" : "Servizio 1",
+       "attivo" : "true",
+       "stato" : "1"}, //da definire gli stati, e.g. 0=disabled 1=running, 2=problemi, 3=warning
+      {"nome" : "Servizio 2",
+       "attivo" : "true",
+       "stato" : "2"},
+      {"nome" : "Servizio 3",
+       "attivo" : "false",
+       "stato" : "0"},
+      {"nome" : "Servizio 4",
+       "attivo" : "true",
+       "stato" : "3"},
+      {"nome" : "Servizio 5",
+       "attivo" : "false",
+       "stato" : "0"},
+       {"nome" : "Servizio 6",
+       "attivo" : "false",
+       "stato" : "1"}
+    ],
+    "token" : ""
   };
   res.send(result);
 });

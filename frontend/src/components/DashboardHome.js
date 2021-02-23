@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Content, Row, Col } from 'adminlte-2-react';
+import { Content, Row, Col, Box } from 'adminlte-2-react';
 import TrafficLightButtons from './TrafficLightButtons';
 import History from './History';
 import LicensesList from './LicensesList';
 import UserData from './UserData';
+import ToggleCategoryPlace from './ToggleCategoryPlace';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 /**
  * connect the actions to the component
@@ -120,6 +122,13 @@ const DashboardHome = (props) => {
       </Col>
       <Col xs={12} md={6}>
         <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company}/>
+      </Col>
+      <Col xs={12} md={6}>
+        <Box title="Personalizzazione" type="primary" collapsable>
+          <Col md={12} xs={12}>
+            <h4><b>Visualizzazione client: </b><ToggleCategoryPlace /></h4>
+          </Col>
+        </Box>
       </Col>
     </Row>
   </Content>);

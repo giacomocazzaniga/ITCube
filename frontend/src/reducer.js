@@ -12,7 +12,11 @@ const initialState = {
   logged: false,
   token : null,
   licensesList : [{name: 'Free', id: 0},{name: 'Premium', id: 1},{name: 'Pro', id: 2}],
-  searched_client: ""
+  searched_client: "",
+  places_list : [],
+  categories_list : [],
+  category_vs_place : true, //true==category, false==place
+  services_list : []
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -46,6 +50,26 @@ export function rootReducer(state = initialState, action) {
       searched_client: action.client_name
     });
   }
+  if (action.type === types.PLACESLIST) {
+    return Object.assign({}, state, {
+      places_list: action.places_list
+    });
+  }
+  if (action.type === types.CATEGORIESLIST) {
+    return Object.assign({}, state, {
+      categories_list: action.categories_list
+    });
+  }
+  if (action.type === types.CATEGORYVSPLACE) {
+    return Object.assign({}, state, {
+      category_vs_place: action.category_vs_place
+    });
+  }
+  if (action.type === types.SERVICESLIST) {
+    return Object.assign({}, state, {
+      services_list: action.servicesList
+    });
+  }
 
   //returning the state
   return state;
@@ -54,7 +78,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client']
+  blacklist: ['nome_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);

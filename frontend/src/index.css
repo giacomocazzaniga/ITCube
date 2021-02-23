@@ -42,3 +42,34 @@ code {
 .apexcharts-selected svg {
   fill: #3c8dbc !important;
 }
+
+.modalWrapper {
+  position: absolute !important;
+  top: -600px !important;
+  z-index: 999999 !important;
+  left: 23% !important;
+  width: 70% !important;
+  -webkit-box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
+  -moz-box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
+  box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
+}
+
+.modalWrapper .box {
+  margin-bottom: 0px !important;
+}
+
+.clickable{
+  cursor: pointer !important;
+}
+
+.disabled:hover {
+  cursor: not-allowed;
+}
+
+.infoDisabled {
+  color: rgb(221, 75, 57);
+}
+
+.apexcharts-toolbar {
+  z-index: 0 !important;
+}

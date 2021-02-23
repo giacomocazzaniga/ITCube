@@ -26,6 +26,7 @@ const ClientInfo = (props) => {
         <h4><b>Licenza: </b>{props.client.codice_licenza}</h4>
         <h4><b>Tipologia Licenza: </b>{props.client.nome_tipologia_licenza}</h4>
         <h4><b>Gruppo di lavoro: </b>{props.client.category}</h4>
+        <h4><b>Sede di lavoro: </b>{props.client.sede}</h4>
       </Col>
     </Box>
   );
