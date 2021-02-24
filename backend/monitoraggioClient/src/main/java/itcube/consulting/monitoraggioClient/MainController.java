@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpSession;
@@ -33,6 +35,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
@@ -51,17 +58,13 @@ import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
+import itcube.consulting.monitoraggioClient.services.Services;
+import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 
 @RestController
 @RequestMapping(path="/be/main")
 public class MainController {
-	
-	//private  AuthenticationManager authenticationManager;
-
-	private HashMap<String, Date> AuthenticationManager= new HashMap<String, Date>();
-	private int milliSecLenghtToken=30000;
-	private double threshold=0.1*milliSecLenghtToken;
 	
 	@Autowired
 	private ConfigRepository configRepository;
@@ -102,7 +105,7 @@ public class MainController {
 		ElencoCompanies company;
 		ElencoLicenze licenza;
 		String codice;
-		
+
 		try {
 			email=body.get("email").toString();
 			password=body.get("password").toString();
@@ -130,7 +133,11 @@ public class MainController {
 				elencoCompaniesRepository.save(company);
 				
 				//salva la licenza
-				codice=getLicenseCode();
+				do
+				{
+					codice=Services.getLicenseCode();
+				}while(elencoLicenzeRepository.countCodes(codice)!=0);
+				
 				licenza=new ElencoLicenze();
 				licenza.setCodice(codice);
 				licenza.setElencoClients(null);
@@ -191,10 +198,10 @@ public class MainController {
 				{
 					company=elencoCompaniesRepository.getInfoCompany(email);
 					elencoClients=elencoClientsRepository.getElencoClients(company);
-					token = getJWTToken(company.getRagione_sociale());
+					token = Services.getJWTToken(company.getRagione_sociale());
 					
-					AuthenticationManager.put(token, new Date(System.currentTimeMillis() +milliSecLenghtToken));
-					
+					Services.putToken(token);
+
 					responseLogin.setMessage("Login avvenuto con successo");
 					responseLogin.setMessageCode(0);
 					responseLogin.setRagione_sociale(company.getRagione_sociale());
@@ -214,11 +221,16 @@ public class MainController {
 		
 		@PostMapping(path="/hello",produces=MediaType.APPLICATION_JSON_VALUE)
 		public String helloWorld(@RequestBody Map<String,Object> body) {
-			if(isValid((String)body.get("token")))
+			if(Services.isValid((String)body.get("token")))
 			{
-				String newToken=checkThreshold((String)body.get("token"));
+				String newToken=Services.checkThreshold((String)body.get("token"));
 				if(newToken==null)
 				{
+					List elenco= Stream.of(elencoCompaniesRepository.getInfo()).collect(Collectors.toList());
+					Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+					String jsonString = gson.toJson(elenco);
+					System.out.println(jsonString);
+					
 					return "Autenticato ("+body.get("token")+")";
 				}
 				else
@@ -228,84 +240,5 @@ public class MainController {
 				
 			}
 			return "Autenticazione fallita ("+body.get("token")+")";
-		}
-		
-		//Metodo token
-		private String getJWTToken(String ragione_sociale) {
-			String secretKey = "mySecretKey";
-			List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-					.commaSeparatedStringToAuthorityList("ROLE_USER");
-			
-			String token = Jwts
-					.builder()
-					.setId("ITCube")
-					.setSubject(ragione_sociale)
-					.claim("authorities",
-							grantedAuthorities.stream()
-									.map(GrantedAuthority::getAuthority)
-									.collect(Collectors.toList()))
-					.setIssuedAt(new Date(System.currentTimeMillis()))
-					.setExpiration(new Date(System.currentTimeMillis() + milliSecLenghtToken))
-					.signWith(SignatureAlgorithm.HS512, 
-					  secretKey.getBytes()).compact();
-
-			return token;
-		}
-
-		private boolean isValid(String token)
-		{
-			if(AuthenticationManager.containsKey(token))
-			{
-				if((new Date(System.currentTimeMillis())).before(((Date)AuthenticationManager.get(token))))
-				{
-					return true;
-				}
-				else
-				{
-					AuthenticationManager.remove(token);
-					return false;
-				}
-			}
-			return false;
-		}
-		
-		private String checkThreshold(String token)
-		{
-			if((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(token)), TimeUnit.MILLISECONDS))<threshold)
-			{
-				System.out.println((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(token)), TimeUnit.MILLISECONDS)));
-				System.out.println(threshold);
-				String newToken=getJWTToken(token);
-				AuthenticationManager.remove(token);
-				AuthenticationManager.put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
-				return newToken;
-			}
-			return null;
-		}
-		
-		private String getLicenseCode()
-		{
-				String codice="";
-				String shortId;
-				do
-				{
-					for(int i=0; i<4; i++)
-					{
-						shortId = RandomStringUtils.randomAlphanumeric(4); 
-						System.out.println(shortId);
-						codice+=shortId;
-						if(i<3)
-							codice+="-";
-					}
-					//codice = UUID.randomUUID().toString();
-				}
-			    while(elencoLicenzeRepository.countCodes(codice)!=0);
-				
-			    return codice;    	
-		}
-		
-		private static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-		    long diffInMillies = date2.getTime() - date1.getTime();
-		    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
 		}
 }

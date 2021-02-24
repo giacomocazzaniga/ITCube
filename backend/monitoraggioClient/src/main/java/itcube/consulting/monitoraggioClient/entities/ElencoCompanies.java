@@ -86,4 +86,13 @@ public class ElencoCompanies {
 	public void setElencoClients(List<ElencoClients> elencoClients) {
 		this.elencoClients = elencoClients;
 	}
+
+	@Override
+	public String toString() {
+		return "ElencoCompanies [id=" + id + ", elencoLicenze=" + elencoLicenze + ", elencoClients=" + elencoClients
+				+ ", ragione_sociale=" + ragione_sociale + ", password=" + password + ", email=" + email
+				+ ", email_alert=" + email_alert + "]";
+	}
+	
+	
 }
