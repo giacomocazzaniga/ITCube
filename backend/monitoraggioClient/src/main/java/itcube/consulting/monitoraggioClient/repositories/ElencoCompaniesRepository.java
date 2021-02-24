@@ -17,5 +17,7 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 	
 	@Query(value="Select * from elenco_companies where elenco_companies.email= :email", nativeQuery=true)
 	ElencoCompanies getInfoCompany(@Param("email") String email);
-
+	
+	@Query(value="SELECT * from elenco_companies", nativeQuery=true)
+	List<ElencoCompanies> getInfo();
 }
