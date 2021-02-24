@@ -7,9 +7,7 @@ import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import DashboardHome from './components/DashboardHome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { placesList, searchClient } from './ActionCreator';
-import { ModalProvider } from 'react-simple-hook-modal';
-
+import { searchClient } from './ActionCreator';
 
 /**
  * connect the actions to the component
@@ -93,12 +91,12 @@ const App = (props) => {
     props.Search(event.target.value);
   }
   return (
-    <ModalProvider>
+    
       <ToastProvider>
         {props.logged==true 
         ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.nome_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByCategory(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
             <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
-            {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} client={item} title={item.nome_client} />)}
+            {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} client={item} title={item.nome_client} />)}  
           </AdminLTE>
         : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
             <ToastProvider path="/accedi" title="Accedi"><LoginPage /></ToastProvider>
@@ -106,7 +104,6 @@ const App = (props) => {
           </AdminLTE>
         }
       </ToastProvider>
-    </ModalProvider>
   );
 }
 

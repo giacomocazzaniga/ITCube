@@ -45,9 +45,12 @@ code {
 
 .modalWrapper {
   position: absolute !important;
-  top: -600px !important;
   z-index: 999999 !important;
-  left: 23% !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
   width: 70% !important;
   -webkit-box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
   -moz-box-shadow: 0px 0px 42px 10px rgba(0,0,0,0.63) !important;
@@ -60,6 +63,7 @@ code {
 
 .clickable{
   cursor: pointer !important;
+  color: #337ab7 !important;
 }
 
 .disabled:hover {
@@ -73,3 +77,82 @@ code {
 .apexcharts-toolbar {
   z-index: 0 !important;
 }
+
+.whiteLink {
+  cursor: pointer !important;
+  color: rgba(255,255,255,0.85) !important;
+}
+
+.add svg {
+  margin-top: 64px;
+  font-size: 100px;
+  opacity: 0.7;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -moz-transition: opacity 0.3s ease-in-out;
+  -ms-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.add svg:hover {
+  opacity: 1.0;
+  filter: alpha(opacity=50);
+  cursor: pointer;
+}
+
+.dash:hover {
+  opacity: 1.0;
+  filter: alpha(opacity=50);
+  cursor: pointer;
+}
+
+.dash {
+  height: 230px;
+  border-style: dashed;
+  opacity: 0.7;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -moz-transition: opacity 0.3s ease-in-out;
+  -ms-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.content .box-primary {
+  max-height: 310px !important;
+}
+
+.small-box-footer {
+  z-index: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+/*#root .wrapper:first-child {
+  position: absolute !important;
+}*/

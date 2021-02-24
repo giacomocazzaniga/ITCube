@@ -50,27 +50,36 @@ const ServicesList = (props) => {
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<p class="infoDisabled">* Servizio non selezionabile con la licenza in uso.</p>];
+    let returnList = [<p class="infoDisabled">* Operazione non selezionabile con la licenza in uso.</p>];
     let status = ["", "RUNNING", "PROBLEMI", "WARINNG"]
     services.map((service, i) => {
-      (service.stato=="0")
-      ?   (service.attivo=="true") 
+      switch(service.stato){
+        case "0": //disattivato
+          (service.attivo=="true") 
           ? returnList=[returnList, <p class="disabled"><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} checked disabled/> <span class="infoDisabled">*</span>{service.nome}</p>]
           : returnList=[returnList, <p class="disabled"><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} disabled/> <span class="infoDisabled">*</span>{service.nome}</p>]
-      :   (service.attivo=="true") 
+          break;
+        case "1": //attivo
+          (service.attivo=="true") 
+          ? returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} checked/> <label for={"service"+i}> {service.nome}</label></p>]
+          : returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome}/> <label for={"service"+i}> {service.nome}</label></p>]
+          break;
+        default: //attivo con problemi o warning
+          (service.attivo=="true") 
           ? returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} checked/> <label for={"service"+i}> {service.nome}</label> {status[service.stato]}</p>]
           : returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} /> <label for={"service"+i}> {service.nome}</label></p>]
+      }
     })
     return returnList;
   }
   
   return (
-    <Box title="Lista dei servizi" type="primary" collapsable footer={<PopUp title="Gestione dei servizi" childs={props.services_list} action={()=>getServicesList(props.selected, props.token)}/>}>
+    <Box title="Lista delle operazioni" type="primary" collapsable footer={<PopUp title="Gestione delle operazioni" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList(props.selected, props.token)}/>}>
       <Col md={12} xs={12}>
-        <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Servizi attivi: {props.services.attivi}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Servizi in esecuzione: {props.services.esecuzione}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Servizi con problemi: {props.services.problemi}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Servizi con warnings: {props.services.warnings}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Operazioni attive: {props.services.attivi}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Operazioni in esecuzione: {props.services.esecuzione}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Operazioni con problemi: {props.services.problemi}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Operazioni con warnings: {props.services.warnings}</h4>
       </Col>
     </Box>
   );

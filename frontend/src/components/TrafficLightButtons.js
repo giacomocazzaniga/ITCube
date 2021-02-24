@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PopUp from './PopUp';
 
 
 /**
@@ -28,9 +29,9 @@ const TrafficLightButtons = (props) => {
           <div class="icon">
             <FontAwesomeIcon icon={["fas", "times-circle"]} />
           </div>
-          <a href="#" class="small-box-footer">
-            Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} />
-          </a>
+          <span href="#" class="small-box-footer">
+            <PopUp title="Problemi" linkClass={"whiteLink"} childs={[]} action={()=>(console.log("action"))}/>
+          </span>
         </div>
       </Col>
       <Col xs={4}>
@@ -42,9 +43,9 @@ const TrafficLightButtons = (props) => {
           <div class="icon">
             <FontAwesomeIcon icon={["fas", "exclamation-circle"]} />
           </div>
-          <a href="#" class="small-box-footer">
-            Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} />
-          </a>
+          <span href="#" class="small-box-footer">
+            <PopUp title="Warnings" linkClass={"whiteLink"} childs={[]} action={()=>(console.log("action"))}/>
+          </span>
         </div>
       </Col>
       <Col xs={4}>
@@ -56,9 +57,9 @@ const TrafficLightButtons = (props) => {
           <div class="icon">
             <FontAwesomeIcon icon={["fas", "play-circle"]} />
           </div>
-          <a href="#" class="small-box-footer">
-            Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /> 
-          </a>
+          <span href="#" class="small-box-footer">
+            <h2></h2>
+          </span>
         </div>
       </Col>
     </div>

@@ -27,7 +27,7 @@ const PopUp = (props) => {
   }
   return (
     <>
-      <a onClick={launchAction()} class="clickable">Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>
+      <a onClick={launchAction()} class={props.linkClass}>Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>
       <Modal
         id="any-unique-identifier"
         isOpen={isModalOpen}

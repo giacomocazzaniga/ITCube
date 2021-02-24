@@ -8,6 +8,8 @@ import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+document.body.classList.add('fixed');
+
 /**
  * connect the actions to the component
  * @param {*} dispatch 

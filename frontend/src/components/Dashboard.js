@@ -7,6 +7,10 @@ import History from './History';
 import Drive from './Drive';
 import ServicesList from './ServicesList';
 import ClientInfo from './ClientInfo';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ModalProvider } from 'react-simple-hook-modal';
+
+document.body.classList.add('fixed');
 
 /**
  * connect the actions to the component
@@ -92,8 +96,10 @@ const mapStateToProps = state => {
 }
 
 const Dashboard = (props) => {
-  return (<Content title={props.title} browserTitle={props.title}>
+  return (
+  <Content title={props.title} browserTitle={props.title}>  
     <Row>
+    <ModalProvider>
       <TrafficLightButtons titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
       <Col md={8} xs={12}>
         <Communications />
@@ -110,8 +116,13 @@ const Dashboard = (props) => {
       <Col md={4} xs={6}>
         <ServicesList selected={props.title} services={props.client.servizi}/>
       </Col>
+      <Col md={4} xs={6}>
+        <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
+      </Col>
+      </ModalProvider>
     </Row>
-  </Content>);
+  </Content>
+);
 }
 export default connect(
   mapStateToProps,

@@ -174,22 +174,22 @@ app.post('/listagruppi', function (req, res) {
 app.post('/listaservizi', function (req, res) {
   result = {
     "servizi" : [
-      {"nome" : "Servizio 1",
+      {"nome" : "Operazione 1",
        "attivo" : "true",
-       "stato" : "1"}, //da definire gli stati, e.g. 0=disabled 1=running, 2=problemi, 3=warning
-      {"nome" : "Servizio 2",
+       "stato" : "1"}, //da definire gli stati, e.g. 0=disattivo 1=attivo, 2=attivo con problemi, 3=attivo con warning
+      {"nome" : "Operazione 2",
        "attivo" : "true",
        "stato" : "2"},
-      {"nome" : "Servizio 3",
+      {"nome" : "Operazione 3",
        "attivo" : "false",
        "stato" : "0"},
-      {"nome" : "Servizio 4",
+      {"nome" : "Operazione 4",
        "attivo" : "true",
        "stato" : "3"},
-      {"nome" : "Servizio 5",
+      {"nome" : "Operazione 5",
        "attivo" : "false",
        "stato" : "0"},
-       {"nome" : "Servizio 6",
+      {"nome" : "Operazione 6",
        "attivo" : "false",
        "stato" : "1"}
     ],
