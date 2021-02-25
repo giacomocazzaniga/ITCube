@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Content, Row, Col, Box } from 'adminlte-2-react';
+import { ModalProvider } from 'react-simple-hook-modal';
 import TrafficLightButtons from './TrafficLightButtons';
 import History from './History';
 import LicensesList from './LicensesList';
@@ -115,23 +116,28 @@ const mapStateToProps = state => {
 const DashboardHome = (props) => {
   return (<Content title={props.title} browserTitle={props.title}>
     <Row>
-      <TrafficLightButtons titles={["Client con problemi", "Client con warnings", "Client senza problemi e warnings"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
-      <Col xs={12} md={4}>
-        <LicensesList title="Gestione delle licenze" list={props.licenses}/>
-      </Col>
-      <Col md={8} xs={12}>
-        <History apex={props.apex}/>
-      </Col>
-      <Col xs={12} md={6}>
-        <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company}/>
-      </Col>
-      <Col xs={12} md={6}>
-        <Box title="Personalizzazione" type="primary" collapsable>
-          <Col md={12} xs={12}>
-            <h4><b>Visualizzazione client: </b><ToggleCategoryPlace /></h4>
-          </Col>
-        </Box>
-      </Col>
+      <ModalProvider>
+        <TrafficLightButtons titles={["Client con problemi", "Client con warnings", "Client senza problemi e warnings"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
+        <Col xs={12} md={4}>
+          <LicensesList title="Gestione delle licenze" list={props.licenses}/>
+        </Col>
+        <Col md={8} xs={12}>
+          <History apex={props.apex}/>
+        </Col>
+        <Col xs={12} md={6}>
+          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company}/>
+        </Col>
+        <Col xs={6} md={3}>
+          <Box title="Personalizzazione" type="primary" collapsable>
+            <Col md={12} xs={12}>
+              <h4><b>Visualizzazione client: </b><ToggleCategoryPlace /></h4>
+            </Col>
+          </Box>
+        </Col>
+        <Col md={3} xs={6}>
+          <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
+        </Col>
+      </ModalProvider>
     </Row>
   </Content>);
 }

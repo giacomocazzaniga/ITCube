@@ -4,6 +4,7 @@ import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { addLicense, removeLicense } from '../ActionCreator';
+import PopUp from './PopUp';
 
 
 /**
@@ -42,7 +43,7 @@ const LicensesList = (props) => {
     props.RemoveLicense(selectedList);
   }
   return (
-    <Box title={props.title} type="primary" collapsable footer={<a href="#" class="small-box-footer">Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>}>
+    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={[]} action={()=>(console.log("action"))}/></span>}>
       <Multiselect
         placeholder="Filtra per tipologia"
         emptyRecordMsg="Nessun filtro disponibile"
