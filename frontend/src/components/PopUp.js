@@ -23,6 +23,7 @@ const PopUp = (props) => {
     return () => {
       openModal();
       props.action();
+      setTimeout(function(){ document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px"; }, 100);
     };
   }
   return (
