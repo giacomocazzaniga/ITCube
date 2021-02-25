@@ -99,26 +99,26 @@ const Dashboard = (props) => {
   return (
   <Content title={props.title} browserTitle={props.title}>  
     <Row>
-    <ModalProvider>
-      <TrafficLightButtons titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
-      <Col md={8} xs={12}>
-        <Communications />
-        <History apex={props.apex}/>
-      </Col>
-      <Col md={4} xs={6}>
-        <ClientInfo client={props.client}/>
-      </Col>
-      {props.drives.map((drive) =>  
-        <Col md={4} xs={6}>
-          <Drive driveLabel={drive.driveLabel} occupiedSpace={drive.occupiedSpace} lastUpdate={drive.lastUpdate} totalSpace={drive.totalSpace}/>
+      <ModalProvider>
+        <TrafficLightButtons titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
+        <Col md={8} xs={12}>
+          <Communications />
+          <History apex={props.apex}/>
         </Col>
-      )}
-      <Col md={4} xs={6}>
-        <ServicesList selected={props.title} services={props.client.servizi}/>
-      </Col>
-      <Col md={4} xs={6}>
-        <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
-      </Col>
+        <Col md={4} xs={6}>
+          <ClientInfo client={props.client}/>
+        </Col>
+        {props.drives.map((drive) =>  
+          <Col md={4} xs={6}>
+            <Drive driveLabel={drive.driveLabel} occupiedSpace={drive.occupiedSpace} lastUpdate={drive.lastUpdate} totalSpace={drive.totalSpace}/>
+          </Col>
+        )}
+        <Col md={4} xs={6}>
+          <ServicesList selected={props.title} services={props.client.servizi}/>
+        </Col>
+        <Col md={4} xs={6}>
+          <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
+        </Col>
       </ModalProvider>
     </Row>
   </Content>

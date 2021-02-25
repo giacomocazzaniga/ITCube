@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Box } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PopUp from './PopUp';
 
 /**
  * connect the actions to the component
@@ -24,7 +25,7 @@ const mapStateToProps = state => {
 
 const UserData = (props) => {
   return (
-    <Box title="Dati dell'utente" type="primary" collapsable footer={<a href="#" class="small-box-footer">Modifica <FontAwesomeIcon icon={["fas", "pen"]} /></a>}>
+    <Box title="Dati dell'utente" type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Dati dell'utente" linkClass={"clickable"} childs={[]} action={()=>(console.log("action"))}/></span>}>
       <Col md={12} xs={12}>
         <h4><b>Indirizzo email: </b>{props.email}</h4>
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
