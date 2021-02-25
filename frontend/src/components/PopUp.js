@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, useModal, ModalTransition } from 'react-simple-hook-modal';
 import { Col, Box } from 'adminlte-2-react';
+import { Accordion } from 'react-bootstrap';
 
 
 /**
@@ -37,7 +38,9 @@ const PopUp = (props) => {
         <div class="modalWrapper">
           <Box title={props.title} style={{"margin-bottom": "0px !important"}} type="primary" footer={<a onClick={closeModal} class="clickable">Chiudi</a>}>
             <Col md={12} xs={12}>
+              <Accordion>
                 {props.childs.length==0 ? <p>Caricamento...</p> : props.childs.map(child => (<>{child}</>))}
+              </Accordion>
             </Col>
           </Box>
         </div>
