@@ -47,6 +47,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -58,6 +59,7 @@ import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
+import itcube.consulting.monitoraggioClient.response.ResponseOperationsPerClient;
 import itcube.consulting.monitoraggioClient.services.Services;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -219,18 +221,59 @@ public class MainController {
 			}
 		}
 		
+		@PostMapping(path="/operationsPerClient",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> Operations(@RequestBody Map<String,Object> body) {
+			
+			GeneralResponse generalResponse=new GeneralResponse();
+			ResponseOperationsPerClient response=new ResponseOperationsPerClient();
+			OperationsPerClient operationsPerClient=new OperationsPerClient();
+			int id_company;
+			int id_client;
+			String codice_licenza;
+			String token;
+			
+			try
+			{
+				id_company=(int)body.get("id_company");
+				id_client=(int)body.get("id_client");
+				codice_licenza=body.get("codice_licenza").toString();
+				token=body.get("token").toString();
+				
+				if(Services.isValid(token))
+				{
+					operationsPerClient= elencoClientsRepository.getOperationsPerClient(id_client); 
+					
+					response.setId_config(operationsPerClient.getId_config());
+					response.setId_operazione(operationsPerClient.getId_operazione());
+					response.setNome_operazione(operationsPerClient.getNome_operazione());
+					response.setTempo(operationsPerClient.getTempo());
+					
+					String newToken=Services.checkThreshold(token);
+					generalResponse.setMessage("Ok");
+					generalResponse.setMessageCode(0);
+					response.setToken(newToken);
+					return ResponseEntity.ok(response);
+				}
+				generalResponse.setMessage("Client non autenticato");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
+		
 		@PostMapping(path="/hello",produces=MediaType.APPLICATION_JSON_VALUE)
 		public String helloWorld(@RequestBody Map<String,Object> body) {
 			if(Services.isValid((String)body.get("token")))
 			{
 				String newToken=Services.checkThreshold((String)body.get("token"));
 				if(newToken==null)
-				{
-					List elenco= Stream.of(elencoCompaniesRepository.getInfo()).collect(Collectors.toList());
-					Gson gson = new GsonBuilder().setPrettyPrinting().create();;
-					String jsonString = gson.toJson(elenco);
-					System.out.println(jsonString);
-					
+				{		
 					return "Autenticato ("+body.get("token")+")";
 				}
 				else
@@ -241,4 +284,6 @@ public class MainController {
 			}
 			return "Autenticazione fallita ("+body.get("token")+")";
 		}
+		
+		
 }

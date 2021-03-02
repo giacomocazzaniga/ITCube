@@ -8,7 +8,6 @@ public class ResponseLogin extends GeneralResponse{
 	private String ragione_sociale;
 	private int id_company;
 	List<ElencoClients> elencoClients;
-	private String token;
 	
 	public ResponseLogin() {
 
@@ -37,14 +36,5 @@ public class ResponseLogin extends GeneralResponse{
 	public void setElencoClients(List<ElencoClients> elencoClients) {
 		this.elencoClients = elencoClients;
 	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
 	
 }
