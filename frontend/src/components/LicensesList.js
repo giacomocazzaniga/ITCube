@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { addLicense, removeLicense } from '../ActionCreator';
 import PopUp from './PopUp';
+import { _LICENZE } from '../Constants';
 
 
 /**
@@ -28,7 +29,12 @@ const mapDispatchToProps = dispatch => {
  */
 const mapStateToProps = state => {
   return {
-    options: [{name: 'Free', id: 0},{name: 'Premium', id: 1},{name: 'Pro', id: 2}],
+    options: [{name: _LICENZE.SISTEMA_OPERATIVO.label, id: _LICENZE.SISTEMA_OPERATIVO.tipo},
+              {name: _LICENZE.BACKUP.label, id: _LICENZE.BACKUP.tipo},
+              {name: _LICENZE.RETE.label, id: _LICENZE.RETE.tipo},
+              {name: _LICENZE.VULNERABILITA.label, id: _LICENZE.VULNERABILITA.tipo},
+              {name: _LICENZE.ANTIVIRUS.label, id: _LICENZE.ANTIVIRUS.tipo}
+    ],
     selectedValue: state.licensesList,
     licensesList: state.licensesList
   }
@@ -42,6 +48,7 @@ const LicensesList = (props) => {
   const onRemove = (selectedList, removedItem) => {
     props.RemoveLicense(selectedList);
   }
+
   return (
     <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={[]} action={()=>(console.log("action"))}/></span>}>
       <Multiselect

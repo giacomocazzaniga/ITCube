@@ -37,38 +37,38 @@ const mapStateToProps = state => {
     licenses: [
       {
         codice: "ATRJ-95SX-LQQ6-IRRV",
-        classe: 0,
-        nome_tipologia: "Free"
+        classe: 1,
+        nome_tipologia: "Sistema operativo"
       },
       {
         codice: "ZQCQ-B0EC-TW8N-YZFT",
-        classe: 0,
-        nome_tipologia: "Free"
+        classe: 1,
+        nome_tipologia: "Sistema operativo"
       },
       {
         codice: "SQVH-F0H2-ZDHH-3GLR",
-        classe: 1,
-        nome_tipologia: "Premium"
+        classe: 2,
+        nome_tipologia: "Backup"
       },
       {
         codice: "LE1P-42KI-PY9L-1FZP",
-        classe: 2,
-        nome_tipologia: "Pro"
+        classe: 3,
+        nome_tipologia: "Antivirus"
       },
       {
         codice: "TLCU-UMMR-83JL-YORW",
-        classe: 0,
-        nome_tipologia: "Free"
+        classe: 4,
+        nome_tipologia: "Rete"
       },
       {
         codice: "WIC3-9FST-SLDX-XUMA",
-        classe: 1,
-        nome_tipologia: "Premium"
+        classe: 5,
+        nome_tipologia: "Vulnerabilità"
       },
       {
         codice: "VXLL-RPEA-5HMH-GEEQ",
-        classe: 2,
-        nome_tipologia: "Pro"
+        classe: 3,
+        nome_tipologia: "Antivirus"
       }
     ],
     apex: {
@@ -117,26 +117,28 @@ const DashboardHome = (props) => {
   return (<Content title={props.title} browserTitle={props.title}>
     <Row>
       <ModalProvider>
-        <TrafficLightButtons titles={["Client con problemi", "Client con warnings", "Client senza problemi e warnings"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
-        <Col xs={12} md={4}>
+      <TrafficLightButtons size={3} titles={["Client con problemi", "Client con warnings", "Client senza problemi e warnings"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
+          <Col xs={6} md={3}>
+            <Box title="Personalizzazione" type="primary" collapsable>
+              <Col md={12} xs={12}>
+                <b>Visualizzazione client: </b><ToggleCategoryPlace />
+              </Col>
+            </Box>
+          </Col>
+        
+        <Col xs={12} md={6}>
           <LicensesList title="Gestione delle licenze" list={props.licenses}/>
         </Col>
-        <Col md={8} xs={12}>
+        <Col md={6} xs={12}>
           <History apex={props.apex}/>
         </Col>
         <Col xs={12} md={6}>
           <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company}/>
         </Col>
-        <Col xs={6} md={3}>
-          <Box title="Personalizzazione" type="primary" collapsable>
-            <Col md={12} xs={12}>
-              <h4><b>Visualizzazione client: </b><ToggleCategoryPlace /></h4>
-            </Col>
-          </Box>
-        </Col>
-        <Col md={3} xs={6}>
+        
+        {/*<Col md={3} xs={6}>
           <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
-        </Col>
+        </Col>*/}
       </ModalProvider>
     </Row>
   </Content>);

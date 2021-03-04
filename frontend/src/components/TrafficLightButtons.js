@@ -20,7 +20,7 @@ const mapStateToProps = state => ({});
 const TrafficLightButtons = (props) => {
   return (
     <div>
-      <Col xs={4}>
+      <Col xs={props.size}>
         <div class="small-box bg-red">
           <div class="inner">
             <h3>{props.problems}</h3>
@@ -34,7 +34,7 @@ const TrafficLightButtons = (props) => {
           </span>
         </div>
       </Col>
-      <Col xs={4}>
+      <Col xs={props.size}>
         <div class="small-box bg-yellow">
           <div class="inner">
             <h3>{props.warnings}</h3>
@@ -48,7 +48,7 @@ const TrafficLightButtons = (props) => {
           </span>
         </div>
       </Col>
-      <Col xs={4}>
+      <Col xs={props.size}>
         <div class="small-box bg-green">
           <div class="inner">
             <h3>{props.running}</h3>

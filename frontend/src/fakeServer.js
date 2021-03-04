@@ -49,7 +49,7 @@ app.post('/login', function (req, res) {
         "category" : "Sviluppo",
         "MAC_address" : "00-50-FC-A0-67-2C",
         "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
-        "classe_licenza" : "0",
+        "classe_licenza" : "1",
         "nome_tipologia_licenza" : "Free",
         "sede" : "Venezia",
         "servizi" : {
@@ -65,7 +65,7 @@ app.post('/login', function (req, res) {
         "category" : "Sviluppo",
         "MAC_address" : "00-56-SC-E4-C2-WC",
         "codice_licenza" : "ZQCQ-B0EC-TW8N-YZFT",
-        "classe_licenza" : "0",
+        "classe_licenza" : "2",
         "nome_tipologia_licenza" : "Free",
         "sede" : "Venezia",
         "servizi" : {
@@ -81,7 +81,7 @@ app.post('/login', function (req, res) {
         "category" : "Produzione",
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
-        "classe_licenza" : "2",
+        "classe_licenza" : "3",
         "nome_tipologia_licenza" : "Pro",
         "sede" : "Milano",
         "servizi" : {
@@ -97,7 +97,7 @@ app.post('/login', function (req, res) {
         "category" : "Produzione",
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
-        "classe_licenza" : "2",
+        "classe_licenza" : "4",
         "nome_tipologia_licenza" : "Pro",
         "sede" : "Milano",
         "servizi" : {
@@ -113,7 +113,7 @@ app.post('/login', function (req, res) {
         "category" : "Sviluppo",
         "MAC_address" : "00-41-5E-E4-2Z-C2",
         "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
-        "classe_licenza" : "2",
+        "classe_licenza" : "5",
         "nome_tipologia_licenza" : "Pro",
         "sede" : "Torino",
         "servizi" : {
@@ -125,17 +125,21 @@ app.post('/login', function (req, res) {
       }
     ],
     "sedi" : [
-      {"nome" : "Venezia",
-       "n_client" : 2},
-      {"nome" : "Milano",
-      "n_client" : 2},
-      {"nome" : "Torino",
+      {"nome" : "1",
+       "n_client" : 1},
+      {"nome" : "2",
+       "n_client" : 1},
+      {"nome" : "3",
+       "n_client" : 1},
+      {"nome" : "4",
+       "n_client" : 1},
+      {"nome" : "5",
        "n_client" : 1},
     ],
     "categories" : [
-      {"nome" : "Sviluppo",
+      {"nome" : "Client",
        "n_client" : 3},
-      {"nome" : "Produzione",
+      {"nome" : "Server",
       "n_client" : 2}
     ],
     "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
@@ -158,12 +162,44 @@ app.post('/listasedi', function (req, res) {
   res.send(result);
 });
 
+app.post('/listalicenze', function (req, res) {
+  result = {
+    "sedi" : [
+      {"nome" : "1",
+       "n_client" : 1},
+      {"nome" : "2",
+       "n_client" : 1},
+      {"nome" : "3",
+       "n_client" : 1},
+      {"nome" : "4",
+       "n_client" : 1},
+      {"nome" : "5",
+       "n_client" : 1},
+    ],
+    "token" : ""
+  };
+  res.send(result);
+});
+
 app.post('/listagruppi', function (req, res) {
   result = {
     "categories" : [
       {"nome" : "Sviluppo",
        "n_client" : 3},
       {"nome" : "Produzione",
+      "n_client" : 2}
+    ],
+    "token" : ""
+  };
+  res.send(result);
+});
+
+app.post('/listatipodispositivi', function (req, res) {
+  result = {
+    "categories" : [
+      {"nome" : "Client",
+       "n_client" : 3},
+      {"nome" : "Server",
       "n_client" : 2}
     ],
     "token" : ""

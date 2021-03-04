@@ -34,13 +34,13 @@ const ToggleCategoryPlace = (props) => {
       <span onChange={onChangeValue}>
         {props.category_vs_place
         ? <>
-            <br /><input type="radio" value="category" name="toggleView" checked="checked"/> Categoria
-            <br /><input type="radio" value="place" name="toggleView" /> Sede
+            <br /><input type="radio" value="category" name="toggleView" checked="checked"/> Tipologia dispositivi
+            <br /><input type="radio" value="place" name="toggleView" /> Categoria
           </>
         :
           <>
-            <br /><input type="radio" value="category" name="toggleView"/> Categoria
-            <br /><input type="radio" value="place" name="toggleView" checked="checked"/> Sede
+            <br /><input type="radio" value="category" name="toggleView"/> Tipologia dispositivi
+            <br /><input type="radio" value="place" name="toggleView" checked="checked"/> Categoria
           </>}
         
       </span>

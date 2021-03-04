@@ -8,6 +8,8 @@ import SignUpPage from './components/SignUpPage';
 import DashboardHome from './components/DashboardHome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { searchClient } from './ActionCreator';
+import { _FILTERS, _LICENZE } from './Constants';
+import { ClientFilter } from './HierarchyManager';
 
 /**
  * connect the actions to the component
@@ -47,35 +49,115 @@ const getSidebar = (client_list, nome_company) =>{
 }
 
 
-const getSidebarByCategory = (client_list, nome_company, searched_client, category) =>{
+const getSidebarByType = (client_list, nome_company, searched_client, category) =>{
+  let filtered_client_list = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
   let lastComponent = [];
-  for(let i=0; i<category.length; i++){
-    lastComponent = [lastComponent, <Item icon="fa-users" text={category[i].nome+" ("+category[i].n_client+")"}>
+  {filtered_client_list.map((filtered_clients) => {
+    lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
+      {category.map((cat) => {
+        return (<Item icon="fa-users" text={cat.nome}>
+          {client_list.map((item) => {
+            return (item.sede==filtered_clients.place && item.tipo_client==cat.nome)
+            ? 
+              (item.tipo_client=="Client")
+              ? <Item icon={"fa-desktop"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} />
+              : <Item icon={"fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> 
+            : <></>
+          })}
+        </Item>)
+      })}
+    </Item>]
+  })}
+
+  //WITHOUT PLACE
+  /*{category.map((cat) => {
+    lastComponent = [lastComponent, <Item icon="fa-users" text={cat.nome+" ("+cat.n_client+")"}>
       {client_list.map((item) => {
         if(searched_client==""){
-          return (item.category===category[i].nome) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
+          return (item.tipo_client===cat.nome) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
         }else{
-          return (item.category===category[i].nome && item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
+          return (item.tipo_client===cat.nome && item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
         }
   })}
     </Item>];
-  }
+  })}*/
   return lastComponent;
 }
 
 const getSidebarByPlace = (client_list, nome_company, searched_client, place) =>{
-  let lastComponent = [];
+  /*let lastComponent = [];
+  let label = "";
+  console.log(place)
   for(let i=0; i<place.length; i++){
-    lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={place[i].nome+" ("+place[i].n_client+")"}>
+    switch (place[i].nome) {
+      case _LICENZE.SISTEMA_OPERATIVO.tipo: 
+        label = _LICENZE.SISTEMA_OPERATIVO.label;
+        break;
+      case _LICENZE.BACKUP.tipo: 
+        label = _LICENZE.BACKUP.label;
+        break;
+      case _LICENZE.ANTIVIRUS.tipo: 
+        label = _LICENZE.ANTIVIRUS.label;
+        break;
+      case _LICENZE.RETE.tipo: 
+        label = _LICENZE.RETE.label;
+        break;
+      case _LICENZE.VULNERABILITA.tipo: 
+        label = _LICENZE.VULNERABILITA.label;
+        break;
+    }
+
+    //WITHOUT PLACE
+    lastComponent = [lastComponent, <Item icon="fa-users" text={label+" ("+place[i].n_client+")"}>
       {client_list.map((item) => {
         if(searched_client==""){
-          return (item.sede===place[i].nome) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
+          return (item.classe_licenza===place[i].nome) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
         }else{
-          return (item.sede===place[i].nome && item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
+          return (item.classe_licenza===place[i].nome && item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
         }
   })}
     </Item>];
   }
+  return lastComponent;*/
+  let label = [];
+  for(let i=0; i<place.length; i++){
+    switch (place[i].nome) {
+      case _LICENZE.SISTEMA_OPERATIVO.tipo: 
+        label[_LICENZE.SISTEMA_OPERATIVO.tipo] = _LICENZE.SISTEMA_OPERATIVO.label;
+        break;
+      case _LICENZE.BACKUP.tipo: 
+        label[_LICENZE.BACKUP.tipo] = _LICENZE.BACKUP.label;
+        break;
+      case _LICENZE.ANTIVIRUS.tipo: 
+        label[_LICENZE.ANTIVIRUS.tipo] = _LICENZE.ANTIVIRUS.label;
+        break;
+      case _LICENZE.RETE.tipo: 
+        label[_LICENZE.RETE.tipo] = _LICENZE.RETE.label;
+        break;
+      case _LICENZE.VULNERABILITA.tipo: 
+        label[_LICENZE.VULNERABILITA.tipo] = _LICENZE.VULNERABILITA.label;
+        break;
+    }
+  }
+
+  let filtered_client_list = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
+  let lastComponent = [];
+  {filtered_client_list.map((filtered_clients) => {
+    lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
+      {place.map((p) => {
+        return (<Item icon="fa-users" text={label[p.nome]}>
+          {client_list.map((item) => {
+            return (item.sede==filtered_clients.place && item.classe_licenza==p.nome)
+            ? 
+              (item.tipo_client=="Client")
+              ? <Item icon={"fa-desktop"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} />
+              : <Item icon={"fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> 
+            : <></>
+          })}
+        </Item>)
+      })}
+    </Item>]
+  })}
   return lastComponent;
 }
 
@@ -94,7 +176,7 @@ const App = (props) => {
     
       <ToastProvider>
         {props.logged==true 
-        ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.nome_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByCategory(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
+        ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.nome_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
             <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
             {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} client={item} title={item.nome_client} />)}  
           </AdminLTE>

@@ -1,6 +1,7 @@
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 import * as types from './ActionTypes';
+import { _LICENZE } from './Constants';
 
 const initialState = {
   message : "",
@@ -11,7 +12,12 @@ const initialState = {
   client_list : [],
   logged: false,
   token : null,
-  licensesList : [{name: 'Free', id: 0},{name: 'Premium', id: 1},{name: 'Pro', id: 2}],
+  licensesList : [{name: _LICENZE.SISTEMA_OPERATIVO.label, id: _LICENZE.SISTEMA_OPERATIVO.tipo},
+    {name: _LICENZE.BACKUP.label, id: _LICENZE.BACKUP.tipo},
+    {name: _LICENZE.RETE.label, id: _LICENZE.RETE.tipo},
+    {name: _LICENZE.VULNERABILITA.label, id: _LICENZE.VULNERABILITA.tipo},
+    {name: _LICENZE.ANTIVIRUS.label, id: _LICENZE.ANTIVIRUS.tipo}
+  ],
   searched_client: "",
   places_list : [],
   categories_list : [],

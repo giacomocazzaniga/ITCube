@@ -1,4 +1,9 @@
-export const url_login = "http://127.0.0.1:3001/login";
-export const url_signup = "http://127.0.0.1:3001/signup";
-export const url_lista_sedi = "http://127.0.0.1:3001/listasedi";
-export const url_lista_servizi = "http://127.0.0.1:3001/listaservizi";
+const port = "3001";
+const ip = "127.0.0.1";
+const buildurl = "http://"+ip+":"+port+"/";
+export const url_login = buildurl+"login";
+export const url_signup = buildurl+"signup";
+export const url_lista_sedi = buildurl+"listasedi";
+export const url_lista_servizi = buildurl+"listaservizi";
+export const url_lista_tipo_dispositivi = buildurl+"listatipodispositivi";
+export const url_lista_licenze = buildurl+"listalicenze";
