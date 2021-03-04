@@ -10,4 +10,6 @@ public interface ElencoOperazioniRepository extends CrudRepository<ElencoOperazi
 	
 	@Query(value="Select count(*) from elenco_licenze where codice= :codice", nativeQuery=true)
 	int countCodes(@Param("codice") String codice);
+	
+	
 }
