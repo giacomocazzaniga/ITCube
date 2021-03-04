@@ -170,11 +170,13 @@ const FilterByPlace = (clientList) => {
 }
 
 const FilterByCategory = (clientList) => {
+  //custom filtering by client license here
   let filteredList = clientList;
   return filteredList;
 }
 
 const FilterByClientType = (clientList) => {
+  //custom filtering by client type here
   let filteredList = clientList;
   return filteredList;
 }
