@@ -6,6 +6,7 @@ import { url_login } from '../REST';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
 
+var md5 = require('md5');
 
 const axios = require('axios');
 
@@ -55,7 +56,9 @@ const LoginPage = (props) => {
    * @param {*} evt 
    */
   const handleEmailLogin = (evt) => {
-    setState({ emailLogin: evt.target.value });
+    setState((previousState) => {
+      return { ...previousState, emailLogin: evt.target.value };  
+    });
   }
 
   /**
@@ -63,19 +66,33 @@ const LoginPage = (props) => {
    * @param {*} evt 
    */
   const handlePswLogin = (evt) => {
-    setState({ pswLogin: evt.target.value });
+    setState((previousState) => {
+      return { ...previousState, pswLogin: evt.target.value };
+    });
   }
 
   const { addToast } = useToasts();
 
   const LoginController = (email, psw) => {
+    let encryptedPsw = md5(psw);
+    console.log(encryptedPsw);
+    console.log(email);
+
     axios.post(url_login, {
       email: email,
-      password: psw
+      password: encryptedPsw
     })
     .then(function (response) {
       //i campi json di risposta vanno gestiti qui
-      props.LoginWithPlacesCategories(response.data.nome_company, response.data.email, response.data.emailNotify, response.data.client, response.data.token, response.data.sedi, response.data.categories);
+      console.log(response.data);
+      if(response.data.messageCode=="1"){
+        //login failed
+        addToast(response.data.message, {appearance: 'error',autoDismiss: true});
+      }else{
+        //done
+        addToast(response.data.message, {appearance: 'success',autoDismiss: true});
+        props.LoginWithPlacesCategories(response.data.ragione_sociale, response.data.email, response.data.emailNotify, response.data.elencoClients, response.data.token, response.data.sedi, response.data.categories);
+      }
     })
     .catch(function (error) {
       addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});

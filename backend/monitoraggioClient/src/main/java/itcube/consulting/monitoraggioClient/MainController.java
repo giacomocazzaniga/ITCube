@@ -29,6 +29,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -97,6 +98,7 @@ public class MainController {
 	
 	//http://localhost:8080/be/main/registrazione
 	@PostMapping(path="/registrazione",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
 	public ResponseEntity<GeneralResponse> Registrazione(@RequestBody Map<String,Object> body){
 		GeneralResponse responseRegistrazione=new GeneralResponse();
 		String email;
@@ -169,6 +171,7 @@ public class MainController {
 	
 	//http://localhost:8080/be/main/login
 		@PostMapping(path="/login",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> Login(@RequestBody Map<String,Object> body){
 			ResponseLogin responseLogin=new ResponseLogin();
 			GeneralResponse generalResponse=new GeneralResponse();;
@@ -180,6 +183,7 @@ public class MainController {
 			List<ElencoClients> elencoClients;
 			
 			try {
+				System.out.println(body);
 				email=body.get("email").toString();
 				password=body.get("password").toString();
 				

@@ -33,15 +33,37 @@ app.get('/elenco_client', function (req, res) {
   });
 });*/
 
-
+app.post('/clientdetails', function (req, res) {
+  //select ... from ... where id_client=... + token
+  result = {
+    "client" : {
+        "id_client" : "1",
+        "nome_client" : "DESKTOP-3874",
+        "tipo_client" : "Client",
+        "category" : "Sviluppo",
+        "MAC_address" : "00-50-FC-A0-67-2C",
+        "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
+        "classe_licenza" : "1",
+        "nome_tipologia_licenza" : "Free",
+        "sede" : "Venezia",
+        "servizi" : {
+          "attivi" : "83",
+          "esecuzione" : "44",
+          "problemi" : "2",
+          "warnings" : "11"
+        }
+      }
+  };
+  res.send(result);
+});
 
 app.post('/login', function (req, res) {
   result = {
-    "nome_company":"ITCube Consulting",
+    "ragione_sociale":"ITCube Consulting",
     "id_company": "1",
     "email": "francesco.done@itcubeconsulting.it",
     "emailNotify": "alert@itcubeconsulting.it",
-    "client" : [
+    "elencoClients" : [
       {
         "id_client" : "1",
         "nome_client" : "DESKTOP-3874",

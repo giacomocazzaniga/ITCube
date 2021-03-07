@@ -6,6 +6,8 @@ import { signUp } from '../ActionCreator';
 import DashboardWrap from './DashboardWrap';
 import { url_signup } from '../REST';
 
+var md5 = require('md5');
+
 /**
  * connect the actions to the component
  * @param {*} dispatch 
@@ -45,7 +47,9 @@ const SignUpPage = (props) => {
    * @param {*} evt 
    */
   const handleEmailSignUp = (evt) => {
-    setState({ emailSignUp: evt.target.value });
+    setState((previousState) => {
+      return { ...previousState, emailSignUp: evt.target.value };
+    });
   }
 
   /**
@@ -53,7 +57,9 @@ const SignUpPage = (props) => {
    * @param {*} evt 
    */
   const handlePswSignUp = (evt) => {
-    setState({ pswSignUp: evt.target.value });
+    setState((previousState) => {
+      return { ...previousState, pswSignUp: evt.target.value };
+    });
   }
 
     /**
@@ -61,7 +67,9 @@ const SignUpPage = (props) => {
    * @param {*} evt 
    */
   const handleEmailAlertSignUp = (evt) => {
-    setState({ emailAlertSignUp: evt.target.value });
+    setState((previousState) => {
+      return { ...previousState, emailAlertSignUp: evt.target.value };
+    });
   }
 
   /**
@@ -69,22 +77,31 @@ const SignUpPage = (props) => {
    * @param {*} evt 
    */
   const handleRagioneSocialeSignUp = (evt) => {
-    setState({ ragioneSocialeSignUp: evt.target.value });
+    setState((previousState) => {
+      return { ...previousState, ragioneSocialeSignUp: evt.target.value };
+    });
   }
-
 
   const { addToast } = useToasts();
 
   const SignUpController = (email, password, email_alert, ragione_sociale) => {
+    let encryptedPsw = md5(password);
     axios.post(url_signup, {
       email: email,
-      password: password,
+      password: encryptedPsw,
       email_alert: email_alert,
       ragione_sociale: ragione_sociale
     })
     .then(function (response) {
       //i campi json di risposta vanno gestiti qui
-      props.SignUp(response.data.message, response.data.messageCode);
+      if(response.data.messageCode=="1"){
+        //already registered
+        addToast(response.data.message, {appearance: 'error',autoDismiss: true});
+      }else{
+        //done
+        addToast(response.data.message, {appearance: 'success',autoDismiss: true});
+      }
+      //props.SignUp(response.data.message, response.data.messageCode);
     })
     .catch(function (error) {
       addToast("Errore durante la registrazione.", {appearance: 'error',autoDismiss: true});
@@ -92,9 +109,6 @@ const SignUpPage = (props) => {
   }
 
   return (
-    (props.nome_company===null) 
-    ?
-      <ToastProvider>
         <div class="container">
           <div class="row">
             <br />
@@ -116,16 +130,11 @@ const SignUpPage = (props) => {
                   <label for="exampleInputRagioneSociale">Ragione Sociale</label>
                   <input value={state.ragioneSocialeSignUp} onChange={handleRagioneSocialeSignUp} class="form-control" id="exampleInputRagioneSociale" aria-describedby="emailHelp" placeholder="Ragione Sociale" />
                 </div>
-                <button onClick={() => SignUpController(state.emailSignUp, state.pswSignUp, state.emailAlertSignUp, state.ragioneSocialeSignUp)} class="btn btn-primary">Registrati</button>
+                <button type="button" onClick={() => SignUpController(state.emailSignUp, state.pswSignUp, state.emailAlertSignUp, state.ragioneSocialeSignUp)} class="btn btn-primary">Registrati</button>
               </form>
             </div>
           </div>
         </div>
-      </ToastProvider>
-    :
-      <ToastProvider>
-        <DashboardWrap />
-      </ToastProvider>
   );
 }
 
