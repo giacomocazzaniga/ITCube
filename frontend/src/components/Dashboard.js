@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from 'react-redux';
 import { Content, Row, Col } from 'adminlte-2-react';
 import TrafficLightButtons from './TrafficLightButtons';
@@ -9,6 +9,8 @@ import ServicesList from './ServicesList';
 import ClientInfo from './ClientInfo';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalProvider } from 'react-simple-hook-modal';
+import { _getDeepClient } from "../callableRESTs";
+import { useToasts } from "react-toast-notifications";
 
 document.body.classList.add('fixed');
 
@@ -96,7 +98,31 @@ const mapStateToProps = state => {
 }
 
 const Dashboard = (props) => {
+  const [state, setState] = React.useState({
+    clientData: null
+  })
+
+  const { addToast } = useToasts();
+
+  useEffect( () => {
+    //on component mount
+    _getDeepClient(props.id_client, props.id_company, props.token)
+    .then(function (response) {
+      console.log(response.data);
+      setState(() => {
+        return { clientData: response.data };
+      });
+    })
+    .catch(function (error) {
+      addToast("Errore durante il caricamento del dispositivo", {appearance: 'error',autoDismiss: true});
+    });
+    return () => {
+      //on component unmount
+  }
+ }, []);
   return (
+  state.clientData != null 
+  ? 
   <Content title={props.title} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
@@ -106,7 +132,7 @@ const Dashboard = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col md={4} xs={6}>
-          <ClientInfo client={props.client}/>
+          <ClientInfo client={state.clientData}/>
         </Col>
         {props.drives.map((drive) =>  
           <Col md={4} xs={6}>
@@ -114,7 +140,7 @@ const Dashboard = (props) => {
           </Col>
         )}
         <Col md={4} xs={6}>
-          <ServicesList selected={props.title} services={[props.client.servizi_attivi, props.client.servizi_esecuzione, props.client.servizi_problemi, props.client.servizi_warnings]}/>
+          <ServicesList selected={props.title} services={[state.clientData.servizi_attivi, state.clientData.servizi_esecuzione, state.clientData.servizi_problemi, state.clientData.servizi_warnings]}/>
         </Col>
         {/*<Col md={3} xs={6}>
           <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
@@ -122,6 +148,7 @@ const Dashboard = (props) => {
       </ModalProvider>
     </Row>
   </Content>
+  : <></>
 );
 }
 export default connect(

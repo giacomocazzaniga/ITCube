@@ -1,7 +1,8 @@
 import * as types from './ActionTypes';
 
-export const login = (nome_company, email, emailNotify, client_list, token) => ({
+export const login = (nome_company, id_company, email, emailNotify, client_list, token) => ({
   type: types.LOGIN,
+  id_company: id_company,
   nome_company: nome_company,
   email: email,
   emailNotify: emailNotify,

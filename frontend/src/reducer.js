@@ -7,6 +7,7 @@ const initialState = {
   message : "",
   messageCode : 0,
   nome_company : null, //ragione sociale
+  id_company : null,
   email : null,
   emailNotify : null,
   client_list : [],
@@ -28,6 +29,7 @@ export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
       nome_company: action.nome_company,
+      id_company: action.id_company,
       email: action.email,
       emailNotify: action.emailNotify,
       client_list: action.client_list,
@@ -84,7 +86,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list']
+  blacklist: ['nome_company', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);

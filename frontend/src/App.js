@@ -36,18 +36,13 @@ const mapStateToProps = state => {
     searched_client: state.searched_client,
     categories_list: state.categories_list,
     places_list: state.places_list,
-    category_vs_place: state.category_vs_place
+    category_vs_place: state.category_vs_place,
+    token: state.token,
+    id_company: state.id_company
   }
 }
 
 const { Item, Searchbar } = Sidebar;
-
-const getSidebar = (client_list, nome_company) =>{
-  let item_list = [];
-  client_list.map((item) => (item_list = [item_list, <Item icon="fa-desktop" key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} />]));
-  return item_list;
-}
-
 
 const getSidebarByType = (client_list, nome_company, searched_client, category) =>{
   let filtered_client_list = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
@@ -73,57 +68,10 @@ const getSidebarByType = (client_list, nome_company, searched_client, category) 
       })}
     </Item>]
   })}
-
-  //WITHOUT PLACE
-  /*{category.map((cat) => {
-    lastComponent = [lastComponent, <Item icon="fa-users" text={cat.nome+" ("+cat.n_client+")"}>
-      {client_list.map((item) => {
-        if(searched_client==""){
-          return (item.tipo_client===cat.nome) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
-        }else{
-          return (item.tipo_client===cat.nome && item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
-        }
-  })}
-    </Item>];
-  })}*/
   return lastComponent;
 }
 
 const getSidebarByPlace = (client_list, nome_company, searched_client, place) =>{
-  /*let lastComponent = [];
-  let label = "";
-  console.log(place)
-  for(let i=0; i<place.length; i++){
-    switch (place[i].nome) {
-      case _LICENZE.SISTEMA_OPERATIVO.tipo: 
-        label = _LICENZE.SISTEMA_OPERATIVO.label;
-        break;
-      case _LICENZE.BACKUP.tipo: 
-        label = _LICENZE.BACKUP.label;
-        break;
-      case _LICENZE.ANTIVIRUS.tipo: 
-        label = _LICENZE.ANTIVIRUS.label;
-        break;
-      case _LICENZE.RETE.tipo: 
-        label = _LICENZE.RETE.label;
-        break;
-      case _LICENZE.VULNERABILITA.tipo: 
-        label = _LICENZE.VULNERABILITA.label;
-        break;
-    }
-
-    //WITHOUT PLACE
-    lastComponent = [lastComponent, <Item icon="fa-users" text={label+" ("+place[i].n_client+")"}>
-      {client_list.map((item) => {
-        if(searched_client==""){
-          return (item.classe_licenza===place[i].nome) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
-        }else{
-          return (item.classe_licenza===place[i].nome && item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={(item.tipo_client=="Client") ? "fa-desktop" : "fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
-        }
-  })}
-    </Item>];
-  }
-  return lastComponent;*/
   let label = [];
   for(let i=0; i<place.length; i++){
     switch (place[i].nome) {
@@ -188,7 +136,7 @@ const App = (props) => {
         {props.logged==true 
         ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.nome_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
             <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
-            {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} client={item} title={item.nome_client} />)}  
+            {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
           </AdminLTE>
         : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
             <div path="/accedi" title="Accedi"><LoginPage /></div>

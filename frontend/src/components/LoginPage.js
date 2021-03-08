@@ -22,10 +22,10 @@ const mapDispatchToProps =  dispatch => {
     Login: (nome_company, email, emailNotify, client_list, token) => {
       dispatch(login(nome_company, email, emailNotify, client_list, token))
     },
-    LoginWithPlacesCategories: (nome_company, email, emailNotify, client_list, token, places_list, categories_list) => {
+    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list) => {
       dispatch(categoriesList(categories_list))
       dispatch(placesList(places_list))
-      dispatch(login(nome_company, email, emailNotify, client_list, token))
+      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token))
     }
   }
 }
@@ -87,6 +87,7 @@ const LoginPage = (props) => {
         addToast(response.data.message, {appearance: 'success',autoDismiss: true});
         //missing from login: email, emailNotify
         let ragione_sociale = response.data.ragione_sociale;
+        let id_company = response.data.id_company;
         let token = response.data.token;
         let elencoClients = fake_shallowClientList;//fake_elencoClients;//response.data.elencoClients;
         let emailNotify = response.data.emailNotify;
@@ -100,7 +101,7 @@ const LoginPage = (props) => {
             //get categories
             let categories = response.data.categories;
             console.log(categories);
-            props.LoginWithPlacesCategories(ragione_sociale, email, emailNotify, elencoClients, token, sedi, categories);
+            props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories);
           })
           .catch(function (error) {
             addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});

@@ -8,6 +8,7 @@ export const url_lista_gruppi = buildurl+"listagruppi";
 export const url_lista_servizi = buildurl+"listaservizi";
 export const url_lista_tipo_dispositivi = buildurl+"listatipodispositivi";
 export const url_lista_licenze = buildurl+"listalicenze";
+export const url_deep_client = buildurl+"deepClient";
 
 
 const portFake = "3001"; //"8080";
@@ -20,3 +21,4 @@ export const url_lista_gruppiFake = buildurlFake+"listagruppi";
 export const url_lista_serviziFake = buildurlFake+"listaservizi";
 export const url_lista_tipo_dispositiviFake = buildurlFake+"listatipodispositivi";
 export const url_lista_licenzeFake = buildurlFake+"listalicenze";
+export const url_deep_clientFake = buildurlFake+"deepClient";

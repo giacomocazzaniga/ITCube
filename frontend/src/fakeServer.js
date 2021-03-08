@@ -233,6 +233,26 @@ app.post('/listatipodispositivi', function (req, res) {
   res.send(result);
 });
 
+app.post('/deepClient', function (req, res) {
+  result = {
+    "id_client" : "1",
+    "nome_client" : "DESKTOP-3874",
+    "tipo_client" : "Client",
+    "MAC_address" : "00-50-FC-A0-67-2C",
+    "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
+    "classe_licenza" : "1",
+    "sede" : "Venezia",
+    "servizi_attivi" : "83",
+    "servizi_esecuzione" : "44",
+    "servizi_problemi" : "2",
+    "servizi_warnings" : "11",
+    "token" : "",
+    "message": "",
+    "messageCode": "0"
+  };
+  res.send(result);
+});
+
 app.post('/listaservizi', function (req, res) {
   result = {
     "servizi" : [
