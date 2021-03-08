@@ -2,9 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { login, placesList, categoriesList } from '../ActionCreator';
-import { url_login } from '../REST';
+import { url_lista_sedi, url_lista_sediFake, url_login } from '../REST';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
+import {_getClientTypes, _getPlaces, _performLogin} from '../callableRESTs'; 
+import { _MSGCODE } from '../Constants';
+import { fake_elencoClients } from '../fakeData';
 
 var md5 = require('md5');
 
@@ -74,24 +77,38 @@ const LoginPage = (props) => {
   const { addToast } = useToasts();
 
   const LoginController = (email, psw) => {
-    let encryptedPsw = md5(psw);
-    console.log(encryptedPsw);
-    console.log(email);
-
-    axios.post(url_login, {
-      email: email,
-      password: encryptedPsw
-    })
+    _performLogin(email, psw)
     .then(function (response) {
-      //i campi json di risposta vanno gestiti qui
-      console.log(response.data);
-      if(response.data.messageCode=="1"){
+      if(response.data.messageCode==_MSGCODE.ERR){
         //login failed
         addToast(response.data.message, {appearance: 'error',autoDismiss: true});
       }else{
-        //done
+        //login done, need to retieve 'sedi' and 'categories'
         addToast(response.data.message, {appearance: 'success',autoDismiss: true});
-        props.LoginWithPlacesCategories(response.data.ragione_sociale, response.data.email, response.data.emailNotify, response.data.elencoClients, response.data.token, response.data.sedi, response.data.categories);
+        //missing from login: email, emailNotify
+        let ragione_sociale = response.data.ragione_sociale;
+        let token = response.data.token;
+        let elencoClients = fake_elencoClients;//response.data.elencoClients;
+        let emailNotify = response.data.emailNotify;
+        _getPlaces(ragione_sociale, token)
+        .then(function (response) {
+          //get places
+          console.log(response.data)
+          let sedi = response.data.sedi;
+          _getClientTypes(ragione_sociale, token)
+          .then(function (response) {
+            //get categories
+            let categories = response.data.categories;
+            console.log(categories);
+            props.LoginWithPlacesCategories(ragione_sociale, email, emailNotify, elencoClients, token, sedi, categories);
+          })
+          .catch(function (error) {
+            addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+          })
+        })
+        .catch(function (error) {
+          addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+        });
       }
     })
     .catch(function (error) {

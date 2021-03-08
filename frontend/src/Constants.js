@@ -26,3 +26,8 @@ export const _FILTERS = {
     CATEGORY : "2",
     CLIENT_TYPE : "3"
 }
+
+export const _MSGCODE = {
+    NO_ERR : "0",
+    ERR : "1"
+}

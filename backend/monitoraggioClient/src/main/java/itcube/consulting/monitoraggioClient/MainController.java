@@ -2,6 +2,7 @@ package itcube.consulting.monitoraggioClient;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -183,16 +184,16 @@ public class MainController {
 			List<ElencoClients> elencoClients;
 			
 			try {
-				System.out.println(body);
+				//System.out.println(body);		
 				email=body.get("email").toString();
 				password=body.get("password").toString();
 				
-				System.out.println(email);
-				System.out.println(password);
+				//System.out.println(email);
+				//System.out.println(password);
 				
 				numCompany=elencoCompaniesRepository.Login(email, password);
 				
-				System.out.println(numCompany);
+				//System.out.println(numCompany);
 		
 				if(numCompany<1)
 				{
@@ -214,6 +215,7 @@ public class MainController {
 					responseLogin.setId_company(company.getId());
 					responseLogin.setElencoClients(elencoClients);
 					responseLogin.setToken(token);
+					System.out.println(Services.getCurrentDate()+" /login SUCCESS "+email);
 					return ResponseEntity.ok(responseLogin);
 				}
 			}
@@ -221,6 +223,7 @@ public class MainController {
 				generalResponse.setMessage(e.getMessage());
 				generalResponse.setMessageCode(-1);
 				System.out.println(e.getMessage());
+				System.out.println(Services.getCurrentDate()+" /login FAILED");
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 		}

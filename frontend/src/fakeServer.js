@@ -172,11 +172,15 @@ app.post('/login', function (req, res) {
 app.post('/listasedi', function (req, res) {
   result = {
     "sedi" : [
-      {"nome" : "Venezia",
-       "n_client" : 2},
-      {"nome" : "Milano",
-      "n_client" : 2},
-      {"nome" : "Torino",
+      {"nome" : "1",
+       "n_client" : 1},
+      {"nome" : "2",
+       "n_client" : 1},
+      {"nome" : "3",
+       "n_client" : 1},
+      {"nome" : "4",
+       "n_client" : 1},
+      {"nome" : "5",
        "n_client" : 1},
     ],
     "token" : ""
@@ -206,9 +210,9 @@ app.post('/listalicenze', function (req, res) {
 app.post('/listagruppi', function (req, res) {
   result = {
     "categories" : [
-      {"nome" : "Sviluppo",
+      {"nome" : "Client",
        "n_client" : 3},
-      {"nome" : "Produzione",
+      {"nome" : "Server",
       "n_client" : 2}
     ],
     "token" : ""

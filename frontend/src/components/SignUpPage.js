@@ -5,6 +5,8 @@ import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { signUp } from '../ActionCreator';
 import DashboardWrap from './DashboardWrap';
 import { url_signup } from '../REST';
+import { _MSGCODE } from '../Constants';
+import { _performSignUp } from '../callableRESTs';
 
 var md5 = require('md5');
 
@@ -85,20 +87,13 @@ const SignUpPage = (props) => {
   const { addToast } = useToasts();
 
   const SignUpController = (email, password, email_alert, ragione_sociale) => {
-    let encryptedPsw = md5(password);
-    axios.post(url_signup, {
-      email: email,
-      password: encryptedPsw,
-      email_alert: email_alert,
-      ragione_sociale: ragione_sociale
-    })
+    _performSignUp(email, password, email_alert, ragione_sociale)
     .then(function (response) {
-      //i campi json di risposta vanno gestiti qui
-      if(response.data.messageCode=="1"){
+      if(response.data.messageCode==_MSGCODE.ERR){
         //already registered
         addToast(response.data.message, {appearance: 'error',autoDismiss: true});
       }else{
-        //done
+        //signup done
         addToast(response.data.message, {appearance: 'success',autoDismiss: true});
       }
       //props.SignUp(response.data.message, response.data.messageCode);

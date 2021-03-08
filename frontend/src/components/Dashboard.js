@@ -114,7 +114,7 @@ const Dashboard = (props) => {
           </Col>
         )}
         <Col md={4} xs={6}>
-          <ServicesList selected={props.title} services={props.client.servizi}/>
+          <ServicesList selected={props.title} services={[props.client.servizi_attivi, props.client.servizi_esecuzione, props.client.servizi_problemi, props.client.servizi_warnings]}/>
         </Col>
         {/*<Col md={3} xs={6}>
           <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
