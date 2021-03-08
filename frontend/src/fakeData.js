@@ -62,3 +62,51 @@ export const fake_elencoClients = [
   }
 ]
 
+
+export const fake_shallowClientList = [
+  {
+    "id_client" : "1",
+    "nome_client" : "DESKTOP-3874",
+    "tipo_client" : "Client",
+    "sede" : "Venezia",
+    "classe_licenza" : "1",
+  }, {
+    "id_client" : "2",
+    "nome_client" : "DESKTOP-2230",
+    "tipo_client" : "Client",
+    "sede" : "Venezia",
+    "classe_licenza" : "2",
+  }, {
+    "id_client" : "3",
+    "nome_client" : "SERVER-3512",
+    "tipo_client" : "Server",
+    "sede" : "Milano",
+    "classe_licenza" : "3",
+  }, {
+    "id_client" : "4",
+    "nome_client" : "DESKTOP-3562",
+    "tipo_client" : "Client",
+    "sede" : "Milano",
+    "classe_licenza" : "4",
+  }, {
+    "id_client" : "5",
+    "nome_client" : "SERVER-8290",
+    "tipo_client" : "Server",
+    "sede" : "Torino",
+    "classe_licenza" : "5",
+  }
+]
+
+export const fake_deepClient = {
+  "id_client" : "1",
+  "nome_client" : "DESKTOP-3874",
+  "tipo_client" : "Client",
+  "MAC_address" : "00-50-FC-A0-67-2C",
+  "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
+  "classe_licenza" : "1",
+  "sede" : "Venezia",
+  "servizi_attivi" : "83",
+  "servizi_esecuzione" : "44",
+  "servizi_problemi" : "2",
+  "servizi_warnings" : "11"
+}

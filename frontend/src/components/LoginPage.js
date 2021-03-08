@@ -7,7 +7,7 @@ import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
 import {_getClientTypes, _getPlaces, _performLogin} from '../callableRESTs'; 
 import { _MSGCODE } from '../Constants';
-import { fake_elencoClients } from '../fakeData';
+import { fake_elencoClients, fake_shallowClientList } from '../fakeData';
 
 var md5 = require('md5');
 
@@ -88,7 +88,7 @@ const LoginPage = (props) => {
         //missing from login: email, emailNotify
         let ragione_sociale = response.data.ragione_sociale;
         let token = response.data.token;
-        let elencoClients = fake_elencoClients;//response.data.elencoClients;
+        let elencoClients = fake_shallowClientList;//fake_elencoClients;//response.data.elencoClients;
         let emailNotify = response.data.emailNotify;
         _getPlaces(ragione_sociale, token)
         .then(function (response) {
