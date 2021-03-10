@@ -45,7 +45,10 @@ const mapStateToProps = state => {
 const { Item, Searchbar } = Sidebar;
 
 const getSidebarByType = (client_list, nome_company, searched_client, category) =>{
-  let filtered_client_list = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
+  let filterMap = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
+  let filtered_client_list = filterMap[0];
+  let map = filterMap[1];
+  console.log(map);
   let lastComponent = [];
   {filtered_client_list.map((filtered_clients) => {
     lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
@@ -93,11 +96,15 @@ const getSidebarByPlace = (client_list, nome_company, searched_client, place) =>
     }
   }
 
-  let filtered_client_list = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
+  let filterMap = ClientFilter(client_list, _FILTERS.CATEGORY);
+  let filtered_client_list = filterMap[0];
+  let map = filterMap[1];
+  console.log(map);
   let lastComponent = [];
   {filtered_client_list.map((filtered_clients) => {
     lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
       {place.map((p) => {
+        //se map[place] include _licenze.RETE.tipo ecc...
         return (<Item icon="fa-users" text={label[p.nome]}>
           {client_list.map((item) => {
             return (item.sede==filtered_clients.place && item.classe_licenza==p.nome)

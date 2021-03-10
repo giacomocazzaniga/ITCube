@@ -143,15 +143,16 @@ let inputList = [
 export const ClientFilter = (clientList, filterType) => {
   //console.log(clientList);
   let filteredList = FilterByPlace(clientList);
+  let returnList = []
   switch(filterType){
     case _FILTERS.CATEGORY:
-      filteredList = FilterByCategory(filteredList);
+      returnList = FilterByCategory(filteredList);
     break;
     case _FILTERS.CLIENT_TYPE:
-      filteredList = FilterByClientType(filteredList);
+      returnList = FilterByClientType(filteredList);
     break;
   }
-  return filteredList;
+  return returnList;
 }
 
 const FilterByPlace = (clientList) => {
@@ -172,13 +173,25 @@ const FilterByPlace = (clientList) => {
 const FilterByCategory = (clientList) => {
   //custom filtering by client license here
   let filteredList = clientList;
-  return filteredList;
+  var map = [];
+  filteredList.map((filter) => {
+    filter.filteredList.map((client) => {
+      map[client.sede] += [client.classe_licenza];
+    })
+  })
+  return [filteredList, map];
 }
 
 const FilterByClientType = (clientList) => {
   //custom filtering by client type here
   let filteredList = clientList;
-  return filteredList;
+  var map = [];
+  filteredList.map((filter) => {
+    filter.filteredList.map((client) => {
+      map[client.sede] += [client.tipo_client];
+    })
+  })
+  return [filteredList, map];
 }
 
 const GetClientsByPlace = (clientList, place) => {
