@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class RealTime implements Serializable{
+public class RealTime {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

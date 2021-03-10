@@ -144,7 +144,7 @@ public class MainController {
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
 				licenza=new ElencoLicenze();
-				licenza.setCodice(codice);
+				//licenza.setCodice(codice);
 				licenza.setElencoClients(null);
 				licenza.setTipologieLicenze(tipologieLicenzeRepository.getLicenza("1"));
 				licenza.setElencoCompanies(company);

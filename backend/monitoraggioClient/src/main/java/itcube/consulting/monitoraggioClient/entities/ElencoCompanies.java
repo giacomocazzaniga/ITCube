@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class ElencoCompanies implements Serializable{
+public class ElencoCompanies {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

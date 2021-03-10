@@ -10,13 +10,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
-public class ConfWindowsServices implements Serializable{
+public class ConfWindowsServices {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String nome_servizio;
 	private String stato;
+	private String notifica;
 	
 	@OneToOne
 	@JoinColumn(name = "id_client")
@@ -59,6 +60,14 @@ public class ConfWindowsServices implements Serializable{
 		this.elencoClients = elencoClients;
 	}
 
+	public String getNotifica() {
+		return notifica;
+	}
+
+	public void setNotifica(String notifica) {
+		this.notifica = notifica;
+	}
+
 	/*public int getId_client() {
 		return id_client;
 	}
@@ -66,4 +75,5 @@ public class ConfWindowsServices implements Serializable{
 	public void setId_client(int id_client) {
 		this.id_client = id_client;
 	}*/
+	
 }

@@ -1,21 +1,26 @@
 package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-public class ElencoClients implements Serializable{
+public class ElencoClients {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@OneToOne(mappedBy = "elencoClients")
 	private Config config;
 	
@@ -25,28 +30,57 @@ public class ElencoClients implements Serializable{
 	@OneToOne(mappedBy = "elencoClients")
 	private ConfWindowsServices confWindowsServices;
 	
+	@OneToOne(mappedBy = "elencoClients")
+	private VisualizzazioneEventi visualizzazioneEventi;
+	
 	private String nome;
+	
+	@ManyToOne
+	@JoinColumn(name = "tipologiaClient")
+	private TipologiaClient tipologiaClient;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_company")
 	private ElencoCompanies elencoCompanies;
 	//private int id_company;
 	
-	private String MAC_address;
+	private String mac_address;
+	
 	//Chiave esterna licenza_in_uso 
-	@ManyToOne
-	@JoinColumn(name = "licenza_in_uso")
-	private ElencoLicenze elencoLicenze;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinTable(name = "elencoClients_elencoLicenze",
+     joinColumns = { @JoinColumn(name = "licenza_in_uso",nullable = false, updatable = false)},
+     inverseJoinColumns = { @JoinColumn(name = "codice",nullable = false, updatable = false)})
+	private List<ElencoLicenze> elencoLicenze;
 
-	public ElencoLicenze getElencoLicenze() {
+
+	public ElencoClients() {
+		
+	}
+	
+	public TipologiaClient getTipologiaClient() {
+		return tipologiaClient;
+	}
+
+	public void setTipologiaClient(TipologiaClient tipologiaClient) {
+		this.tipologiaClient = tipologiaClient;
+	}
+
+	
+	public VisualizzazioneEventi getVisualizzazioneEventi() {
+		return visualizzazioneEventi;
+	}
+
+	public void setVisualizzazioneEventi(VisualizzazioneEventi visualizzazioneEventi) {
+		this.visualizzazioneEventi = visualizzazioneEventi;
+	}
+	
+	public List<ElencoLicenze> getElencoLicenze() {
 		return elencoLicenze;
 	}
 
-	public void setElencoLicenze(ElencoLicenze elencoLicenze) {
+	public void setElencoLicenze(List<ElencoLicenze> elencoLicenze) {
 		this.elencoLicenze = elencoLicenze;
-	}
-
-	public ElencoClients() {
 	}
 
 	public int getId() {
@@ -73,12 +107,12 @@ public class ElencoClients implements Serializable{
 		this.id_company = id_company;
 	}*/
 
-	public String getMAC_address() {
-		return MAC_address;
+	public String getMac_address() {
+		return mac_address;
 	}
 
-	public void setMAC_address(String mAC_address) {
-		MAC_address = mAC_address;
+	public void setMac_address(String mac_address) {
+		mac_address = mac_address;
 	}
 
 	public ElencoCompanies getElencoCompanies() {

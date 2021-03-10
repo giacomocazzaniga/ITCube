@@ -1,17 +1,24 @@
 package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
-public class ElencoOperazioni implements Serializable{
+@Table(name = "elenco_operazioni")
+public class ElencoOperazioni {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +30,12 @@ public class ElencoOperazioni implements Serializable{
 	private String nome;
 	private String tabella_riferimento;
 
-	@ManyToOne
-	@JoinColumn(name = "classe_licenza_minima")
-	private TipologieLicenze tipologieLicenze;
+	/*@ManyToOne
+	@JoinColumn(name = "licenza_riferimento")
+	private TipologieLicenze tipologieLicenze;*/
+	
+	@ManyToMany(mappedBy = "elencoOperazioni", fetch = FetchType.LAZY)
+	private List<TipologieLicenze> elencoTipologieLicenze;
 	
 	//private String id_tipologia_licenze;
 	
@@ -57,14 +67,6 @@ public class ElencoOperazioni implements Serializable{
 		this.tabella_riferimento = tabella_riferimento;
 	}
 
-	public TipologieLicenze getTipologieLicenze() {
-		return tipologieLicenze;
-	}
-
-	public void setTipologieLicenze(TipologieLicenze tipologieLicenze) {
-		this.tipologieLicenze = tipologieLicenze;
-	}
-
 	public Config getConfig() {
 		return config;
 	}
@@ -73,6 +75,22 @@ public class ElencoOperazioni implements Serializable{
 		this.config = config;
 	}
 
+	public List<TipologieLicenze> getElencoTipologieLicenze() {
+		return elencoTipologieLicenze;
+	}
+
+	public void setElencoTipologieLicenze(List<TipologieLicenze> elencoTipologieLicenze) {
+		this.elencoTipologieLicenze = elencoTipologieLicenze;
+	}
+	
+	/*public TipologieLicenze getTipologieLicenze() {
+		return tipologieLicenze;
+	}
+
+	public void setTipologieLicenze(TipologieLicenze tipologieLicenze) {
+		this.tipologieLicenze = tipologieLicenze;
+	}*/
+	
 	/*public String getId_tipologia_licenze() {
 		return id_tipologia_licenze;
 	}
