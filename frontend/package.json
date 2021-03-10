@@ -43,6 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start_on_server": "set PORT=8080&& react-scripts start",
+    "deploy_on_surge": "npm run build && cp build/index.html build/200.html && surge build https://itcubeapp.surge.sh",
     "build": "NODE_ENV=production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -66,6 +67,7 @@
     ]
   },
   "devDependencies": {
+    "babel-plugin-react-transform": "^3.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "morris.js": "^0.5.0",

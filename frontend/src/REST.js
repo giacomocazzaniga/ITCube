@@ -1,4 +1,4 @@
-const port = "8080";//"3001";  //"8080";
+const port = "8080";
 const ip = "127.0.0.1";
 const buildurl = "http://"+ip+":"+port+"/be/main/";
 export const url_login = buildurl+"login"; //V
@@ -11,7 +11,7 @@ export const url_lista_licenze = buildurl+"listalicenze";
 export const url_deep_client = buildurl+"deepClient";
 
 
-const portFake = "3001"; //"8080";
+const portFake = "3001"; 
 const ipFake = "127.0.0.1";
 const buildurlFake = "http://"+ipFake+":"+portFake+"/";
 export const url_loginFake = buildurlFake+"login";

@@ -234,6 +234,7 @@ app.post('/listatipodispositivi', function (req, res) {
 });
 
 app.post('/deepClient', function (req, res) {
+  console.log("/deepClient")
   result = {
     "id_client" : "1",
     "nome_client" : "DESKTOP-3874",
