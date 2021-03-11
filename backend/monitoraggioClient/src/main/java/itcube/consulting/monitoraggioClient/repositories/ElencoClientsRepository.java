@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
+import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 
 public interface ElencoClientsRepository extends CrudRepository<ElencoClients,Integer>{
 	
@@ -21,4 +22,13 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 			+ "INNER JOIN elenco_operazioni eo on eo.id=config.id_operazione)\n"
 			+ "where ec.id= :id_client", nativeQuery=true)
 	OperationsPerClient getOperationsPerClient(@Param("id_client") int id_client);
+	
+	@Query(value="SELECT ec.id_client, ec.nome_client, ec.tipo_client, ec.sede, tl.classe_licenza\n"
+			+ "FROM elenco_clients ec\n"
+			+ "INNER JOIN elenco_licenze el on ec.licenza_in_uso=el.codice\n"
+			+ "INNER JOIN tipologie_licenze tl on el.id_tipo=tl.id\n"
+			+ "WHERE ec.id = :id_company", nativeQuery=true)
+	List<ShallowClient> getShallowClients(@Param("id_company") int id_company);
+	
+	
 }

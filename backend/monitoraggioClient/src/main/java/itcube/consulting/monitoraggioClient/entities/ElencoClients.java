@@ -52,6 +52,8 @@ public class ElencoClients {
      joinColumns = { @JoinColumn(name = "licenza_in_uso",nullable = false, updatable = false)},
      inverseJoinColumns = { @JoinColumn(name = "codice",nullable = false, updatable = false)})
 	private List<ElencoLicenze> elencoLicenze;
+	
+	private String sede;
 
 
 	public ElencoClients() {
@@ -146,4 +148,13 @@ public class ElencoClients {
 	public void setConfWindowsServices(ConfWindowsServices confWindowsServices) {
 		this.confWindowsServices = confWindowsServices;
 	}
+
+	public String getSede() {
+		return sede;
+	}
+
+	public void setSede(String sede) {
+		this.sede = sede;
+	}
+	
 }

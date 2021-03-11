@@ -50,6 +50,7 @@ import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
+import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -62,6 +63,7 @@ import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeReposit
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ResponseOperationsPerClient;
+import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -291,6 +293,33 @@ public class MainController {
 			}
 			return "Autenticazione fallita ("+body.get("token")+")";
 		}
+		
+		//DA DEFINIRE
+		
+		/*@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
+		public String shallowClientsList (@RequestBody Map<String,Object> body) {
+			if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
+			{
+				GeneralResponse generalResponse=new GeneralResponse();
+				ShallowClientsResponse shallowClientsResponse = new ShallowClientsResponse();
+				
+				List<ShallowClient> shallowClients = elencoClientsRepository.getShallowClients(Integer.parseInt((String)body.get("id_company")));
+				
+				shallowClientsResponse.setShallowClients(shallowClients);
+				
+				String newToken=Services.checkThreshold(Integer.parseInt((String)body.get("id_company")),(String)body.get("token"));
+				if(newToken==null)
+				{		
+					return "Autenticato ("+body.get("token")+")";
+				}
+				else
+				{
+					return "Autenticato ( New Token: "+newToken+")";
+				}
+				
+			}
+			return "Autenticazione fallita ("+body.get("token")+")";			
+		}*/
 		
 		
 }
