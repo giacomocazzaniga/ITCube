@@ -17,7 +17,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public final class Services {
 
-	private static Map<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
+	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
 	private static int milliSecLenghtToken=30000;
 	private static double threshold=0.1*milliSecLenghtToken;
 
@@ -46,6 +46,7 @@ public final class Services {
 	public static void putToken(Integer id_company, String token)
 	{
 		HashMap<String, Date> newMap =new HashMap<String, Date>();
+		newMap.put(token, new Date(System.currentTimeMillis() + milliSecLenghtToken));
 		if(AuthenticationManager.containsKey(id_company))
 		{
 			AuthenticationManager.get(id_company).put(token, new Date(System.currentTimeMillis() + milliSecLenghtToken));
@@ -57,6 +58,18 @@ public final class Services {
 		}
 	}
 
+	public static String tokenCompany(Integer id_company)
+	{
+		if(AuthenticationManager.containsKey(id_company))
+		{
+			return (String) AuthenticationManager.get(id_company).keySet().toArray()[0];
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public static boolean isValid(Integer id_company, String token)
 	{
 		if(AuthenticationManager.containsKey(id_company))
@@ -70,10 +83,6 @@ public final class Services {
 				else
 				{
 					AuthenticationManager.get(id_company).remove(token);
-					if(AuthenticationManager.get(id_company).size()==0)
-					{
-						AuthenticationManager.remove(id_company);
-					}
 					return false;
 				}
 			}
@@ -86,25 +95,11 @@ public final class Services {
 	{
 		if((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(id_company).get(token)), TimeUnit.MILLISECONDS))<threshold)
 		{
-			System.out.println("------------------------------------");
-			System.out.println("Prima");
-			for (Integer i : AuthenticationManager.keySet()) {
-				  System.out.println("key: " + i + " value: " + AuthenticationManager.get(i));
- 
-				}
-			
 			System.out.println((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(id_company).get(token)), TimeUnit.MILLISECONDS)));
 			System.out.println(threshold);
-			String newToken=getJWTToken(token);
+			String newToken=getJWTToken(token.substring(0,10));
 			AuthenticationManager.get(id_company).remove(token);
-			//AuthenticationManager.get(id_company).put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
-			
-			System.out.println("------------------------------------");
-			System.out.println("Dopo");
-			for (int i : AuthenticationManager.keySet()) {
-				  System.out.println("key: " + i + " value: " + AuthenticationManager.get(i));
-				}
-			
+			AuthenticationManager.get(id_company).put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
 			return newToken;
 		}
 		return null;

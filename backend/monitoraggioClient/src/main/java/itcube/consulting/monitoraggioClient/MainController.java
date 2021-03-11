@@ -206,7 +206,12 @@ public class MainController {
 				{
 					company=elencoCompaniesRepository.getInfoCompany(email);
 					elencoClients=elencoClientsRepository.getElencoClients(company);
-					token = Services.getJWTToken(company.getRagione_sociale());
+					
+					String _tokenCompany=Services.tokenCompany(company.getId());
+					if(_tokenCompany==null)
+						token = Services.getJWTToken(company.getRagione_sociale());
+					else
+						token=_tokenCompany;
 					
 					Services.putToken(company.getId(),token);
 
