@@ -7,7 +7,7 @@ import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 public class ResponseLogin extends GeneralResponse{
 	private String ragione_sociale;
 	private int id_company;
-	List<ElencoClients> elencoClients;
+	private String emailNotify;
 	
 	public ResponseLogin() {
 
@@ -29,12 +29,11 @@ public class ResponseLogin extends GeneralResponse{
 		this.id_company = id_company;
 	}
 
-	public List<ElencoClients> getElencoClients() {
-		return elencoClients;
+	public String getEmailNotify() {
+		return emailNotify;
 	}
 
-	public void setElencoClients(List<ElencoClients> elencoClients) {
-		this.elencoClients = elencoClients;
+	public void setEmailNotify(String emailNotify) {
+		this.emailNotify = emailNotify;
 	}
-	
 }

@@ -137,7 +137,7 @@ public class MainController {
 				
 				elencoCompaniesRepository.save(company);
 				
-				//salva la licenza
+				//salva la licenza --> FIX
 				do
 				{
 					codice=Services.getLicenseCode();
@@ -199,6 +199,7 @@ public class MainController {
 				{
 					generalResponse.setMessage("Password sbagliata o utente non presente");
 					generalResponse.setMessageCode(1);
+					System.out.println(Services.getCurrentDate()+" /login FAILED");
 					return ResponseEntity.ok(generalResponse);
 				}
 				else
@@ -207,13 +208,13 @@ public class MainController {
 					elencoClients=elencoClientsRepository.getElencoClients(company);
 					token = Services.getJWTToken(company.getRagione_sociale());
 					
-					Services.putToken(token);
+					Services.putToken(company.getId(),token);
 
 					responseLogin.setMessage("Login avvenuto con successo");
 					responseLogin.setMessageCode(0);
 					responseLogin.setRagione_sociale(company.getRagione_sociale());
 					responseLogin.setId_company(company.getId());
-					responseLogin.setElencoClients(elencoClients);
+					responseLogin.setEmailNotify(company.getEmail_alert());
 					responseLogin.setToken(token);
 					System.out.println(Services.getCurrentDate()+" /login SUCCESS "+email);
 					return ResponseEntity.ok(responseLogin);
@@ -222,8 +223,7 @@ public class MainController {
 			catch (Exception e) {
 				generalResponse.setMessage(e.getMessage());
 				generalResponse.setMessageCode(-1);
-				System.out.println(e.getMessage());
-				System.out.println(Services.getCurrentDate()+" /login FAILED");
+				System.out.println(Services.getCurrentDate()+"\n"+e.getMessage());
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 		}
@@ -246,7 +246,7 @@ public class MainController {
 				codice_licenza=body.get("codice_licenza").toString();
 				token=body.get("token").toString();
 				
-				if(Services.isValid(token))
+				if(Services.isValid(id_company, token))
 				{
 					operationsPerClient= elencoClientsRepository.getOperationsPerClient(id_client); 
 					
@@ -255,7 +255,7 @@ public class MainController {
 					response.setNome_operazione(operationsPerClient.getNome_operazione());
 					response.setTempo(operationsPerClient.getTempo());
 					
-					String newToken=Services.checkThreshold(token);
+					String newToken=Services.checkThreshold(id_company, token);
 					generalResponse.setMessage("Ok");
 					generalResponse.setMessageCode(0);
 					response.setToken(newToken);
@@ -276,9 +276,9 @@ public class MainController {
 		
 		@PostMapping(path="/hello",produces=MediaType.APPLICATION_JSON_VALUE)
 		public String helloWorld(@RequestBody Map<String,Object> body) {
-			if(Services.isValid((String)body.get("token")))
+			if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
 			{
-				String newToken=Services.checkThreshold((String)body.get("token"));
+				String newToken=Services.checkThreshold(Integer.parseInt((String)body.get("id_company")),(String)body.get("token"));
 				if(newToken==null)
 				{		
 					return "Autenticato ("+body.get("token")+")";
