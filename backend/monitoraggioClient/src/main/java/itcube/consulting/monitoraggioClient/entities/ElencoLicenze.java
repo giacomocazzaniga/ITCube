@@ -1,26 +1,30 @@
 package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-public class ElencoLicenze implements Serializable{
+public class ElencoLicenze {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private String codice;
-	
-	//Chiave esterna 
-	@OneToMany(mappedBy = "elencoLicenze")
+	@ManyToMany(mappedBy = "elencoLicenze", fetch = FetchType.LAZY)
 	private List<ElencoClients> elencoClients;
+	
+	/*
+	@OneToMany(mappedBy = "elencoLicenze")
+	private List<ElencoClients> elencoClients; */
 
 	@ManyToOne
 	@JoinColumn(name = "id_tipo")
@@ -31,6 +35,8 @@ public class ElencoLicenze implements Serializable{
 	@JoinColumn(name = "acquistato_da")
 	private ElencoCompanies elencoCompanies;
 	//private String acquistato_da;
+	
+	private Date scadenza;
 
 	public ElencoLicenze() {
 
@@ -60,17 +66,26 @@ public class ElencoLicenze implements Serializable{
 		this.id_tipo = id_tipo;
 	}*/
 
-	public String getCodice() {
+	/*public String getCodice() {
 		return codice;
 	}
 
 	public void setCodice(String codice) {
 		this.codice = codice;
-	}
+	}*/
+	
 
 	public ElencoCompanies getElencoCompanies() {
 		return elencoCompanies;
 	}
+
+	/*public List<String> getCodice() {
+		return codice;
+	}
+
+	public void setCodice(List<String> codice) {
+		this.codice = codice;
+	}*/
 
 	public void setElencoCompanies(ElencoCompanies elencoCompanies) {
 		this.elencoCompanies = elencoCompanies;
@@ -83,4 +98,13 @@ public class ElencoLicenze implements Serializable{
 	public void setTipologieLicenze(TipologieLicenze tipologieLicenze) {
 		this.tipologieLicenze = tipologieLicenze;
 	}
+
+	public Date getScadenza() {
+		return scadenza;
+	}
+
+	public void setScadenza(Date scadenza) {
+		this.scadenza = scadenza;
+	}
+	
 }

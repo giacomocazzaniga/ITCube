@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Config implements Serializable{
+public class Config {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
