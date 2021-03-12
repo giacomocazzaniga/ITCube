@@ -51,6 +51,7 @@ import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
+import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -125,8 +126,6 @@ public class MainController {
 			System.out.println(ragione_sociale);
 			
 			elencoCompanies=elencoCompaniesRepository.getCompanies(email, ragione_sociale);
-			
-			System.out.println(elencoCompanies);
 	
 			if(elencoCompanies.isEmpty())
 			{
@@ -186,16 +185,12 @@ public class MainController {
 			List<ElencoClients> elencoClients;
 			
 			try {
-				//System.out.println(body);		
+
 				email=body.get("email").toString();
 				password=body.get("password").toString();
 				
-				//System.out.println(email);
-				//System.out.println(password);
-				
 				numCompany=elencoCompaniesRepository.Login(email, password);
 				
-				//System.out.println(numCompany);
 		
 				if(numCompany<1)
 				{
@@ -301,30 +296,45 @@ public class MainController {
 		
 		//DA DEFINIRE
 		
-		/*@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
-		public String shallowClientsList (@RequestBody Map<String,Object> body) {
-			if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
+		@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> shallowClientsList (@RequestBody Map<String,Object> body) {
+			GeneralResponse generalResponse=new GeneralResponse();
+			ShallowClientsResponse shallowClientsResponse = new ShallowClientsResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			
+			try
 			{
-				GeneralResponse generalResponse=new GeneralResponse();
-				ShallowClientsResponse shallowClientsResponse = new ShallowClientsResponse();
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
 				
-				List<ShallowClient> shallowClients = elencoClientsRepository.getShallowClients(Integer.parseInt((String)body.get("id_company")));
-				
-				shallowClientsResponse.setShallowClients(shallowClients);
-				
-				String newToken=Services.checkThreshold(Integer.parseInt((String)body.get("id_company")),(String)body.get("token"));
-				if(newToken==null)
-				{		
-					return "Autenticato ("+body.get("token")+")";
-				}
-				else
+				if(validToken.isValid())
 				{
-					return "Autenticato ( New Token: "+newToken+")";
+					
+					List<ShallowClient> shallowClients = elencoClientsRepository.getShallowClients(Integer.parseInt((String)body.get("id_company")));
+					shallowClientsResponse.setShallowClients(shallowClients);
+					
+					String newToken=Services.checkThreshold(id_company, token);
+					
+					shallowClientsResponse.setMessage("Operazione effettuata con successo");
+					shallowClientsResponse.setMessageCode(0);
+					shallowClientsResponse.setToken(newToken);
+					
 				}
-				
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
 			}
-			return "Autenticazione fallita ("+body.get("token")+")";			
-		}*/
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
 		
 		
 }

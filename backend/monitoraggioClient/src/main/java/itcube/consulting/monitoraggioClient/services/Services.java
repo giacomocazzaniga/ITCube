@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 
 public final class Services {
 
@@ -105,6 +106,26 @@ public final class Services {
 		return null;
 	}
 	
+	
+	public static ValidToken checkToken(int id_company, String token)
+	{
+		ValidToken validToken=new ValidToken();
+		
+		if(Services.isValid(id_company, token))
+		{
+			
+			String newToken=Services.checkThreshold(id_company, token);
+			validToken.setToken(newToken);
+			validToken.setValid(true);
+		}
+		else
+		{
+			validToken.setToken(null);
+			validToken.setValid(false);
+		}
+		return validToken;
+	}
+	
 	public static String getLicenseCode()
 	{
 			String codice="";
@@ -113,13 +134,12 @@ public final class Services {
 				for(int i=0; i<4; i++)
 				{
 					shortId = RandomStringUtils.randomAlphanumeric(4); 
-					System.out.println(shortId);
 					codice+=shortId;
 					if(i<3)
 						codice+="-";
 				}
 				//codice = UUID.randomUUID().toString();
-			
+			System.out.println(codice);
 		    return codice;    	
 	}
 	
