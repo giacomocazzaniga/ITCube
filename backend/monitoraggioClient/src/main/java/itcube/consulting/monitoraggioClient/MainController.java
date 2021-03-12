@@ -323,6 +323,8 @@ public class MainController {
 					shallowClientsResponse.setMessageCode(0);
 					shallowClientsResponse.setToken(newToken);
 					
+					return ResponseEntity.ok(shallowClientsResponse); 
+					
 				}
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
