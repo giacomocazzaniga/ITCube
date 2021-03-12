@@ -23,13 +23,12 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 			+ "where ec.id= :id_client", nativeQuery=true)
 	OperationsPerClient getOperationsPerClient(@Param("id_client") int id_client);
 	
-	@Query(value="SELECT ec.id, ec.nome, ec.sede, tl.nome_tipologia\n"
+	@Query(value="SELECT ec.id, ec.nome, tc.nome_tipologia as tipo_client, ec.sede, tl.nome_tipologia\n"
 			+ "FROM elenco_clients ec\n"
 			+ "INNER JOIN elenco_licenze el on ec.licenza_in_uso=el.id\n"
 			+ "INNER JOIN tipologie_licenze tl on el.id_tipo=tl.id\n"
 			+ "INNER JOIN tipologia_client tc on tc.id=ec.tipologia_client\n"
-			+ "WHERE ec.id = :id_company", nativeQuery=true)
+			+ "WHERE ec.id_company = :id_company", nativeQuery=true)
 	List<ShallowClient> getShallowClients(@Param("id_company") int id_company);
-	
-	
+		
 }

@@ -313,9 +313,11 @@ public class MainController {
 				
 				if(validToken.isValid())
 				{
-					
-					List<ShallowClient> shallowClients = elencoClientsRepository.getShallowClients(id_company);
-					shallowClientsResponse.setShallowClients(shallowClients);
+					System.out.println(id_company);
+					//List<ShallowClient> shallowClients = elencoClientsRepository.getShallowClients(id_company);
+					//System.out.println(shallowClients);
+					System.out.println(elencoClientsRepository.getShallowClients(id_company).toString());
+					//shallowClientsResponse.setShallowClients(shallowClients);
 					
 					String newToken=Services.checkThreshold(id_company, token);
 					
