@@ -111,7 +111,7 @@ public class MainController {
 		String ragione_sociale;
 		List<String> elencoCompanies;
 		ElencoCompanies company;
-		ElencoLicenze licenza;
+		ElencoLicenze elencoLicenze;
 		String codice;
 
 		try {
@@ -144,13 +144,14 @@ public class MainController {
 					codice=Services.getLicenseCode();
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
-				licenza=new ElencoLicenze();
-				//licenza.setCodice(codice);
-				licenza.setElencoClients(null);
-				licenza.setTipologieLicenze(tipologieLicenzeRepository.getLicenza("1"));
-				licenza.setElencoCompanies(company);
+				elencoLicenze=new ElencoLicenze();
+				elencoLicenze.setCodice(codice);
+				elencoLicenze.setElencoClients(null);
+				elencoLicenze.setTipologieLicenze(tipologieLicenzeRepository.getLicenza("1"));
+				elencoLicenze.setElencoCompanies(company);
+				elencoLicenze.setScadenza(new Date(System.currentTimeMillis()+500000));
 				
-				elencoLicenzeRepository.save(licenza);
+				elencoLicenzeRepository.save(elencoLicenze);
 				
 				responseRegistrazione.setMessage("Registrazione avvenuta con successo");
 				responseRegistrazione.setMessageCode(0);

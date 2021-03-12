@@ -25,6 +25,7 @@ public class ElencoLicenze {
 	/*
 	@OneToMany(mappedBy = "elencoLicenze")
 	private List<ElencoClients> elencoClients; */
+	private String codice;
 
 	@ManyToOne
 	@JoinColumn(name = "id_tipo")
@@ -66,14 +67,13 @@ public class ElencoLicenze {
 		this.id_tipo = id_tipo;
 	}*/
 
-	/*public String getCodice() {
+	public String getCodice() {
 		return codice;
 	}
 
 	public void setCodice(String codice) {
 		this.codice = codice;
-	}*/
-	
+	}
 
 	public ElencoCompanies getElencoCompanies() {
 		return elencoCompanies;
