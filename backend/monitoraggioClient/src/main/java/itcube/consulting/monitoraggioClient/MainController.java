@@ -294,9 +294,7 @@ public class MainController {
 			}
 			return "Autenticazione fallita ("+body.get("token")+")";
 		}
-		
-		//DA DEFINIRE
-		
+				
 		@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<GeneralResponse> shallowClientsList (@RequestBody Map<String,Object> body) {
 			GeneralResponse generalResponse=new GeneralResponse();
@@ -313,11 +311,11 @@ public class MainController {
 				
 				if(validToken.isValid())
 				{
-					System.out.println(id_company);
-					//List<ShallowClient> shallowClients = elencoClientsRepository.getShallowClients(id_company);
-					//System.out.println(shallowClients);
-					System.out.println(elencoClientsRepository.getShallowClients(id_company).toString());
-					//shallowClientsResponse.setShallowClients(shallowClients);
+					
+					ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+					List<ElencoClients> elencoClients = elencoClientsRepository.getElencoClients(company);
+					
+					shallowClientsResponse.setShallowClients(ShallowClient.getShallowClients(elencoClients));
 					
 					String newToken=Services.checkThreshold(id_company, token);
 					

@@ -50,7 +50,7 @@ public class ElencoClients {
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "elencoClients_elencoLicenze",
      joinColumns = { @JoinColumn(name = "licenza_in_uso",nullable = false, updatable = false)},
-     inverseJoinColumns = { @JoinColumn(name = "codice",nullable = false, updatable = false)})
+     inverseJoinColumns = { @JoinColumn(name = "id",nullable = false, updatable = false)})
 	private List<ElencoLicenze> elencoLicenze;
 	
 	private String sede;
