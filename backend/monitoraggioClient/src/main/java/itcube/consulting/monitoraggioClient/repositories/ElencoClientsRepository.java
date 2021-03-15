@@ -30,5 +30,15 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 			+ "INNER JOIN tipologia_client tc on tc.id=ec.tipologia_client\n"
 			+ "WHERE ec.id_company = :company", nativeQuery=true)
 	List<ElencoClients> getShallowClients(@Param("company") ElencoCompanies company);
+	
+	
+	//SOLO PREDISPOSTA, DA FARE
+	@Query(value="SELECT *\n"
+			+ "FROM elenco_clients ec\n"
+			+ "INNER JOIN elenco_licenze el on ec.licenza_in_uso=el.id\n"
+			+ "INNER JOIN tipologie_licenze tl on el.id_tipo=tl.id\n"
+			+ "INNER JOIN tipologia_client tc on tc.id=ec.tipologia_client\n"
+			+ "where ec.id= :id_client", nativeQuery=true)
+	ElencoClients getDeepClient(@Param("id_client") int id_client);
 		
 }

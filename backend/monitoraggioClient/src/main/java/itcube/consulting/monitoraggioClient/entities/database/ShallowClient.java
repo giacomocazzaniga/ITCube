@@ -50,11 +50,9 @@ public class ShallowClient {
 		List<String> classiLicenze = new ArrayList<>();
 		
 		for (int i = 0; i < elencoClients.size(); i++) {
-			
-			System.out.println(elencoClients.get(i).getElencoLicenze().size());
-			
+						
 			for (int j = 0; j < elencoClients.get(i).getElencoLicenze().size(); j++)
-				classiLicenze.add(elencoClients.get(i).getElencoLicenze().get(j).getTipologieLicenze().getNome_tipologia()); 
+				classiLicenze.add(elencoClients.get(i).getElencoLicenze().get(j).getTipologieLicenze().getNome_tipologia());
 			
 			shallowClients.add(new ShallowClient(
 					elencoClients.get(i).getId(),

@@ -340,4 +340,49 @@ public class MainController {
 		}
 		
 		
+		//SOLO PREDISPOSTO, DA FARE
+		@PostMapping(path="/deepClient",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> deepClient (@RequestBody Map<String,Object> body) {
+			GeneralResponse generalResponse=new GeneralResponse();
+			ShallowClientsResponse shallowClientsResponse = new ShallowClientsResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			
+			try
+			{
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				
+				if(validToken.isValid())
+				{
+					
+					ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+					List<ElencoClients> elencoClients = elencoClientsRepository.getElencoClients(company);
+					
+					shallowClientsResponse.setShallowClients(ShallowClient.getShallowClients(elencoClients));
+					
+					String newToken=Services.checkThreshold(id_company, token);
+					
+					shallowClientsResponse.setMessage("Operazione effettuata con successo");
+					shallowClientsResponse.setMessageCode(0);
+					shallowClientsResponse.setToken(newToken);
+					
+					return ResponseEntity.ok(shallowClientsResponse); 
+					
+				}
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
+		
 }
