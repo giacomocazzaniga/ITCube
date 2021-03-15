@@ -17,22 +17,6 @@ const app = express();
 
 app.use(cors());
 
-/*// Creating a GET route that returns data from the 'users' table.
-app.get('/elenco_client', function (req, res) {
-    // Connecting to the database.
-    connection.getConnection(function (err, connection) {
-    console.log("/elenco_client")
-    // Executing the MySQL query
-    connection.query('SELECT * FROM elenco_client', function (error, results, fields) {
-      // If some error occurs, we throw an error.
-      if (error) throw error;
-
-      // Getting the 'response' from the database and sending it to our route. This is were the data is.
-      res.send(results)
-    });
-  });
-});*/
-
 app.post('/clientdetails', function (req, res) {
   //select ... from ... where id_client=... + token
   result = {
@@ -61,110 +45,10 @@ app.post('/login', function (req, res) {
   result = {
     "ragione_sociale":"ITCube Consulting",
     "id_company": "1",
-    "email": "francesco.done@itcubeconsulting.it",
     "emailNotify": "alert@itcubeconsulting.it",
-    "elencoClients" : [
-      {
-        "id_client" : "1",
-        "nome_client" : "DESKTOP-3874",
-        "tipo_client" : "Client",
-        "category" : "Sviluppo",
-        "MAC_address" : "00-50-FC-A0-67-2C",
-        "codice_licenza" : "ATRJ-95SX-LQQ6-IRRV",
-        "classe_licenza" : "1",
-        "nome_tipologia_licenza" : "Free",
-        "sede" : "Venezia",
-        "servizi" : {
-          "attivi" : "83",
-          "esecuzione" : "44",
-          "problemi" : "2",
-          "warnings" : "11"
-        }
-      }, {
-        "id_client" : "2",
-        "nome_client" : "DESKTOP-2230",
-        "tipo_client" : "Client",
-        "category" : "Sviluppo",
-        "MAC_address" : "00-56-SC-E4-C2-WC",
-        "codice_licenza" : "ZQCQ-B0EC-TW8N-YZFT",
-        "classe_licenza" : "2",
-        "nome_tipologia_licenza" : "Free",
-        "sede" : "Venezia",
-        "servizi" : {
-          "attivi" : "83",
-          "esecuzione" : "44",
-          "problemi" : "2",
-          "warnings" : "11"
-        }
-      }, {
-        "id_client" : "3",
-        "nome_client" : "SERVER-3512",
-        "tipo_client" : "Server",
-        "category" : "Produzione",
-        "MAC_address" : "00-41-5E-E4-2Z-C2",
-        "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
-        "classe_licenza" : "3",
-        "nome_tipologia_licenza" : "Pro",
-        "sede" : "Milano",
-        "servizi" : {
-          "attivi" : "83",
-          "esecuzione" : "44",
-          "problemi" : "2",
-          "warnings" : "11"
-        }
-      }, {
-        "id_client" : "4",
-        "nome_client" : "DESKTOP-3562",
-        "tipo_client" : "Client",
-        "category" : "Produzione",
-        "MAC_address" : "00-41-5E-E4-2Z-C2",
-        "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
-        "classe_licenza" : "4",
-        "nome_tipologia_licenza" : "Pro",
-        "sede" : "Milano",
-        "servizi" : {
-          "attivi" : "83",
-          "esecuzione" : "44",
-          "problemi" : "2",
-          "warnings" : "11"
-        }
-      }, {
-        "id_client" : "5",
-        "nome_client" : "SERVER-8290",
-        "tipo_client" : "Server",
-        "category" : "Sviluppo",
-        "MAC_address" : "00-41-5E-E4-2Z-C2",
-        "codice_licenza" : "LE1P-42KI-PY9L-1FZP",
-        "classe_licenza" : "5",
-        "nome_tipologia_licenza" : "Pro",
-        "sede" : "Torino",
-        "servizi" : {
-          "attivi" : "83",
-          "esecuzione" : "44",
-          "problemi" : "2",
-          "warnings" : "11"
-        }
-      }
-    ],
-    "sedi" : [
-      {"nome" : "1",
-       "n_client" : 1},
-      {"nome" : "2",
-       "n_client" : 1},
-      {"nome" : "3",
-       "n_client" : 1},
-      {"nome" : "4",
-       "n_client" : 1},
-      {"nome" : "5",
-       "n_client" : 1},
-    ],
-    "categories" : [
-      {"nome" : "Client",
-       "n_client" : 3},
-      {"nome" : "Server",
-      "n_client" : 2}
-    ],
-    "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    "token" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+    "message" : "Login avvenuto",
+    "messageCode" : "0"
   };
   res.send(result);
 });
@@ -184,6 +68,16 @@ app.post('/listasedi', function (req, res) {
        "n_client" : 1},
     ],
     "token" : ""
+  };
+  res.send(result);
+});
+
+app.post('/editCompanyData', function (req, res) {
+  console.log("/editCompanyData")
+  result = {
+    "token" : "",
+    "message" : "Modifica dei dati avvenuta con successo",
+    "messageCode" : "0"
   };
   res.send(result);
 });
@@ -255,6 +149,7 @@ app.post('/deepClient', function (req, res) {
 });
 
 app.post('/listaservizi', function (req, res) {
+  console.log("/listaservizi")
   result = {
     "servizi" : [
       {"nome" : "Operazione 1",
