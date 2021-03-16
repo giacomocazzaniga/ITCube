@@ -54,6 +54,7 @@ import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
+import itcube.consulting.monitoraggioClient.entities.database.LicenzeDeep;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -68,6 +69,7 @@ import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ResponseOperationsPerClient;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
+import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -379,6 +381,49 @@ public class MainController {
 					
 					return ResponseEntity.ok(licenzeShallowResponse);
 					
+				}
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			
+		}
+		
+		@PostMapping(path="/getLicenzeDeep",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> getLicenzeDeep (@RequestBody Map<String,Object> body) {
+			GeneralResponse generalResponse=new GeneralResponse();
+			LicenzeDeepResponse licenzeDeepResponse = new LicenzeDeepResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			
+			try
+			{
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				
+				if(validToken.isValid())
+				{
+					ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+					List<ElencoLicenze> licenze = elencoLicenzeRepository.getLicenze(company);
+					
+					licenzeDeepResponse.setElencoLicenze(LicenzeDeep.createLicenzeDeep(licenze));
+					
+					String newToken=Services.checkThreshold(id_company, token);
+					
+					licenzeDeepResponse.setMessage("Operazione effettuata con successo");
+					licenzeDeepResponse.setMessageCode(0);
+					licenzeDeepResponse.setToken(newToken);
+					
+					return ResponseEntity.ok(licenzeDeepResponse);
 				}
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
