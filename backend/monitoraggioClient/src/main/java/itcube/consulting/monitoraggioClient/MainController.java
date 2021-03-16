@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient;
 
 import java.io.File;
+
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
@@ -65,6 +67,7 @@ import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ResponseOperationsPerClient;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
+import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -345,6 +348,50 @@ public class MainController {
 		public ResponseEntity<GeneralResponse> deepClient (@RequestBody Map<String,Object> body) {
 			
 			return null;
+		}
+		
+		@PostMapping(path="/getLicenzeShallow",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> getLicenzeShallow (@RequestBody Map<String,Object> body) {
+			GeneralResponse generalResponse=new GeneralResponse();
+			LicenzeShallowResponse licenzeShallowResponse = new LicenzeShallowResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			
+			try
+			{
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				
+				if(validToken.isValid())
+				{
+					ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+					List<ElencoLicenze> licenze = elencoLicenzeRepository.getLicenze(company);
+					
+					licenzeShallowResponse.setLicenzeShallow(LicenzaShallow.getLicenzeShallow(licenze));
+					
+					String newToken=Services.checkThreshold(id_company, token);
+					
+					licenzeShallowResponse.setMessage("Operazione effettuata con successo");
+					licenzeShallowResponse.setMessageCode(0);
+					licenzeShallowResponse.setToken(newToken);
+					
+					return ResponseEntity.ok(licenzeShallowResponse);
+					
+				}
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			
 		}
 		
 }
