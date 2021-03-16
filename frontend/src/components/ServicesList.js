@@ -46,7 +46,7 @@ const ServicesList = (props) => {
       props.ServicesList(list)
     })
     .catch(function (error) {
-      addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+      addToast("Errore durante il caricamento delle operazioni", {appearance: 'error',autoDismiss: true});
     });
   }
 
