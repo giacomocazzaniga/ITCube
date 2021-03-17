@@ -20,6 +20,7 @@
 /backend/.metadata/
 /backend/.metadata
 /backend/.metadata/*
+**/metadata/*
 
 npm-debug.log*
 yarn-debug.log*
