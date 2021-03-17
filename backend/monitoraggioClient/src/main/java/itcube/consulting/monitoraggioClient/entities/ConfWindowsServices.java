@@ -16,8 +16,10 @@ public class ConfWindowsServices {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String nome_servizio;
-	private String stato;
-	private String notifica;
+	private boolean attivo;
+	private boolean esecuzione;
+	private boolean notifica;
+	private int tipo_alert;
 	
 	@OneToOne
 	@JoinColumn(name = "id_client")
@@ -43,13 +45,21 @@ public class ConfWindowsServices {
 	public void setNome_servizio(String nome_servizio) {
 		this.nome_servizio = nome_servizio;
 	}
-
-	public String getStato() {
-		return stato;
+	
+	public boolean isAttivo() {
+		return attivo;
 	}
 
-	public void setStato(String stato) {
-		this.stato = stato;
+	public void setAttivo(boolean attivo) {
+		this.attivo = attivo;
+	}
+
+	public boolean isEsecuzione() {
+		return esecuzione;
+	}
+
+	public void setEsecuzione(boolean esecuzione) {
+		this.esecuzione = esecuzione;
 	}
 
 	public ElencoClients getElencoClients() {
@@ -59,15 +69,14 @@ public class ConfWindowsServices {
 	public void setElencoClients(ElencoClients elencoClients) {
 		this.elencoClients = elencoClients;
 	}
-
-	public String getNotifica() {
+	
+	public boolean isNotifica() {
 		return notifica;
 	}
 
-	public void setNotifica(String notifica) {
+	public void setNotifica(boolean notifica) {
 		this.notifica = notifica;
 	}
-
 	/*public int getId_client() {
 		return id_client;
 	}

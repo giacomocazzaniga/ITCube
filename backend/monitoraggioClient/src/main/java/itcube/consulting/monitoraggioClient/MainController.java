@@ -70,6 +70,7 @@ import itcube.consulting.monitoraggioClient.response.ResponseOperationsPerClient
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
+import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -349,7 +350,62 @@ public class MainController {
 		@PostMapping(path="/deepClient",produces=MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<GeneralResponse> deepClient (@RequestBody Map<String,Object> body) {
 			
-			return null;
+			GeneralResponse generalResponse=new GeneralResponse();
+			DeepClientResponse deepClientResponse=new DeepClientResponse();
+			ValidToken validToken=new ValidToken();
+			String token;
+			int id_company;
+			int id_client;
+			List<String> codiciLicenze=new ArrayList<String>();
+			List<Integer> classiLicenze=new ArrayList<Integer>();
+			
+			try 
+			{
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				id_client=Integer.parseInt((String)body.get("id_client"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				
+				if(validToken.isValid())
+				{
+					ElencoClients deepClient = elencoClientsRepository.getDeepClient(id_client);
+					
+					deepClientResponse.setNome(deepClient.getNome());
+					deepClientResponse.setNome_tipologia(deepClient.getTipologiaClient().getNome_tipologia());
+					deepClientResponse.setMac_address(deepClient.getMac_address());
+					deepClientResponse.setSede(deepClient.getSede());
+					for(ElencoLicenze i : deepClient.getElencoLicenze())
+					{
+						codiciLicenze.add(i.getCodice());
+						classiLicenze.add(elencoLicenzeRepository.getClasseLicenza(i.getTipologieLicenze().getId()));
+					}
+					deepClientResponse.setCodice_licenza(codiciLicenze);
+					deepClientResponse.setClasse_licenza(classiLicenze);
+					
+					deepClientResponse.setServizi_problemi(confWindowsServicesRepository.countTipoAlert(1));
+					deepClientResponse.setServizi_warning(confWindowsServicesRepository.countTipoAlert(2));
+					deepClientResponse.setServizi_attivi(confWindowsServicesRepository.countAttivo(true));
+					deepClientResponse.setServizi_esecuzione(confWindowsServicesRepository.countEsecuzione(true));
+					
+					String newToken=Services.checkThreshold(id_company, token);
+					
+					deepClientResponse.setMessage("Operazione effettuata con successo");
+					deepClientResponse.setMessageCode(0);
+					deepClientResponse.setToken(newToken);
+					
+					return ResponseEntity.ok(deepClientResponse); 
+				}
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
 		}
 		
 		@PostMapping(path="/getLicenzeShallow",produces=MediaType.APPLICATION_JSON_VALUE)
