@@ -449,7 +449,6 @@ public class MainController {
 				System.out.println(e.getMessage());
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
-			//prova
 		}
 		
 		@PostMapping(path="/getLicenzeDeep",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -494,5 +493,75 @@ public class MainController {
 			}
 			
 		}
+		
+		@PostMapping(path="/editCompanyData",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> editCompanyData(@RequestBody Map<String,Object> body)
+		{
+			GeneralResponse generalResponse=new GeneralResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			String email;
+			String email_alert;
+			String ragione_sociale;
+			ElencoCompanies company;
+			
+			try
+			{
+
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				email=(String)body.get("email");
+				email_alert=(String)body.get("email_alert");
+				ragione_sociale=(String)body.get("ragione_sociale");
+				
+				if(validToken.isValid())
+				{
+					
+					company=elencoCompaniesRepository.getInfoCompany(id_company);
+					if(company!=null)
+					{
+						company.setEmail(email);
+						company.setEmail_alert(email_alert);
+						company.setRagione_sociale(ragione_sociale);
+						
+						generalResponse.setMessage("Modifica company effettuata");
+						generalResponse.setMessageCode(0);
+						elencoCompaniesRepository.save(company);
+						
+						return ResponseEntity.badRequest().body(generalResponse);
+					}
+					else
+					{
+						generalResponse.setMessage("Company inesistente");
+						generalResponse.setMessageCode(-3);
+						return ResponseEntity.badRequest().body(generalResponse);
+					}
+					
+				}
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 }

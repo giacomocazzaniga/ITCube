@@ -18,27 +18,16 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	
 	@Query(value="SELECT config.id, config.tempo, eo.id, eo.nome, eo.tabella_riferimento\n"
 			+ "from ((elenco_clients ec\n"
-			+ "INNER JOIN config on ec.id=config.id_client)\n"
-			+ "INNER JOIN elenco_operazioni eo on eo.id=config.id_operazione)\n"
 			+ "where ec.id= :id_client", nativeQuery=true)
 	OperationsPerClient getOperationsPerClient(@Param("id_client") int id_client);
 	
 	@Query(value="SELECT *\n"
 			+ "FROM elenco_clients ec\n"
-			+ "INNER JOIN elenco_licenze el on ec.licenza_in_uso=el.id\n"
-			+ "INNER JOIN tipologie_licenze tl on el.id_tipo=tl.id\n"
-			+ "INNER JOIN tipologia_client tc on tc.id=ec.tipologia_client\n"
 			+ "WHERE ec.id_company = :company", nativeQuery=true)
 	List<ElencoClients> getShallowClients(@Param("company") ElencoCompanies company);
 	
-	
-	//SOLO PREDISPOSTA, DA FARE
 	@Query(value="SELECT *\n"
 			+ "FROM elenco_clients ec\n"
-			+ "INNER JOIN elenco_licenze el on ec.licenza_in_uso=el.id\n"
-			+ "INNER JOIN tipologie_licenze tl on el.id_tipo=tl.id\n"
-			+ "INNER JOIN tipologia_client tc on tc.id=ec.tipologia_client\n"
 			+ "where ec.id= :id_client", nativeQuery=true)
-	ElencoClients getDeepClient(@Param("id_client") int id_client);
-		
+	ElencoClients getDeepClient(@Param("id_client") int id_client);	
 }

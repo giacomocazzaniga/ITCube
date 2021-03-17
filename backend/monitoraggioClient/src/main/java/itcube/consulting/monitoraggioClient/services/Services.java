@@ -19,7 +19,7 @@ import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 public final class Services {
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
-	private static int milliSecLenghtToken=30000;
+	private static int milliSecLenghtToken=3000000;
 	private static double threshold=0.1*milliSecLenghtToken;
 
 	//Metodo token
