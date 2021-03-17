@@ -553,15 +553,43 @@ public class MainController {
 			}
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		/*@PostMapping(path="/clientLicenseList",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> getClientLicenseList(@RequestBody Map<String,Object> body)
+		{
+			GeneralResponse generalResponse=new GeneralResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			ElencoCompanies company;
+			List<ElencoClients> elencoClients=new ArrayList<>();
+			
+			
+			try
+			{
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				
+				if(validToken.isValid())
+				{
+					company=elencoCompaniesRepository.getInfoCompany(id_company);
+					elencoClients=elencoClientsRepository.getElencoClients(company);
+					Map<Integer,List<String>> mappa=elencoClients.stream().collect(groupingBy(x->x.));
+				}
+				else
+				{
+					generalResponse.setMessage("Company inesistente");
+					generalResponse.setMessageCode(-3);
+					return ResponseEntity.badRequest().body(generalResponse);
+				}
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}*/
 		
 }
