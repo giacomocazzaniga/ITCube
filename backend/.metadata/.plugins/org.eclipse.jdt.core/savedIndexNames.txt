@@ -1,0 +1,3 @@
+INDEX VERSION 1.131+/Users/stichpuglia/Documents/ITCube/Progetto/Progetto Git/ITCube/backend/.metadata/.plugins/org.eclipse.jdt.core
+2888586291.index
+2025444075.index
