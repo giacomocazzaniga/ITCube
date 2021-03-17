@@ -16,14 +16,8 @@ public interface ElencoLicenzeRepository extends CrudRepository<ElencoLicenze,In
 	
 	@Query(value="Select * from elenco_licenze where acquistato_da= :company", nativeQuery=true)
 	List<ElencoLicenze> getLicenze(@Param("company") ElencoCompanies company);
-	
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
+
 	@Query(value="Select tl.classe from elenco_licenze el inner join tipologie_licenze tl on :id_tipo=tl.id", nativeQuery=true)
 	int getClasseLicenza(@Param("id_tipo") int id_tipo);
->>>>>>> Stashed changes
 }
-=======
-}
->>>>>>> main
+
