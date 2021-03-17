@@ -6,7 +6,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -50,6 +52,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
@@ -553,7 +556,7 @@ public class MainController {
 			}
 		}
 		
-		/*@PostMapping(path="/clientLicenseList",produces=MediaType.APPLICATION_JSON_VALUE)
+		@PostMapping(path="/clientLicenseList",produces=MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<GeneralResponse> getClientLicenseList(@RequestBody Map<String,Object> body)
 		{
 			GeneralResponse generalResponse=new GeneralResponse();
@@ -562,7 +565,7 @@ public class MainController {
 			String token;
 			ElencoCompanies company;
 			List<ElencoClients> elencoClients=new ArrayList<>();
-			
+			List<TipologieLicenze> tipologieLicenze = new ArrayList<>();
 			
 			try
 			{
@@ -574,7 +577,20 @@ public class MainController {
 				{
 					company=elencoCompaniesRepository.getInfoCompany(id_company);
 					elencoClients=elencoClientsRepository.getElencoClients(company);
-					Map<Integer,List<String>> mappa=elencoClients.stream().collect(groupingBy(x->x.));
+					tipologieLicenze = tipologieLicenzeRepository.getLicenze();
+					Dictionary<Integer, Integer> map = new Hashtable<Integer, Integer>();
+					
+					for(TipologieLicenze i : tipologieLicenze) {
+						int count = 0;
+						for (ElencoClients client : elencoClients) {
+							if (client.hasLicenza(i))
+								count++;
+						}
+						map.put(i.getClasse(),count);
+					}
+					
+					return null;
+					
 				}
 				else
 				{
@@ -590,6 +606,6 @@ public class MainController {
 				System.out.println(e.getMessage());
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
-		}*/
+		}
 		
 }

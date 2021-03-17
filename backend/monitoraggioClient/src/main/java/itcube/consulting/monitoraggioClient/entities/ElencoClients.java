@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class ElencoClients {
@@ -54,7 +55,6 @@ public class ElencoClients {
 	private List<ElencoLicenze> elencoLicenze;
 	
 	private String sede;
-
 
 	public ElencoClients() {
 		
@@ -155,6 +155,12 @@ public class ElencoClients {
 
 	public void setSede(String sede) {
 		this.sede = sede;
+	}
+	
+	public Boolean hasLicenza (TipologieLicenze licenza) {
+		if (this.getElencoLicenze().contains(licenza)) 
+			return true;
+		return false;
 	}
 	
 }
