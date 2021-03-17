@@ -75,6 +75,7 @@ import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
+import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -348,8 +349,6 @@ public class MainController {
 			}
 		}
 		
-		
-		//SOLO PREDISPOSTO, DA FARE INTERAMENTE
 		@PostMapping(path="/deepClient",produces=MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<GeneralResponse> deepClient (@RequestBody Map<String,Object> body) {
 			
@@ -529,11 +528,14 @@ public class MainController {
 						company.setEmail_alert(email_alert);
 						company.setRagione_sociale(ragione_sociale);
 						
+						String newToken=Services.checkThreshold(id_company, token);
+						
 						generalResponse.setMessage("Modifica company effettuata");
 						generalResponse.setMessageCode(0);
+						generalResponse.setToken(newToken);
 						elencoCompaniesRepository.save(company);
 						
-						return ResponseEntity.badRequest().body(generalResponse);
+						return ResponseEntity.ok(generalResponse);
 					}
 					else
 					{
@@ -566,6 +568,7 @@ public class MainController {
 			ElencoCompanies company;
 			List<ElencoClients> elencoClients=new ArrayList<>();
 			List<TipologieLicenze> tipologieLicenze = new ArrayList<>();
+			ClientLicenseListResponse response=new ClientLicenseListResponse();
 			
 			try
 			{
@@ -578,7 +581,7 @@ public class MainController {
 					company=elencoCompaniesRepository.getInfoCompany(id_company);
 					elencoClients=elencoClientsRepository.getElencoClients(company);
 					tipologieLicenze = tipologieLicenzeRepository.getLicenze();
-					Dictionary<Integer, Integer> map = new Hashtable<Integer, Integer>();
+					HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
 					
 					for(TipologieLicenze i : tipologieLicenze) {
 						int count = 0;
@@ -589,8 +592,14 @@ public class MainController {
 						map.put(i.getClasse(),count);
 					}
 					
-					return null;
+					String newToken=Services.checkThreshold(id_company, token);
+
+					response.setMessage("Operazione avvenuta con successo");
+					response.setMessageCode(0);
+					response.setToken(newToken);
+					response.setSedi(map);
 					
+					return ResponseEntity.ok(response);
 				}
 				else
 				{
