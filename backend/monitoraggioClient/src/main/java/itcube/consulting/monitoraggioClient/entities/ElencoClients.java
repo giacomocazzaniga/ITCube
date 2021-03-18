@@ -114,7 +114,7 @@ public class ElencoClients {
 	}
 
 	public void setMac_address(String mac_address) {
-		mac_address = mac_address;
+		this.mac_address = mac_address;
 	}
 
 	public ElencoCompanies getElencoCompanies() {
