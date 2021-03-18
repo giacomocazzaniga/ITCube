@@ -66,6 +66,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
+import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.GetClientTypesResponse;
@@ -110,6 +111,9 @@ public class MainController {
 	
 	@Autowired
 	private TipologieLicenzeRepository tipologieLicenzeRepository;
+	
+	@Autowired
+	private TipologieClientRepository tipologieClientRepository;
 	
 	//http://localhost:8080/be/main/registrazione
 	@PostMapping(path="/registrazione",produces=MediaType.APPLICATION_JSON_VALUE)
@@ -668,9 +672,6 @@ public class MainController {
 					}
 					
 					String newToken=Services.checkThreshold(id_company, token);
-					
-					System.out.println(map.get("Client"));
-					System.out.println(map.get("Server"));
 
 					response.setCategories(map);
 					response.setMessage("Operazione avvenuta con successo");
@@ -696,10 +697,7 @@ public class MainController {
 		
 		
 		
-		
-		
-		
-		
+	
 		
 		
 		
