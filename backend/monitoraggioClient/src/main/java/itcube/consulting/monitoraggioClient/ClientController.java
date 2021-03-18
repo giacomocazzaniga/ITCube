@@ -282,6 +282,7 @@ public class ClientController {
 	
 	
 	@PostMapping(path="/getClientTypes",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
 	public ResponseEntity<GeneralResponse> getClientTypes(@RequestBody Map<String,Object> body)
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
@@ -340,6 +341,7 @@ public class ClientController {
 	
 	
 	@PostMapping(path="/newClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
 	public ResponseEntity<GeneralResponse> newClient(@RequestBody Map<String,Object> body)
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
@@ -393,6 +395,7 @@ public class ClientController {
 	}
 	
 	@PostMapping(path="/pingToClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
 	public ResponseEntity<GeneralResponse> pingToClient(@RequestBody Map<String,Object> body)
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
