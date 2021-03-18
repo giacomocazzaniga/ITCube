@@ -696,7 +696,57 @@ public class MainController {
 		}
 		
 		
-		
+		@PostMapping(path="/newClient",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> newClient(@RequestBody Map<String,Object> body)
+		{
+			GeneralResponse generalResponse=new GeneralResponse();
+			ElencoLicenze licenza;
+			List<ElencoLicenze> el=new ArrayList();
+			try
+			{
+				String mac_address=(String)body.get("mac_address");
+				String nome=(String)body.get("nome");
+				String licenza_in_uso=(String)body.get("licenza_in_uso");
+				String tipologia_client=(String)body.get("tipologia_client");
+				String sede=(String)body.get("sede");
+					
+				ElencoClients newClient=new ElencoClients();
+				newClient.setMac_address(mac_address);
+				newClient.setSede(sede);
+				newClient.setNome(nome);
+				newClient.setTipologiaClient(tipologieClientRepository.getSpecificType(tipologia_client));
+				
+				licenza=elencoLicenzeRepository.getLicenza(licenza_in_uso);
+
+				if(licenza!=null)
+				{
+					newClient.setElencoLicenze(new ArrayList<ElencoLicenze>());
+					newClient.getElencoLicenze().add(licenza);
+					newClient.setElencoCompanies(licenza.getElencoCompanies());
+					licenza.getElencoClients().add(newClient);
+					
+					//problema
+					elencoClientsRepository.save(newClient);
+					
+					generalResponse.setMessage("Client registrato con successo");
+					generalResponse.setMessageCode(0);
+					return ResponseEntity.ok(generalResponse);
+				}
+				else
+				{
+					generalResponse.setMessage("Licenza inesistente");
+					generalResponse.setMessageCode(-2);
+					return ResponseEntity.badRequest().body(generalResponse);
+				}
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
 	
 		
 		

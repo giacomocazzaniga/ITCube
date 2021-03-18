@@ -19,5 +19,8 @@ public interface ElencoLicenzeRepository extends CrudRepository<ElencoLicenze,In
 
 	@Query(value="Select tl.classe from elenco_licenze el inner join tipologie_licenze tl on :id_tipo=tl.id", nativeQuery=true)
 	int getClasseLicenza(@Param("id_tipo") int id_tipo);
+	
+	@Query(value="Select * from elenco_licenze el where el.codice= :codice", nativeQuery=true)
+	ElencoLicenze getLicenza(@Param ("codice") String codice);
 }
 
