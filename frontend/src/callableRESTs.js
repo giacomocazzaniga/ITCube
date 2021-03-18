@@ -1,4 +1,4 @@
-const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake } = require('./REST');
+const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -14,7 +14,7 @@ export const _performSignUp = (email, password, email_alert, ragione_sociale) =>
 
 export const _performLogin = (email, password) => {
     let encryptedPsw = md5(password);
-    return axios.post(url_loginFake, { //url_login
+    return axios.post(url_login, { //url_login
       email: email,
       password: encryptedPsw
     })
@@ -43,7 +43,8 @@ export const _getDeepClient = (id_client, id_company, token) => {
 }
 
 export const _editCompanyData = (id_company, token, email, emailAlert, ragioneSociale) => {
-  return axios.post(url_edit_company_dataFake, {
+  console.log([id_company, token, email, emailAlert, ragioneSociale]);
+  return axios.post(url_edit_company_data, {
     id_company: id_company, 
     token: token, 
     email: email, 

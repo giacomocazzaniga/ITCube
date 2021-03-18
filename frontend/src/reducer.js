@@ -37,6 +37,14 @@ export function rootReducer(state = initialState, action) {
       token: action.token
     });
   }
+  if (action.type === types.UPDATECOMPANYDATA) {
+    return Object.assign({}, state, {
+      nome_company: action.nome_company,
+      email: action.email,
+      emailNotify: action.emailNotify,
+      token: action.token
+    });
+  }
   if (action.type === types.SIGNUP) {
     return Object.assign({}, state, {
       message: action.message,

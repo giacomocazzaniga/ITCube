@@ -242,6 +242,7 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/operationsPerClient",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> Operations(@RequestBody Map<String,Object> body) {
 			
 			GeneralResponse generalResponse=new GeneralResponse();
@@ -288,6 +289,7 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/hello",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public String helloWorld(@RequestBody Map<String,Object> body) {
 			if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
 			{
@@ -306,6 +308,7 @@ public class MainController {
 		}
 				
 		@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> shallowClientsList (@RequestBody Map<String,Object> body) {
 			GeneralResponse generalResponse=new GeneralResponse();
 			ShallowClientsResponse shallowClientsResponse = new ShallowClientsResponse();
@@ -350,6 +353,7 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/deepClient",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> deepClient (@RequestBody Map<String,Object> body) {
 			
 			GeneralResponse generalResponse=new GeneralResponse();
@@ -411,6 +415,7 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/getLicenzeShallow",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> getLicenzeShallow (@RequestBody Map<String,Object> body) {
 			GeneralResponse generalResponse=new GeneralResponse();
 			LicenzeShallowResponse licenzeShallowResponse = new LicenzeShallowResponse();
@@ -454,6 +459,7 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/getLicenzeDeep",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> getLicenzeDeep (@RequestBody Map<String,Object> body) {
 			GeneralResponse generalResponse=new GeneralResponse();
 			LicenzeDeepResponse licenzeDeepResponse = new LicenzeDeepResponse();
@@ -497,11 +503,12 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/editCompanyData",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> editCompanyData(@RequestBody Map<String,Object> body)
 		{
 			GeneralResponse generalResponse=new GeneralResponse();
 			ValidToken validToken=new ValidToken();
-			int id_company;
+			Integer id_company;
 			String token;
 			String email;
 			String email_alert;
@@ -511,12 +518,13 @@ public class MainController {
 			try
 			{
 
-				id_company=Integer.parseInt((String)body.get("id_company"));
+				id_company= (Integer) body.get("id_company");
+				System.out.println(id_company);
 				token=(String)body.get("token");
 				validToken= Services.checkToken(id_company, token);
 				email=(String)body.get("email");
-				email_alert=(String)body.get("email_alert");
-				ragione_sociale=(String)body.get("ragione_sociale");
+				email_alert=(String)body.get("emailAlert");
+				ragione_sociale=(String)body.get("ragioneSociale");
 				
 				if(validToken.isValid())
 				{
@@ -534,19 +542,21 @@ public class MainController {
 						generalResponse.setMessageCode(0);
 						generalResponse.setToken(newToken);
 						elencoCompaniesRepository.save(company);
-						
+						System.out.println(Services.getCurrentDate()+" /editCompanyData SUCCESS "+ragione_sociale);
 						return ResponseEntity.ok(generalResponse);
 					}
 					else
 					{
 						generalResponse.setMessage("Company inesistente");
 						generalResponse.setMessageCode(-3);
+						System.out.println(Services.getCurrentDate()+" /editCompanyData FAILED "+ragione_sociale);
 						return ResponseEntity.badRequest().body(generalResponse);
 					}
 					
 				}
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
+				System.out.println(Services.getCurrentDate()+" /editCompanyData SUCCESS "+ragione_sociale);
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 			catch (Exception e)
@@ -559,6 +569,7 @@ public class MainController {
 		}
 		
 		@PostMapping(path="/clientLicenseList",produces=MediaType.APPLICATION_JSON_VALUE)
+		@CrossOrigin
 		public ResponseEntity<GeneralResponse> getClientLicenseList(@RequestBody Map<String,Object> body)
 		{
 			GeneralResponse generalResponse=new GeneralResponse();

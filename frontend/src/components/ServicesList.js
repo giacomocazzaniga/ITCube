@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import PopUp from "./PopUp";
 import { servicesList } from "../ActionCreator";
-import { url_lista_servizi } from "../REST";
+import { url_lista_servizi, url_lista_serviziFake } from "../REST";
 import axios from "axios";
 import { Accordion, Alert, Card } from "react-bootstrap";
 
@@ -38,7 +38,7 @@ const ServicesList = (props) => {
   const { addToast } = useToasts();
 
   const getServicesList = (selected, token) => {
-    axios.post(url_lista_servizi, {
+    axios.post(url_lista_serviziFake, {
       nome_client: selected
     })
     .then(function (response) {

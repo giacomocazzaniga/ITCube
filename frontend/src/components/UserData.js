@@ -2,15 +2,24 @@ import React, {useEffect} from 'react';
 import { connect } from 'react-redux';
 import { Col, Box } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Modal, useModal, ModalTransition } from 'react-simple-hook-modal';
 import PopUp from './PopUp';
 import { _editCompanyData } from '../callableRESTs';
 import { useToasts } from 'react-toast-notifications';
+import { updateCompanyData } from '../ActionCreator';
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => {
+  return{
+    UpdateCompanyData: (nome_company, email, emailNotify, token) => {
+      console.log([nome_company, email, emailNotify, token]);
+      dispatch(updateCompanyData(nome_company, email, emailNotify, token))
+    }
+  }
+}
 
 /**
  * connect the redux state to the component
@@ -29,23 +38,30 @@ const mapStateToProps = state => {
 }
 
 const UserData = (props) => {
-  const { addToast } = useToasts();
 
-  const clickService = () => {
-    return _editCompanyData(props.id_company, props.token, props.email, props.emailNotify, props.nome_company)
-    .then(function (response) {
-        alert(response.data.message);
-    })
-    .catch(function (error) {
-      addToast(error, {appearance: 'error',autoDismiss: true});
-    });
-  }
+  const { addToast } = useToasts();
 
   const [state, setState] = React.useState({
     emailLogin: "",
     emailLogin2: "",
     pswLogin: ""
   })
+
+  const clickService = () => {
+    let email = (state.emailLogin=="") ? props.email : state.emailLogin;
+    let emailAlert = (state.emailLogin2=="") ? props.emailNotify : state.emailLogin2;
+    let ragioneSociale = (state.pswLogin=="") ? props.nome_company : state.pswLogin;
+    return _editCompanyData(props.id_company, props.token, email, emailAlert, ragioneSociale)
+    .then(function (response) {
+        //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
+        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+        props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
+    })
+    .catch(function (error) {
+      console.log(error)
+      addToast(String(error), {appearance: 'error',autoDismiss: true});
+    });
+  }
 
   /**
    * handle email login and map it to local state emailLogin

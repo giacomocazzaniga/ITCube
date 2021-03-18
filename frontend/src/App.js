@@ -141,8 +141,8 @@ const App = (props) => {
     
       <ToastProvider>
         {props.logged==true 
-        ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.nome_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.nome_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
-            <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
+        ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
+            <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
             {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
           </AdminLTE>
         : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>

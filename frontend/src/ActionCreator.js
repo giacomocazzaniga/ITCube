@@ -9,6 +9,13 @@ export const login = (nome_company, id_company, email, emailNotify, client_list,
   client_list: client_list,
   token: token
 })
+export const updateCompanyData = (nome_company, email, emailNotify, token) => ({
+  type: types.UPDATECOMPANYDATA,
+  nome_company: nome_company,
+  email: email,
+  emailNotify: emailNotify,
+  token: token
+})
 export const signUp = (message, messageCode) => ({
   type: types.SIGNUP,
   message: message,
