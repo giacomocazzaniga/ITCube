@@ -110,3 +110,41 @@ export const fake_deepClient = {
   "servizi_problemi" : "2",
   "servizi_warnings" : "11"
 }
+
+export const fake_licenses = [
+  {
+    codice: "ATRJ-95SX-LQQ6-IRRV",
+    classe: 1,
+    tipologia: "Sistema operativo"
+  },
+  {
+    codice: "ZQCQ-B0EC-TW8N-YZFT",
+    classe: 1,
+    tipologia: "Sistema operativo"
+  },
+  {
+    codice: "SQVH-F0H2-ZDHH-3GLR",
+    classe: 2,
+    tipologia: "Backup"
+  },
+  {
+    codice: "LE1P-42KI-PY9L-1FZP",
+    classe: 3,
+    tipologia: "Antivirus"
+  },
+  {
+    codice: "TLCU-UMMR-83JL-YORW",
+    classe: 4,
+    tipologia: "Rete"
+  },
+  {
+    codice: "WIC3-9FST-SLDX-XUMA",
+    classe: 5,
+    tipologia: "Vulnerabilità"
+  },
+  {
+    codice: "VXLL-RPEA-5HMH-GEEQ",
+    classe: 3,
+    tipologia: "Antivirus"
+  }
+]

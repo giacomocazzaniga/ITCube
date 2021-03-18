@@ -420,12 +420,12 @@ public class MainController {
 			GeneralResponse generalResponse=new GeneralResponse();
 			LicenzeShallowResponse licenzeShallowResponse = new LicenzeShallowResponse();
 			ValidToken validToken=new ValidToken();
-			int id_company;
+			Integer id_company;
 			String token;
 			
 			try
 			{
-				id_company=Integer.parseInt((String)body.get("id_company"));
+				id_company=(Integer) (body.get("id_company"));
 				token=(String)body.get("token");
 				validToken= Services.checkToken(id_company, token);
 				
@@ -441,12 +441,13 @@ public class MainController {
 					licenzeShallowResponse.setMessage("Operazione effettuata con successo");
 					licenzeShallowResponse.setMessageCode(0);
 					licenzeShallowResponse.setToken(newToken);
-					
+					System.out.println(Services.getCurrentDate()+" /getLicenzeShallow SUCCESS "+id_company);
 					return ResponseEntity.ok(licenzeShallowResponse);
 					
 				}
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
+				System.out.println(Services.getCurrentDate()+" /getLicenzeShallow FAILED ");
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 			catch (Exception e)
@@ -454,6 +455,7 @@ public class MainController {
 				generalResponse.setMessage(e.getMessage());
 				generalResponse.setMessageCode(-1);
 				System.out.println(e.getMessage());
+				System.out.println(Services.getCurrentDate()+" /getLicenzeShallow FAILED ");
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 		}
@@ -464,12 +466,12 @@ public class MainController {
 			GeneralResponse generalResponse=new GeneralResponse();
 			LicenzeDeepResponse licenzeDeepResponse = new LicenzeDeepResponse();
 			ValidToken validToken=new ValidToken();
-			int id_company;
+			Integer id_company;
 			String token;
 			
 			try
 			{
-				id_company=Integer.parseInt((String)body.get("id_company"));
+				id_company=(Integer) (body.get("id_company"));
 				token=(String)body.get("token");
 				validToken= Services.checkToken(id_company, token);
 				
@@ -485,11 +487,12 @@ public class MainController {
 					licenzeDeepResponse.setMessage("Operazione effettuata con successo");
 					licenzeDeepResponse.setMessageCode(0);
 					licenzeDeepResponse.setToken(newToken);
-					
+					System.out.println(Services.getCurrentDate()+" /getLicenzeDeep SUCCESS "+id_company);
 					return ResponseEntity.ok(licenzeDeepResponse);
 				}
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
+				System.out.println(Services.getCurrentDate()+" /getLicenzeDeep FAILED ");
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 			catch (Exception e)
@@ -497,6 +500,7 @@ public class MainController {
 				generalResponse.setMessage(e.getMessage());
 				generalResponse.setMessageCode(-1);
 				System.out.println(e.getMessage());
+				System.out.println(Services.getCurrentDate()+" /getLicenzeDeep FAILED ");
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 			

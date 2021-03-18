@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Content, Row, Col, Box } from 'adminlte-2-react';
 import { ModalProvider } from 'react-simple-hook-modal';
@@ -8,6 +8,8 @@ import LicensesList from './LicensesList';
 import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {fake_licenses} from '../fakeData';
+import { _getLicenzeShallow } from '../callableRESTs';
 
 document.body.classList.add('fixed');
 
@@ -29,48 +31,12 @@ const mapStateToProps = state => {
     emailNotify: state.emailNotify,
     token: state.token,
     logged: state.logged,
+    id_company: state.id_company,
     clientOverview: {
       problems: 2,
       warnings: 2,
       running: 26
     },
-    licenses: [
-      {
-        codice: "ATRJ-95SX-LQQ6-IRRV",
-        classe: 1,
-        nome_tipologia: "Sistema operativo"
-      },
-      {
-        codice: "ZQCQ-B0EC-TW8N-YZFT",
-        classe: 1,
-        nome_tipologia: "Sistema operativo"
-      },
-      {
-        codice: "SQVH-F0H2-ZDHH-3GLR",
-        classe: 2,
-        nome_tipologia: "Backup"
-      },
-      {
-        codice: "LE1P-42KI-PY9L-1FZP",
-        classe: 3,
-        nome_tipologia: "Antivirus"
-      },
-      {
-        codice: "TLCU-UMMR-83JL-YORW",
-        classe: 4,
-        nome_tipologia: "Rete"
-      },
-      {
-        codice: "WIC3-9FST-SLDX-XUMA",
-        classe: 5,
-        nome_tipologia: "Vulnerabilità"
-      },
-      {
-        codice: "VXLL-RPEA-5HMH-GEEQ",
-        classe: 3,
-        nome_tipologia: "Antivirus"
-      }
-    ],
     apex: {
       lastUpdate: "12 Feb 18:00",
       options: {
@@ -114,6 +80,20 @@ const mapStateToProps = state => {
 }
 
 const DashboardHome = (props) => {
+  const [state, setState] = React.useState({
+    licenses: []
+  })
+  useEffect(() => {
+    console.log(props.id_company, props.token);
+    _getLicenzeShallow(props.id_company, props.token)
+    .then(function (response) {
+      setState(() => {
+        return { licenses: response.data.licenzeShallow };  
+      });
+    })
+    .catch(function (error) {})
+  }, [])
+
   return (<Content title={props.title} browserTitle={props.title}>
     <Row>
       <ModalProvider>
@@ -127,7 +107,7 @@ const DashboardHome = (props) => {
           </Col>
         
         <Col xs={12} md={6}>
-          <LicensesList title="Gestione delle licenze" list={props.licenses}/>
+          <LicensesList title="Gestione delle licenze" list={state.licenses}/>
         </Col>
         <Col md={6} xs={12}>
           <History apex={props.apex}/>

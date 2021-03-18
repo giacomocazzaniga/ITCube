@@ -41,6 +41,42 @@ const mapStateToProps = state => {
 }
 
 const LicensesList = (props) => {
+  const clickService = () => {
+    alert("click");
+    /*return _service()
+    .then(function (response) {
+        //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
+    })
+    .catch(function (error) {
+      addToast(String(error), {appearance: 'error',autoDismiss: true});
+    });*/
+  }
+
+  const getChilds = (list) => {
+    let childList = [];
+    childList = [
+    <>
+      <Col xs={8} md={6}><strong><h4>CODICE LICENZA</h4></strong></Col>
+      <Col xs={4} md={6}><strong><h4>CATEGORIA</h4></strong></Col>
+      {props.list.map((license) => {
+        return <>
+            <Col xs={8} md={6}>{license.codice}</Col>
+            <Col xs={4} md={6}>{license.tipologia}</Col>
+            </>
+        })
+      }
+      <Col xs={12} md={12}><p></p></Col>
+      <Col xs={8} md={6}>
+        <button class="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
+      </Col>
+      <Col xs={4} md={6}>
+        <div>DROPDOWN</div>
+      </Col>
+    </>
+    ]
+    return childList;
+  }
+
   const onSelect = (selectedList, selectedItem) => {
     props.AddLicense(selectedList);
   }
@@ -50,7 +86,7 @@ const LicensesList = (props) => {
   }
 
   return (
-    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={[]} action={()=>(console.log("action"))}/></span>}>
+    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds(props.list)} action={()=>(console.log("action"))}/></span>}>
       <Multiselect
         placeholder="Filtra per tipologia"
         emptyRecordMsg="Nessun filtro disponibile"
@@ -64,11 +100,11 @@ const LicensesList = (props) => {
       />
       <br />
       {props.list.map((license) => {
-        return (JSON.stringify(props.licensesList).includes(license.nome_tipologia)) 
+        return (JSON.stringify(props.licensesList).toUpperCase().includes(license.tipologia.toUpperCase())) 
         ? <>
-            {console.log(JSON.stringify(props.selectedValue)+" "+license.nome_tipologia+" "+license.codice)}
+            {console.log(JSON.stringify(props.selectedValue)+" "+license.tipologia+" "+license.codice)}
             <Col xs={8} md={6}>{license.codice}</Col>
-            <Col xs={4} md={6}>{license.nome_tipologia}</Col>
+            <Col xs={4} md={6}>{license.tipologia}</Col>
           </>
         : <></>
       })

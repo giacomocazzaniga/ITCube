@@ -10,6 +10,8 @@ export const url_lista_tipo_dispositivi = buildurl+"listatipodispositivi";
 export const url_lista_licenze = buildurl+"listalicenze";
 export const url_deep_client = buildurl+"deepClient";
 export const url_edit_company_data = buildurl+"editCompanyData";
+export const url_deep_licenze = buildurl+"getLicenzeDeep";
+export const url_shallow_licenze = buildurl+"getLicenzeShallow";
 
 
 const portFake = "3001"; 

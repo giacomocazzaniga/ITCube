@@ -1,4 +1,4 @@
-const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data } = require('./REST');
+const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -31,6 +31,13 @@ export const _getClientTypes = (user, token) => {
   return axios.post(url_lista_gruppiFake, {
     token: token,
     ragione_sociale: user
+  })
+}
+
+export const _getLicenzeShallow = (id, token) => {
+  return axios.post(url_shallow_licenze, {
+    token: token,
+    id_company: id
   })
 }
 
