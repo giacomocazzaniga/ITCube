@@ -7,7 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
-import itcube.consulting.monitoraggioClient.entities.database.OperationsPerClient;
 
 public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanies,Integer>{
 	@Query(value="Select email, ragione_sociale from elenco_companies where email= :email or ragione_sociale= :ragione_sociale", nativeQuery=true)
