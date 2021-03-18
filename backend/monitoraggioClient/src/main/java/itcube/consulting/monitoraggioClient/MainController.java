@@ -68,6 +68,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniReposit
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.GetClientTypesResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ResponseOperationsPerClient;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
@@ -618,8 +619,8 @@ public class MainController {
 				}
 				else
 				{
-					generalResponse.setMessage("Company inesistente");
-					generalResponse.setMessageCode(-3);
+					generalResponse.setMessage("Autenticazione fallita ");
+					generalResponse.setMessageCode(-2);
 					return ResponseEntity.badRequest().body(generalResponse);
 				}
 			}
@@ -631,5 +632,75 @@ public class MainController {
 				return ResponseEntity.badRequest().body(generalResponse);
 			}
 		}
+		
+		
+		@PostMapping(path="/getClientTypes",produces=MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<GeneralResponse> getClientTypes(@RequestBody Map<String,Object> body)
+		{
+			GeneralResponse generalResponse=new GeneralResponse();
+			ValidToken validToken=new ValidToken();
+			int id_company;
+			String token;
+			HashMap<String, Integer> map=new HashMap<String, Integer>();
+			List<ElencoClients> elencoClients=new ArrayList();
+			ElencoCompanies company;
+			String nome;
+			int num;
+			GetClientTypesResponse response=new GetClientTypesResponse();
+			
+			try 
+			{
+				id_company=Integer.parseInt((String)body.get("id_company"));
+				token=(String)body.get("token");
+				validToken= Services.checkToken(id_company, token);
+				
+				if(validToken.isValid())
+				{
+					company=elencoCompaniesRepository.getInfoCompany(id_company);
+					elencoClients=elencoClientsRepository.getElencoClients(company);
+					map.put("Client", 0);
+					map.put("Server", 0);
+					for(ElencoClients client:elencoClients)
+					{
+						nome=client.getTipologiaClient().getNome_tipologia();
+						num=map.get(nome)+1;
+						map.put(nome, num);
+					}
+					
+					String newToken=Services.checkThreshold(id_company, token);
+					
+					System.out.println(map.get("Client"));
+					System.out.println(map.get("Server"));
+
+					response.setCategories(map);
+					response.setMessage("Operazione avvenuta con successo");
+					response.setMessageCode(0);
+					response.setToken(newToken);
+					return ResponseEntity.ok(response);
+				}
+				else
+				{
+					generalResponse.setMessage("Autenticazione fallita ");
+					generalResponse.setMessageCode(-2);
+					return ResponseEntity.badRequest().body(generalResponse);
+				}
+			}
+			catch (Exception e)
+			{
+				generalResponse.setMessage(e.getMessage());
+				generalResponse.setMessageCode(-1);
+				System.out.println(e.getMessage());
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 }
