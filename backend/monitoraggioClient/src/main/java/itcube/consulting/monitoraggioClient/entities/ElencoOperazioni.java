@@ -37,6 +37,8 @@ public class ElencoOperazioni {
 	@ManyToMany(mappedBy = "elencoOperazioni", fetch = FetchType.LAZY)
 	private List<TipologieLicenze> elencoTipologieLicenze;
 	
+	private boolean stato;
+	
 	//private String id_tipologia_licenze;
 	
 	public ElencoOperazioni() {
@@ -81,6 +83,14 @@ public class ElencoOperazioni {
 
 	public void setElencoTipologieLicenze(List<TipologieLicenze> elencoTipologieLicenze) {
 		this.elencoTipologieLicenze = elencoTipologieLicenze;
+	}
+
+	public boolean isStato() {
+		return stato;
+	}
+
+	public void setStato(boolean stato) {
+		this.stato = stato;
 	}
 	
 	/*public TipologieLicenze getTipologieLicenze() {
