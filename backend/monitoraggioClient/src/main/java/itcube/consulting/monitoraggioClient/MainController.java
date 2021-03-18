@@ -722,9 +722,10 @@ public class MainController {
 				{
 					newClient.setElencoLicenze(new ArrayList<ElencoLicenze>());
 					newClient.getElencoLicenze().add(licenza);
-					newClient.setElencoCompanies(licenza.getElencoCompanies());
 					licenza.getElencoClients().add(newClient);
+					elencoLicenzeRepository.save(licenza);
 					
+					newClient.setElencoCompanies(licenza.getElencoCompanies());
 					//problema
 					elencoClientsRepository.save(newClient);
 					

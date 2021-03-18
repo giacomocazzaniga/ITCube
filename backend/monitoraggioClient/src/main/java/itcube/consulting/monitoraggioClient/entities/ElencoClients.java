@@ -163,4 +163,8 @@ public class ElencoClients {
 		return false;
 	}
 	
+	public void addLicenza(ElencoLicenze licenza) {
+        this.elencoLicenze.add(licenza);
+    }
+	
 }
