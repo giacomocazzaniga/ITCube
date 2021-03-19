@@ -77,6 +77,7 @@ import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
+import itcube.consulting.monitoraggioClient.response.CompraLicenzaResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -220,9 +221,7 @@ public class LicenzeController {
 		
 		try 
 		{
-			System.out.println("prova1");
 			id_company= Integer.parseInt((String)(body.get("id_company")));
-			System.out.println("prova2");
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -238,6 +237,72 @@ public class LicenzeController {
 				response.setMessage("Operazione effettuata con successo");
 				response.setMessageCode(0);
 				response.setToken(newToken);
+				return ResponseEntity.ok(response);
+			}
+			else
+			{
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
+		catch (Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/compraLicenza",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> compraLicenza (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		Integer classe_licenza;
+		ElencoCompanies company=new ElencoCompanies();
+		String codice;
+		ElencoLicenze licenza=new ElencoLicenze();
+		TipologieLicenze tipo=new TipologieLicenze();
+		CompraLicenzaResponse response=new CompraLicenzaResponse();
+		
+		try
+		{
+			id_company= Integer.parseInt((String)(body.get("id_company")));
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			classe_licenza= Integer.parseInt((String)(body.get("classe_licenza")));
+			
+			if(validToken.isValid())
+			{	
+				company=elencoCompaniesRepository.getInfoCompany(id_company);
+				
+				do
+				{
+					codice=Services.getLicenseCode();
+				}while(elencoLicenzeRepository.countCodes(codice)!=0);
+				
+				licenza.setCodice(codice);
+				licenza.setElencoCompanies(company);
+				licenza.setScadenza(Services.getScadenza());
+				
+				tipo=tipologieLicenzeRepository.getLicenza(classe_licenza.toString());
+				
+				licenza.setTipologieLicenze(tipo);
+				
+				elencoLicenzeRepository.save(licenza);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setCodice(codice);
+				response.setMessage("Licenza comprata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
 				return ResponseEntity.ok(response);
 			}
 			else

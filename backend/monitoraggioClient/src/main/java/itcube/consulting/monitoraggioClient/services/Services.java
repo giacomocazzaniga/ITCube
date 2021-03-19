@@ -19,7 +19,7 @@ import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 public final class Services {
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
-	private static int milliSecLenghtToken=30000000;
+	private static int milliSecLenghtToken=10000000;
 	private static double threshold=0.1*milliSecLenghtToken;
 
 	//Metodo token
@@ -151,5 +151,10 @@ public final class Services {
 		SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date =  new Date(System.currentTimeMillis());
 		return formatter.format(date);
+	}
+	
+	public static Date getScadenza()
+	{
+		return new Date(System.currentTimeMillis()+500000);
 	}
 }

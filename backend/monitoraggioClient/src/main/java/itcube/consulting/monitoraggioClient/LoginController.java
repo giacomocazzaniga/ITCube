@@ -151,7 +151,7 @@ public class LoginController {
 				
 				elencoCompaniesRepository.save(company);
 				
-				//salva la licenza --> FIX
+				//salva la licenza
 				do
 				{
 					codice=Services.getLicenseCode();
@@ -162,7 +162,7 @@ public class LoginController {
 				elencoLicenze.setElencoClients(null);
 				elencoLicenze.setTipologieLicenze(tipologieLicenzeRepository.getLicenza("1"));
 				elencoLicenze.setElencoCompanies(company);
-				elencoLicenze.setScadenza(new Date(System.currentTimeMillis()+500000));
+				elencoLicenze.setScadenza(Services.getScadenza());
 				
 				elencoLicenzeRepository.save(elencoLicenze);
 				
