@@ -172,3 +172,11 @@ code {
   height: auto !important;
   min-height: 265px !important;
 }
+
+.evenColor {
+  background-color: #eee;
+}
+
+.oddColor {
+  background-color: #fff;
+}

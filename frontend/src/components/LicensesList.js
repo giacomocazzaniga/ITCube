@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Multiselect } from 'multiselect-react-dropdown';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 import { addLicense, removeLicense } from '../ActionCreator';
 import PopUp from './PopUp';
 import { _LICENZE } from '../Constants';
@@ -40,9 +42,30 @@ const mapStateToProps = state => {
   }
 }
 
+const isOdd = (num) => { return ((num % 2)==1) ? true : false }
+
 const LicensesList = (props) => {
+
+  useEffect( () => {
+    //get list of licenses types
+
+    /*return _service()
+    .then(function (response) {
+        //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
+    })
+    .catch(function (error) {
+      addToast(String(error), {appearance: 'error',autoDismiss: true});
+    });*/
+  }, []);
+
+  const [state, setState] = React.useState({
+    selectedValue: 0
+  })
+
   const clickService = () => {
-    alert("click");
+    console(state.selectedValue);
+    //buy new license
+
     /*return _service()
     .then(function (response) {
         //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
@@ -52,25 +75,41 @@ const LicensesList = (props) => {
     });*/
   }
 
+  const _onSelect = (e) => {
+    setState(() => {
+      return {selectedValue: e.value };  
+    });
+  }
+
   const getChilds = (list) => {
     let childList = [];
+    let options = [
+      { value: '1', label: 'SISTEMA OPERATIVO' },
+      { value: '2', label: 'BACKUP' },
+      { value: '3', label: 'ANTIVIRUS' },
+      { value: '4', label: 'RETE' },
+      { value: '5', label: 'VUNERABILITÀ' },
+    ];
+    let defaultOption = options[0];
     childList = [
     <>
       <Col xs={8} md={6}><strong><h4>CODICE LICENZA</h4></strong></Col>
       <Col xs={4} md={6}><strong><h4>CATEGORIA</h4></strong></Col>
-      {props.list.map((license) => {
-        return <>
-            <Col xs={8} md={6}>{license.codice}</Col>
-            <Col xs={4} md={6}>{license.tipologia}</Col>
-            </>
-        })
+      {props.list.map((license, i) => {
+        return (isOdd(i)) 
+        ? <><Col xs={8} md={6} class="oddColor col-md-6 col-xs-8">{license.codice}</Col><Col class="oddColor col-md-6 col-xs-4" xs={4} md={6}>{license.tipologia}</Col></>
+        : <><Col xs={8} md={6} class="evenColor col-md-6 col-xs-8">{license.codice}</Col><Col class="evenColor col-md-6 col-xs-4" xs={4} md={6}>{license.tipologia}</Col></>
+      })
       }
       <Col xs={12} md={12}><p></p></Col>
       <Col xs={8} md={6}>
-        <button class="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
+        {state.selectedValue==0
+          ? <button class="btn btn-primary" onClick={() => clickService()} disabled>Acquista licenza</button>
+          : <button class="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
+        }
       </Col>
       <Col xs={4} md={6}>
-        <div>DROPDOWN</div>
+        <Dropdown options={options} onChange={_onSelect} placeholder="Seleziona una tipologia" />
       </Col>
     </>
     ]
