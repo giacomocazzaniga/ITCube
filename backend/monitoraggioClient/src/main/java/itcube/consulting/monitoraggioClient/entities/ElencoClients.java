@@ -157,9 +157,12 @@ public class ElencoClients {
 		this.sede = sede;
 	}
 	
-	public Boolean hasLicenza (TipologieLicenze licenza) {
-		if (this.getElencoLicenze().contains(licenza)) 
-			return true;
+	public boolean hasLicenza (TipologieLicenze licenza) {
+		for(ElencoLicenze i: this.getElencoLicenze())
+		{
+			if(i.getTipologieLicenze().getClasse()==licenza.getClasse())
+				return true;
+		}
 		return false;
 	}
 	

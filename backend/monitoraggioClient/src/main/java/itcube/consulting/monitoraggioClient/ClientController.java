@@ -241,6 +241,7 @@ public class ClientController {
 			
 			if(validToken.isValid())
 			{
+				
 				company=elencoCompaniesRepository.getInfoCompany(id_company);
 				elencoClients=elencoClientsRepository.getElencoClients(company);
 				tipologieLicenze = tipologieLicenzeRepository.getLicenze();
@@ -370,26 +371,31 @@ public class ClientController {
 				System.out.println(licenza.getId());
 				System.out.println(licenza.getElencoClients().size());
 
-				newClient.setElencoLicenze(new ArrayList<ElencoLicenze>());
+				el.add(licenza);
+				
+				//newClient.setElencoLicenze(new ArrayList<ElencoLicenze>());
 				
 				//newClient.getElencoLicenze().add(licenza);
 				
-				licenza.getElencoClients().add(newClient);
-				
-				elencoLicenzeRepository.save(licenza);
-				
 				newClient.setElencoCompanies(licenza.getElencoCompanies());
+				newClient.setElencoLicenze(el);
 				
 				//problema
-				//el.add(licenza);
-				//newClient.setElencoLicenze(el);
 				
+				System.out.println("Stampa prima del save:");
 				for(ElencoLicenze i: newClient.getElencoLicenze())
 				{
 					System.out.println(i.getId());
 					System.out.println(i.getCodice());
 				}
 				elencoClientsRepository.save(newClient);
+				
+				System.out.println("Stampa dopo il save:");
+				for(ElencoLicenze i: elencoClientsRepository.getDeepClient(newClient.getId()).getElencoLicenze())
+				{
+					System.out.println(i.getId());
+					System.out.println(i.getCodice());
+				}
 				
 				generalResponse.setMessage("Client registrato con successo");
 				generalResponse.setMessageCode(0);

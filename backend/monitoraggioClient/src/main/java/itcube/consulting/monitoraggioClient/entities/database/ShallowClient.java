@@ -11,7 +11,7 @@ public class ShallowClient {
 	private String nome_client;
 	private String tipo_client;
 	private String sede;
-	private List<String> classe_licenza;
+	private List<Integer> classe_licenza;
 	
 	public Integer getId_client() {
 		return id_client;
@@ -37,22 +37,22 @@ public class ShallowClient {
 	public void setSede(String sede) {
 		this.sede = sede;
 	}
-	public List<String> getClasse_licenza() {
+	public List<Integer> getClasse_licenza() {
 		return classe_licenza;
 	}
-	public void setClasse_licenza(List<String> classe_licenza) {
+	public void setClasse_licenza(List<Integer> classe_licenza) {
 		this.classe_licenza = classe_licenza;
 	}
 	
 	//Converte da una lista ElencoClients a ShallowClients
 	public static List<ShallowClient> getShallowClients (List<ElencoClients> elencoClients) {
 		List<ShallowClient> shallowClients = new ArrayList<>();
-		List<String> classiLicenze = new ArrayList<>();
 		
 		for (int i = 0; i < elencoClients.size(); i++) {
-						
+			
+			List<Integer> classiLicenze = new ArrayList<>();	
 			for (int j = 0; j < elencoClients.get(i).getElencoLicenze().size(); j++)
-				classiLicenze.add(elencoClients.get(i).getElencoLicenze().get(j).getTipologieLicenze().getNome_tipologia());
+				classiLicenze.add(elencoClients.get(i).getElencoLicenze().get(j).getTipologieLicenze().getClasse());
 			
 			shallowClients.add(new ShallowClient(
 					elencoClients.get(i).getId(),
@@ -66,7 +66,7 @@ public class ShallowClient {
 		return shallowClients;
 	}
 	
-	public ShallowClient (Integer id_client, String nome_client, String tipo_client, String sede, List<String> classe_licenza) {
+	public ShallowClient (Integer id_client, String nome_client, String tipo_client, String sede, List<Integer> classe_licenza) {
 		this.id_client = id_client;
 		this.nome_client = nome_client;
 		this.tipo_client = tipo_client;
