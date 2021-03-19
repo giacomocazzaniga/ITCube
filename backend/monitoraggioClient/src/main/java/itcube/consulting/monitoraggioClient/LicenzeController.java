@@ -71,6 +71,7 @@ import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.GetClientTypesResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
+import itcube.consulting.monitoraggioClient.response.TipiLicenzeResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
@@ -124,7 +125,7 @@ public class LicenzeController {
 		
 		try
 		{
-			id_company=(Integer) (body.get("id_company"));
+			id_company= Integer.parseInt((String)(body.get("id_company")));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -170,7 +171,7 @@ public class LicenzeController {
 		
 		try
 		{
-			id_company=(Integer) (body.get("id_company"));
+			id_company= Integer.parseInt((String)(body.get("id_company")));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -203,5 +204,55 @@ public class LicenzeController {
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
 		
+	}
+	
+	@PostMapping(path="/getTipiLicenze",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getTipiLicenze (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		TipiLicenzeResponse response=new TipiLicenzeResponse();
+		List<TipologieLicenze> tl=new ArrayList();
+		HashMap<Integer,String> map = new HashMap<Integer, String> ();
+		
+		try 
+		{
+			System.out.println("prova1");
+			id_company= Integer.parseInt((String)(body.get("id_company")));
+			System.out.println("prova2");
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{				
+				tl=tipologieLicenzeRepository.getLicenze();
+				for(TipologieLicenze t: tl)
+				{
+					map.put((Integer)t.getClasse(), t.getNome_tipologia());
+				}
+				String newToken=Services.checkThreshold(id_company, token);
+				response.setTipi(map);
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				return ResponseEntity.ok(response);
+			}
+			else
+			{
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
+			}
+		}
+		catch (Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
 	}
 }

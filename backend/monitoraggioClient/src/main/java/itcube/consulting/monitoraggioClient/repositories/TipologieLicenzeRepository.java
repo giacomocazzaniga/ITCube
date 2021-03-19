@@ -14,5 +14,4 @@ public interface TipologieLicenzeRepository extends CrudRepository<TipologieLice
 	
 	@Query(value="Select * from tipologie_licenze", nativeQuery=true)
 	List<TipologieLicenze> getLicenze();
-	
 }

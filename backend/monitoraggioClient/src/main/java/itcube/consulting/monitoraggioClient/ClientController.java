@@ -349,6 +349,7 @@ public class ClientController {
 		List<ElencoLicenze> el=new ArrayList();
 		try
 		{
+			//token agent
 			String mac_address=(String)body.get("mac_address");
 			String nome=(String)body.get("nome");
 			String licenza_in_uso=(String)body.get("licenza_in_uso");
@@ -365,13 +366,29 @@ public class ClientController {
 
 			if(licenza!=null)
 			{
+				System.out.println(licenza.getCodice());
+				System.out.println(licenza.getId());
+				System.out.println(licenza.getElencoClients().size());
+
 				newClient.setElencoLicenze(new ArrayList<ElencoLicenze>());
-				newClient.getElencoLicenze().add(licenza);
+				
+				//newClient.getElencoLicenze().add(licenza);
+				
 				licenza.getElencoClients().add(newClient);
+				
 				elencoLicenzeRepository.save(licenza);
 				
 				newClient.setElencoCompanies(licenza.getElencoCompanies());
+				
 				//problema
+				//el.add(licenza);
+				//newClient.setElencoLicenze(el);
+				
+				for(ElencoLicenze i: newClient.getElencoLicenze())
+				{
+					System.out.println(i.getId());
+					System.out.println(i.getCodice());
+				}
 				elencoClientsRepository.save(newClient);
 				
 				generalResponse.setMessage("Client registrato con successo");
