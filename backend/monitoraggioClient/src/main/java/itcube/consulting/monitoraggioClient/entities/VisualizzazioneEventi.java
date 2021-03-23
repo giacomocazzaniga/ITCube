@@ -22,7 +22,7 @@ public class VisualizzazioneEventi {
 	private MacroCategorieEventi macroCategorieEventi;
 	//private int macro_categoria;
 	
-	private String sottocategoria;
+	private int sottocategoria;
 	private int level;
 	private Date date_and_time;
 	private String source;
@@ -60,9 +60,7 @@ public class VisualizzazioneEventi {
 	public void setMacro_categoria(int macro_categoria) {
 		this.macro_categoria = macro_categoria;
 	}*/
-	public String getSottocategoria() {
-		return sottocategoria;
-	}
+	
 	public MacroCategorieEventi getMacroCategorieEventi() {
 		return macroCategorieEventi;
 	}
@@ -70,10 +68,15 @@ public class VisualizzazioneEventi {
 	public void setMacroCategorieEventi(MacroCategorieEventi macroCategorieEventi) {
 		this.macroCategorieEventi = macroCategorieEventi;
 	}
+	
+	public int getSottocategoria() {
+		return sottocategoria;
+	}
 
-	public void setSottocategoria(String sottocategoria) {
+	public void setSottocategoria(int sottocategoria) {
 		this.sottocategoria = sottocategoria;
 	}
+	
 	public int getLevel() {
 		return level;
 	}

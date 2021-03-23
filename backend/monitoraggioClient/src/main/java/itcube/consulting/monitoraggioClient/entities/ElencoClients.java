@@ -34,6 +34,9 @@ public class ElencoClients {
 	@OneToOne(mappedBy = "elencoClients")
 	private VisualizzazioneEventi visualizzazioneEventi;
 	
+	@OneToOne(mappedBy = "elencoClients")
+	private Monitoraggio monitoraggio;
+	
 	private String nome;
 	
 	@ManyToOne
@@ -157,6 +160,14 @@ public class ElencoClients {
 		this.sede = sede;
 	}
 	
+	public Monitoraggio getMonitoraggio() {
+		return monitoraggio;
+	}
+
+	public void setMonitoraggio(Monitoraggio monitoraggio) {
+		this.monitoraggio = monitoraggio;
+	}
+
 	public boolean hasLicenza (TipologieLicenze licenza) {
 		for(ElencoLicenze i: this.getElencoLicenze())
 		{
