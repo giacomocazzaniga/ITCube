@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ public class ConfWindowsServices {
 	private boolean esecuzione;
 	private boolean notifica;
 	private int tipo_alert;
+	private Date date_and_time;
 	
 	@OneToOne
 	@JoinColumn(name = "id_client")
@@ -84,5 +86,20 @@ public class ConfWindowsServices {
 	public void setId_client(int id_client) {
 		this.id_client = id_client;
 	}*/
-	
+
+	public int getTipo_alert() {
+		return tipo_alert;
+	}
+
+	public void setTipo_alert(int tipo_alert) {
+		this.tipo_alert = tipo_alert;
+	}
+
+	public Date getDate_and_time() {
+		return date_and_time;
+	}
+
+	public void setDate_and_time(Date date_and_time) {
+		this.date_and_time = date_and_time;
+	}
 }

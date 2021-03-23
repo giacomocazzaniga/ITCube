@@ -129,7 +129,7 @@ public class CompanyController {
 		try
 		{
 
-			id_company= (Integer) body.get("id_company");
+			id_company= (Integer)body.get("id_company");
 			System.out.println(id_company);
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);

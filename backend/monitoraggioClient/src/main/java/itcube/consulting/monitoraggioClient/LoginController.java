@@ -249,7 +249,7 @@ public class LoginController {
 	public String helloWorld(@RequestBody Map<String,Object> body) {
 		if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
 		{
-			String newToken=Services.checkThreshold(Integer.parseInt((String)body.get("id_company")),(String)body.get("token"));
+			String newToken=Services.checkThreshold((Integer)body.get("id_company"),(String)body.get("token"));
 			if(newToken==null)
 			{		
 				return "Autenticato ("+body.get("token")+")";
