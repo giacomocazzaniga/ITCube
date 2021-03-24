@@ -24,7 +24,27 @@ const PopUp = (props) => {
     return () => {
       openModal();
       props.action();
-      setTimeout(function(){ document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px"; }, 100);
+      setTimeout(function(){ 
+        try {
+          document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px";
+        } catch (error) {
+          console.error(error);
+        }
+      }, 100);
+      window.onscroll = function (e) {
+        var vertical_position = 0;
+        if (window.pageYOffset)//usual
+          vertical_position = window.pageYOffset;
+        else if (document.documentElement.clientHeight)//ie
+          vertical_position = document.documentElement.scrollTop;
+        else if (document.body)//ie quirks
+          vertical_position = document.body.scrollTop;
+        try {
+          document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px";
+        } catch (error) {
+          console.error(error);
+        }
+      }      
     };
   }
   return (

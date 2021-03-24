@@ -9,8 +9,10 @@ import ServicesList from './ServicesList';
 import ClientInfo from './ClientInfo';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getDeepClient } from "../callableRESTs";
+import { _getDeepClient, _getServiziOverview } from "../callableRESTs";
 import { useToasts } from "react-toast-notifications";
+import WindowsServices from "./WindowsServices";
+import WindowsEvents from "./WindowsEvents";
 
 document.body.classList.add('fixed');
 
@@ -49,12 +51,6 @@ const mapStateToProps = state => {
         lastUpdate: "12 Feb 18:01"
       },
     ],
-    servicesOverview: {
-      active: 83,
-      running: 44,
-      problems: 2,
-      warnings: 11
-    },
     apex: {
       lastUpdate: "12 Feb 18:00",
       options: {
@@ -99,7 +95,11 @@ const mapStateToProps = state => {
 
 const Dashboard = (props) => {
   const [state, setState] = React.useState({
-    clientData: null
+    clientData: null,
+    servizi_attivi: 0,
+    servizi_esecuzione: 0,
+    servizi_problemi: 0,
+    servizi_warnings: 0
   })
 
   const { addToast } = useToasts();
@@ -108,9 +108,23 @@ const Dashboard = (props) => {
     //on component mount
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
-      console.log(response.data);
-      setState(() => {
-        return { clientData: response.data };
+      setState((previousState) => {
+        return { ...previousState, clientData: response.data };
+      });
+      _getServiziOverview(props.token, props.id_client)
+      .then(function (response) {
+        console.log(response.data)
+        setState((previousState) => {
+          return { ...previousState, 
+            servizi_attivi: response.data.attivi,
+            servizi_warnings: response.data.warning,
+            servizi_problemi: response.data.problemi,
+            servizi_esecuzione: response.data.esecuzione
+          };
+        });
+      })
+      .catch(function (error) {
+        addToast("Errore durante il caricamento di servizi", {appearance: 'error',autoDismiss: true});
       });
     })
     .catch(function (error) {
@@ -140,7 +154,13 @@ const Dashboard = (props) => {
           </Col>
         )}
         <Col md={4} xs={6}>
-          <ServicesList selected={props.title} services={[state.clientData.servizi_attivi, state.clientData.servizi_esecuzione, state.clientData.servizi_problemi, state.clientData.servizi_warnings]}/>
+          <ServicesList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
+        </Col>
+        <Col md={4} xs={6}>
+          <WindowsServices selected={props.title} id_client={props.id_client} services={[state.servizi_attivi, state.servizi_esecuzione, state.servizi_problemi, state.servizi_warnings]}/>
+        </Col>
+        <Col md={4} xs={6}>
+          <WindowsEvents selected={props.title} id_client={props.id_client} services={[state.clientData.servizi_attivi, state.clientData.servizi_esecuzione, state.clientData.servizi_problemi, state.clientData.servizi_warnings]}/>
         </Col>
         {/*<Col md={3} xs={6}>
           <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>

@@ -108,7 +108,11 @@ export const fake_deepClient = {
   "servizi_attivi" : "83",
   "servizi_esecuzione" : "44",
   "servizi_problemi" : "2",
-  "servizi_warnings" : "11"
+  "servizi_warnings" : "11",
+  "op_attive" : "83",
+  "op_esecuzione" : "44",
+  "op_problemi" : "2",
+  "op_warnings" : "11"
 }
 
 export const fake_licenses = [
