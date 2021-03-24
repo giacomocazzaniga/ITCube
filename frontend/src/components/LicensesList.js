@@ -63,7 +63,7 @@ const LicensesList = (props) => {
   })
 
   const clickService = () => {
-    console(state.selectedValue);
+    console.log(state.selectedValue);
     //buy new license
 
     /*return _service()

@@ -18,7 +18,7 @@ const mapStateToProps = state => ({});
 
 const Drive = (props) => {
   return (
-    <Box collapsed title={"Drive "+props.driveLabel+": "+parseInt(100-props.occupiedSpace)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+props.lastUpdate}>
+    <Box title={"Drive "+props.driveLabel+": "+parseInt(100-props.occupiedSpace)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+props.lastUpdate}>
       <Col md={4} xs={12}>
         {parseInt(props.occupiedSpace) >= 90 
         ?<Knob value={props.occupiedSpace} fgColor="#dd4b39" height="97" width="97"/>

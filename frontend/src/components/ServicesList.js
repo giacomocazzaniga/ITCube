@@ -105,10 +105,10 @@ const ServicesList = (props) => {
   return (
     <Box title="Lista delle operazioni" type="primary" collapsable footer={<PopUp title="Gestione delle operazioni" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList(props.selected, props.token)}/>}>
       <Col md={12} xs={12}>
-        <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Operazioni attive: {props.services[0]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Operazioni in esecuzione: {props.services[1]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Operazioni con problemi: {props.services[2]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Operazioni con warnings: {props.services[3]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Operazioni attive: {props.ops[0]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Operazioni in esecuzione: {props.ops[1]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Operazioni con problemi: {props.ops[2]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Operazioni con warnings: {props.ops[3]}</h4>
       </Col>
     </Box>
   );

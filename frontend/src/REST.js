@@ -12,6 +12,10 @@ export const url_deep_client = buildurl+"deepClient";
 export const url_edit_company_data = buildurl+"editCompanyData";
 export const url_deep_licenze = buildurl+"getLicenzeDeep";
 export const url_shallow_licenze = buildurl+"getLicenzeShallow";
+export const url_get_servizi_monitorati = buildurl+"getServiziMonitorati";
+export const url_get_servizi_all = buildurl+"getServiziAll";
+export const url_modifica_monitoraggio_servizio = buildurl+"modificaMonitoraggioServizio";
+export const url_get_servizi_overview = buildurl+"getServiziOverview";
 
 
 const portFake = "3001"; 
@@ -26,3 +30,6 @@ export const url_lista_tipo_dispositiviFake = buildurlFake+"listatipodispositivi
 export const url_lista_licenzeFake = buildurlFake+"listalicenze";
 export const url_deep_clientFake = buildurlFake+"deepClient";
 export const url_edit_company_dataFake = buildurlFake+"editCompanyData";
+export const url_get_servizi_monitoratiFake = buildurlFake+"getServiziMonitorati";
+export const url_get_servizi_allFake = buildurlFake+"getServiziAll";
+export const url_get_servizi_overviewFake = buildurlFake+"getServiziOverview";

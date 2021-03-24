@@ -141,6 +141,10 @@ app.post('/deepClient', function (req, res) {
     "servizi_esecuzione" : "44",
     "servizi_problemi" : "2",
     "servizi_warnings" : "11",
+    "op_attive" : "83",
+    "op_esecuzione" : "44",
+    "op_problemi" : "2",
+    "op_warnings" : "11",
     "token" : "",
     "message": "",
     "messageCode": "0"
@@ -176,12 +180,158 @@ app.post('/listaservizi', function (req, res) {
   res.send(result);
 });
 
+app.post('/getServiziOverview', function (req, res) {
+  result = {
+    "token" : "",
+    "message": "",
+    "messageCode": "0",
+    "attivi": "10",
+    "problemi": "10",
+    "esecuzione": "10",
+    "warning": "10"
+  };
+  console.log("/getServiziOverview");
+  res.send(result);
+});
+
 app.post('/signup', function (req, res) {
   result = {
     "message": "fakeResponse",
     "messageCode": "1"
   };
   console.log("signup");
+  res.send(result);
+});
+
+app.post('/getServiziMonitorati', function (req, res) {
+  result = {
+    "servizi" : [
+      {"nome_servizio" : "AdobeUpdateService",
+       "description" : "",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "ActiveX Installer (AxInstSV)",
+       "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "2"},
+      {"nome_servizio" : "Adobe Genuine Software Integrity Service",
+       "description" : "Adobe Genuine Software Integrity Service",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "Agent Activation Runtime_809c7bd",
+       "description" : "Runtime for activating conversational agent applications",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "AdobeUpdateService",
+       "description" : "",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "ActiveX Installer (AxInstSV)",
+       "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "2"},
+      {"nome_servizio" : "Adobe Genuine Software Integrity Service",
+       "description" : "Adobe Genuine Software Integrity Service",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "Agent Activation Runtime_809c7bd",
+       "description" : "Runtime for activating conversational agent applications",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "AdobeUpdateService",
+       "description" : "",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "ActiveX Installer (AxInstSV)",
+       "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "2"},
+      {"nome_servizio" : "Adobe Genuine Software Integrity Service",
+       "description" : "Adobe Genuine Software Integrity Service",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"},
+      {"nome_servizio" : "Agent Activation Runtime_809c7bd",
+       "description" : "Runtime for activating conversational agent applications",
+       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+       "stato" : "1"}
+    ],
+    "token" : "",
+    "message": "",
+    "messageCode": "0"
+  };
+  console.log("/getServiziMonitorati");
+  res.send(result);
+});
+
+app.post('/getServiziAll', function (req, res) {
+  result = {
+    "servizi" : [
+      {"nome_servizio" : "AdobeUpdateService",
+        "description" : "",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "ActiveX Installer (AxInstSV)",
+        "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "2",
+        "monitora" : "true"},
+      {"nome_servizio" : "Adobe Genuine Software Integrity Service",
+        "description" : "Adobe Genuine Software Integrity Service",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "Agent Activation Runtime_809c7bd",
+        "description" : "Runtime for activating conversational agent applications",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "AdobeUpdateService",
+        "description" : "",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "ActiveX Installer (AxInstSV)",
+        "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "2",
+        "monitora" : "true"},
+      {"nome_servizio" : "Adobe Genuine Software Integrity Service",
+        "description" : "Adobe Genuine Software Integrity Service",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "Agent Activation Runtime_809c7bd",
+        "description" : "Runtime for activating conversational agent applications",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "AdobeUpdateService",
+        "description" : "",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "true"},
+      {"nome_servizio" : "Non monitorato test 1",
+        "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "2",
+        "monitora" : "false"},
+      {"nome_servizio" : "Non monitorato test 2",
+        "description" : "Adobe Genuine Software Integrity Service",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "false"},
+      {"nome_servizio" : "Non monitorato test 3",
+        "description" : "Runtime for activating conversational agent applications",
+        "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+        "stato" : "1",
+        "monitora" : "false"}
+    ],
+    "token" : "",
+    "message": "",
+    "messageCode": "0"
+  };
+  console.log("/getServiziAll");
   res.send(result);
 });
 
