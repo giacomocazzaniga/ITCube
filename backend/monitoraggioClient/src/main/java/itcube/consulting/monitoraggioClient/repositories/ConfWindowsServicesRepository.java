@@ -1,5 +1,7 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +20,7 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	
 	@Query(value="Select count(*) from conf_windows_services where esecuzione = :esecuzione", nativeQuery=true)
 	int countEsecuzione(@Param("esecuzione") boolean esecuzione);
+	
+	@Query(value="Select * from ConfWindowsServices where nome_servizio= :nome_servizio", nativeQuery=true)
+	List<ConfWindowsServices> getServiziClient(@Param("nome_servizio") String nome_servizio);
 }
