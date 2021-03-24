@@ -124,7 +124,7 @@ public class ClientController {
 		
 		try
 		{
-			id_company=Integer.parseInt((String)body.get("id_company"));
+			id_company=(Integer)body.get("id_company");
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -173,7 +173,7 @@ public class ClientController {
 		
 		try 
 		{
-			id_company=Integer.parseInt((String)body.get("id_company"));
+			id_company=(Integer)body.get("id_company");
 			id_client=Integer.parseInt((String)body.get("id_client"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
@@ -235,7 +235,7 @@ public class ClientController {
 		
 		try
 		{
-			id_company=Integer.parseInt((String)body.get("id_company"));
+			id_company=(Integer)body.get("id_company");
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -299,7 +299,7 @@ public class ClientController {
 		
 		try 
 		{
-			id_company=Integer.parseInt((String)body.get("id_company"));
+			id_company=(Integer)body.get("id_company");
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -367,20 +367,10 @@ public class ClientController {
 
 			if(licenza!=null)
 			{
-				System.out.println(licenza.getCodice());
-				System.out.println(licenza.getId());
-				System.out.println(licenza.getElencoClients().size());
-
 				el.add(licenza);
-				
-				//newClient.setElencoLicenze(new ArrayList<ElencoLicenze>());
-				
-				//newClient.getElencoLicenze().add(licenza);
 				
 				newClient.setElencoCompanies(licenza.getElencoCompanies());
 				newClient.setElencoLicenze(el);
-				
-				//problema
 				
 				System.out.println("Stampa prima del save:");
 				for(ElencoLicenze i: newClient.getElencoLicenze())
@@ -388,6 +378,7 @@ public class ClientController {
 					System.out.println(i.getId());
 					System.out.println(i.getCodice());
 				}
+				
 				elencoClientsRepository.save(newClient);
 				
 				System.out.println("Stampa dopo il save:");
@@ -426,9 +417,11 @@ public class ClientController {
 		String token;
 		Integer id_client;
 		ElencoClients client;
+		Integer id_company;
+		
 		try
 		{
-			Integer id_company=Integer.parseInt((String)body.get("id_company"));
+			id_company=(Integer)body.get("id_company");
 			id_client=Integer.parseInt((String)body.get("id_client"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);

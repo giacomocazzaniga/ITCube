@@ -154,7 +154,7 @@ public class LoginController {
 				//salva la licenza
 				do
 				{
-					codice=Services.getLicenseCode();
+					codice=Services.getLicenseKey();
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
 				elencoLicenze=new ElencoLicenze();
@@ -249,7 +249,7 @@ public class LoginController {
 	public String helloWorld(@RequestBody Map<String,Object> body) {
 		if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
 		{
-			String newToken=Services.checkThreshold(Integer.parseInt((String)body.get("id_company")),(String)body.get("token"));
+			String newToken=Services.checkThreshold((Integer)body.get("id_company"),(String)body.get("token"));
 			if(newToken==null)
 			{		
 				return "Autenticato ("+body.get("token")+")";
