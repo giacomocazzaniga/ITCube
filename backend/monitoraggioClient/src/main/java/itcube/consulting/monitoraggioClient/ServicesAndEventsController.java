@@ -28,6 +28,8 @@ import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
+import itcube.consulting.monitoraggioClient.response.ServiziOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 
@@ -74,29 +76,63 @@ public class ServicesAndEventsController {
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
 		ValidToken validToken=new ValidToken();
-		int id_company;
+		int id_client;
 		String token;
 		List<ConfWindowsServices> servizi=new ArrayList<ConfWindowsServices>();
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
+		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
 		
 		try
 		{
 			servizi=(List<ConfWindowsServices>)body.get("servizi");
 			if(servizi.size()!=0)
 			{
-				for(ConfWindowsServices i: servizi)
+				//ricavare date and time
+				
+				for(ConfWindowsServices i:servizi)
 				{
 					confWindowsServicesRepository.save(i);
 				}
-				id_company=servizi.get(0).getElencoClients().getId();
-				monitoraggio=monitoraggioRepository.getServiziClient(id_company);
 				
+				/*for (Object servizio : servizi) {
+					String[] words = ((String)servizio).split(",");
+
+					for (int i = 0; i < words.length - 1; i++) {
+						String word = words[i];
+						System.out.println("Word: " + word);
+
+						confWindowsServices.setNomeServizio(word);
+						nomeServizio = confWindowsServices.getNomeServizio();
+						System.out.println("\nNome servizio: " + nomeServizio);
+						
+						confWindowsServices.setStato(0);
+						stato = confWindowsServices.getStato();
+						System.out.println("Stato: " + stato);
+
+						confWindowsServicesRepository.insertWindowsService(id, nomeServizio, stato, idClient);
+						System.out.println("\nSALVATO/I!!!\n");
+
+						System.out.println("Nome servizio: " + nomeServizio);
+						System.out.println("Stato: " + stato);
+						System.out.println("Id client: " + idClient);
+
+						System.out.println("\n--------------------------------------------------\n");
+					}
+				}*/
+				
+				System.out.println("Prova 1");
+				id_client=servizi.get(0).getElencoClients().getId();
+				System.out.println("Prova 2");
+				monitoraggio=monitoraggioRepository.getServiziClient(id_client);
+				System.out.println("Prova 3");
 				if(monitoraggio!=null)
 				{
 					for(ConfWindowsServices i: servizi)
 					{
-						if(monitoraggio.contains(i.toMonitoraggio(i, confWindowsServicesRepository)))
-							monitoraggioRepository.save(null);
+						if(!monitoraggio.contains(i.toMonitoraggio(i, confWindowsServicesRepository)))
+						{
+							monitoraggioRepository.save(i.toMonitoraggio(i, confWindowsServicesRepository));
+						}
 					}
 				}
 				else
@@ -119,6 +155,102 @@ public class ServicesAndEventsController {
 			
 				return ResponseEntity.ok(generalResponse); 
 			}
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+
+	@PostMapping(path="/getServiziAll",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getServiziAll (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		ServiziMonitoratiResponse response=new ServiziMonitoratiResponse();
+		List<ConfWindowsServices> serviziMonitorati=new ArrayList<ConfWindowsServices>();
+		
+		try
+		{
+			id_client=(Integer)body.get("id_client");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				serviziMonitorati=confWindowsServicesRepository.getServiziMonitorati(id_client);
+				
+				response.setConfWindowsSerives(serviziMonitorati);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+				
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+
+	@PostMapping(path="/getServiziOverView",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getServiziOverView (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		ServiziOverviewResponse response=new ServiziOverviewResponse();
+		
+		try 
+		{
+			id_client=(Integer)body.get("id_client");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				//ho assunto: 1=running, 2=stopped
+				response.setN_totali((confWindowsServicesRepository.getTotServizi(id_client)));
+				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 1));
+				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 2));
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+				
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
 		}
 		catch(Exception e)
 		{

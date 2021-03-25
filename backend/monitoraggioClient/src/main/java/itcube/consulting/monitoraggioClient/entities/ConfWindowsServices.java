@@ -3,7 +3,9 @@ package itcube.consulting.monitoraggioClient.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,10 +23,12 @@ public class ConfWindowsServices {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne
-	@JoinColumn(name = "nome_servizio")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "nome_servizio", referencedColumnName = "nome_servizio")
 	private Monitoraggio monitoraggio;
-	//private String nome_servizio;
+	
+	/*@Column(name="nome_servizio")
+	private String nome_servizio;*/
 	
 	@OneToOne
 	@JoinColumn(name = "id_client")
@@ -33,7 +37,7 @@ public class ConfWindowsServices {
 	
 	private int stato;
 	private String description;
-	private int display_name;
+	private String display_name;
 	private int start_type;
 	private int service_type;
 	private Date date_and_time;
@@ -90,11 +94,11 @@ public class ConfWindowsServices {
 		this.description = description;
 	}
 
-	public int getDisplay_name() {
+	public String getDisplay_name() {
 		return display_name;
 	}
 
-	public void setDisplay_name(int display_name) {
+	public void setDisplay_name(String display_name) {
 		this.display_name = display_name;
 	}
 
@@ -118,7 +122,7 @@ public class ConfWindowsServices {
 	{
 		Monitoraggio monitoraggio=new Monitoraggio();
 		monitoraggio.setMonitora(true);
-		//monitoraggio.setConfWindowsServices(repo.getServiziClient());
+		monitoraggio.setConfWindowsServices(repo.getServiziClient(service.getDisplay_name()));
 		monitoraggio.setElencoClients(service.getElencoClients());
 		
 		return monitoraggio;

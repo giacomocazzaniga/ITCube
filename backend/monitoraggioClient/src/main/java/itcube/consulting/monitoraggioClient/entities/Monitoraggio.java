@@ -2,6 +2,7 @@ package itcube.consulting.monitoraggioClient.entities;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,13 +25,25 @@ public class Monitoraggio {
 	
 	@OneToMany(mappedBy = "monitoraggio")
 	List<ConfWindowsServices> confWindowsServices;
-	//private String nome_servizio;
+	
+	@Column(name="nome_servizio")
+	private String nome_servizio;
 	
 	private boolean monitora;
 	
 	public Monitoraggio() {
 	}
 	
+	public Monitoraggio(ElencoClients elencoClients, List<ConfWindowsServices> confWindowsServices,
+			boolean monitora) {
+		super();
+		this.elencoClients = elencoClients;
+		this.confWindowsServices = confWindowsServices;
+		this.monitora = monitora;
+	}
+
+
+
 	public int getId() {
 		return id;
 	}
@@ -59,5 +72,13 @@ public class Monitoraggio {
 	}
 	public void setMonitora(boolean monitora) {
 		this.monitora = monitora;
+	}
+
+	public String getNome_servizio() {
+		return nome_servizio;
+	}
+
+	public void setNome_servizio(String nome_servizio) {
+		this.nome_servizio = nome_servizio;
 	}
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Mar 25, 2021 at 08:45 AM
+-- Generation Time: Mar 25, 2021 at 05:00 PM
 -- Server version: 5.7.32
 -- PHP Version: 7.4.12
 
@@ -183,7 +183,8 @@ CREATE TABLE `macro_categorie_eventi` (
 CREATE TABLE `monitoraggio` (
   `id` int(11) NOT NULL,
   `monitora` bit(1) NOT NULL,
-  `id_client` int(11) DEFAULT NULL
+  `id_client` int(11) DEFAULT NULL,
+  `nome_servizio` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -274,7 +275,8 @@ ALTER TABLE `conf_total_free_disc_space`
 --
 ALTER TABLE `conf_windows_services`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FKmqd53i0wh0trbaw0cs4j9nbmd` (`id_client`);
+  ADD KEY `FKmqd53i0wh0trbaw0cs4j9nbmd` (`id_client`),
+  ADD KEY `FKgweg5amjhfcpfifx1e0kx7olq` (`nome_servizio`);
 
 --
 -- Indexes for table `elenco_clients`
@@ -331,6 +333,7 @@ ALTER TABLE `macro_categorie_eventi`
 --
 ALTER TABLE `monitoraggio`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UK_9jagpj9rmxf92n2fnjhmpf033` (`nome_servizio`),
   ADD KEY `FK49h5b4wcnmjx8urvacsfhx84i` (`id_client`);
 
 --
@@ -462,6 +465,7 @@ ALTER TABLE `conf_total_free_disc_space`
 -- Constraints for table `conf_windows_services`
 --
 ALTER TABLE `conf_windows_services`
+  ADD CONSTRAINT `FKgweg5amjhfcpfifx1e0kx7olq` FOREIGN KEY (`nome_servizio`) REFERENCES `monitoraggio` (`nome_servizio`),
   ADD CONSTRAINT `FKmqd53i0wh0trbaw0cs4j9nbmd` FOREIGN KEY (`id_client`) REFERENCES `elenco_clients` (`id`);
 
 --

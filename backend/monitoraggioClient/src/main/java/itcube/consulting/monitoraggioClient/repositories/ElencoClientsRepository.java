@@ -24,4 +24,7 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 			+ "FROM elenco_clients ec\n"
 			+ "where ec.id= :id_client", nativeQuery=true)
 	ElencoClients getDeepClient(@Param("id_client") int id_client);	
+	
+	@Query(value="Select elenco_companies.id from elenco_companies join elenco_clients on elenco_companies.id_client=elenco_clients.id where id_client= :id_client", nativeQuery=true)
+	int getIdCompany(@Param("id_client") int id_client);
 }
