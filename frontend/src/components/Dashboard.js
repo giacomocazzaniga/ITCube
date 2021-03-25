@@ -5,7 +5,7 @@ import TrafficLightButtons from './TrafficLightButtons';
 import Communications from './Communications';
 import History from './History';
 import Drive from './Drive';
-import ServicesList from './ServicesList';
+import ServicesList from './OperationsList';
 import ClientInfo from './ClientInfo';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalProvider } from 'react-simple-hook-modal';
@@ -13,6 +13,7 @@ import { _getDeepClient, _getEventiOverview, _getServiziOverview } from "../call
 import { useToasts } from "react-toast-notifications";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
+import OperationsList from "./OperationsList";
 
 document.body.classList.add('fixed');
 
@@ -162,7 +163,7 @@ const Dashboard = (props) => {
           </Col>
         )}
         <Col md={4} xs={6}>
-          <ServicesList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
+          <OperationsList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
         </Col>
         <Col md={4} xs={6}>
           <WindowsServices selected={props.title} id_client={props.id_client} services={[state.n_totali, state.n_running, state.n_stop]}/>

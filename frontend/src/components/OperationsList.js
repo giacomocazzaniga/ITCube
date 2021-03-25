@@ -33,7 +33,7 @@ const mapStateToProps = state => {
   }
 }
 
-const ServicesList = (props) => {
+const OperationsList = (props) => {
 
   const { addToast } = useToasts();
 
@@ -116,4 +116,4 @@ const ServicesList = (props) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ServicesList);
+)(OperationsList);
