@@ -68,7 +68,7 @@ public class ServicesAndEventsController {
 	@Autowired
 	private MonitoraggioRepository monitoraggioRepository;
 	
-	@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path="/inserimentoServizi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
 	{

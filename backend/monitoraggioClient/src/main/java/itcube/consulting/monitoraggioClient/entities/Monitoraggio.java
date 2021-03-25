@@ -22,7 +22,7 @@ public class Monitoraggio {
 	private ElencoClients elencoClients;
 	//private int id_client;
 	
-	@OneToMany(mappedBy = "tipologieLicenze")
+	@OneToMany(mappedBy = "monitoraggio")
 	List<ConfWindowsServices> confWindowsServices;
 	//private String nome_servizio;
 	
