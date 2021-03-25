@@ -1,4 +1,4 @@
-const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake } = require('./REST');
+const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -14,7 +14,7 @@ export const _performSignUp = (email, password, email_alert, ragione_sociale) =>
 
 export const _performLogin = (email, password) => {
     let encryptedPsw = md5(password);
-    return axios.post(url_login, { //url_login
+    return axios.post(url_loginFake, {
       email: email,
       password: encryptedPsw
     })
@@ -73,8 +73,22 @@ export const _getServiziAll = (token, id_client) => {
   })
 }
 
+export const _getEventi = (token, id_client) => {
+  return axios.post(url_get_eventiFake, {
+    id_client: id_client, 
+    token: token
+  })
+}
+
 export const _getServiziOverview = (token, id_client) => {
   return axios.post(url_get_servizi_overviewFake, {
+    id_client: id_client, 
+    token: token
+  })
+}
+
+export const _getEventiOverview = (token, id_client) => {
+  return axios.post(url_get_eventi_overviewFake, {
     id_client: id_client, 
     token: token
   })

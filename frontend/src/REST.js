@@ -16,6 +16,8 @@ export const url_get_servizi_monitorati = buildurl+"getServiziMonitorati";
 export const url_get_servizi_all = buildurl+"getServiziAll";
 export const url_modifica_monitoraggio_servizio = buildurl+"modificaMonitoraggioServizio";
 export const url_get_servizi_overview = buildurl+"getServiziOverview";
+export const url_get_eventi_overview = buildurl+"getEventiOverview";
+export const url_get_eventi = buildurl+"getEventi";
 
 
 const portFake = "3001"; 
@@ -33,3 +35,5 @@ export const url_edit_company_dataFake = buildurlFake+"editCompanyData";
 export const url_get_servizi_monitoratiFake = buildurlFake+"getServiziMonitorati";
 export const url_get_servizi_allFake = buildurlFake+"getServiziAll";
 export const url_get_servizi_overviewFake = buildurlFake+"getServiziOverview";
+export const url_get_eventi_overviewFake = buildurlFake+"getEventiOverview";
+export const url_get_eventiFake = buildurlFake+"getEventi";

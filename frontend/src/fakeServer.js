@@ -185,12 +185,23 @@ app.post('/getServiziOverview', function (req, res) {
     "token" : "",
     "message": "",
     "messageCode": "0",
-    "attivi": "10",
-    "problemi": "10",
-    "esecuzione": "10",
-    "warning": "10"
+    "n_totali": "12",
+    "n_running": "9",
+    "n_stop": "3"
   };
   console.log("/getServiziOverview");
+  res.send(result);
+});
+
+app.post('/getEventiOverview', function (req, res) {
+  result = {
+    "token" : "",
+    "message": "",
+    "messageCode": "0",
+    "problemi_oggi": "3",
+    "warning_oggi": "2"
+  };
+  console.log("/getEventiOverview");
   res.send(result);
 });
 
@@ -332,6 +343,32 @@ app.post('/getServiziAll', function (req, res) {
     "messageCode": "0"
   };
   console.log("/getServiziAll");
+  res.send(result);
+});
+
+app.post('/getEventi', function (req, res) {
+  result = {
+    "eventi" : [
+      {"sottocategoria" : "A",
+      "level" : "1",
+      "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "source" : "Bonjour Service",
+      "id_event" : "100",
+      "task_category" : "None",
+      "info" : "mDNSCoreReceiveResponse: Resetting to Probing:   16 DESKTOP-RSM5I11.local. AAAA FE80:0000:0000:0000:A87E:5736:E5E0:502E"},
+      {"sottocategoria" : "A",
+      "level" : "2",
+      "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "source" : "SQLISService120",
+      "id_event" : "274",
+      "task_category" : "Service Contro",
+      "info" : "Microsoft SSIS Service: Registry setting specifying configuration file does not exist. Attempting to load default config file."}
+    ],
+    "token" : "",
+    "message": "",
+    "messageCode": "0"
+  };
+  console.log("/getEventi");
   res.send(result);
 });
 

@@ -54,7 +54,7 @@ const WindowsServices = (props) => {
 
   const servicesListMaker = (services) => {
     let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col><Col xs={1} md={1}><strong><h5>MONITORA</h5></strong></Col><Col xs={4} md={4}><strong><h5>NOME SERVIZIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>STATO</h5></strong></Col><Col xs={5} md={5}><strong><h5>DESCRIZIONE</h5></strong></Col></>];
-    let status = ["RUNNING", "ERRORE", "WARNING"]
+    let status = ["", "Running", "Stop"]
     services.map((service, i) => {
       if(service.hasOwnProperty('monitora')){
         returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, status, service.description, service.monitora);
@@ -150,8 +150,7 @@ const WindowsServices = (props) => {
       <Col md={12} xs={12}>
         <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Servizi attivi: {props.services[0]}</h4>
         <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Servizi in esecuzione: {props.services[1]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Servizi con problemi: {props.services[2]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Servizi con warnings: {props.services[3]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Servizi non in esecuzione: {props.services[2]}</h4>
       </Col>
     </Box>
   );

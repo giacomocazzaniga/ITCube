@@ -49,3 +49,7 @@ export const servicesList = (servicesList) => ({
   type: types.SERVICESLIST,
   servicesList: servicesList
 })
+export const eventsList = (eventsList) => ({
+  type: types.EVENTSLIST,
+  eventsList: eventsList
+})

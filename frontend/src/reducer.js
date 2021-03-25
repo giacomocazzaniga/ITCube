@@ -23,7 +23,8 @@ const initialState = {
   places_list : [],
   categories_list : [],
   category_vs_place : true, //true==category, false==place
-  services_list : []
+  services_list : [],
+  events_list : []
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -86,7 +87,11 @@ export function rootReducer(state = initialState, action) {
       services_list: action.servicesList
     });
   }
-
+  if (action.type === types.EVENTSLIST) {
+    return Object.assign({}, state, {
+      events_list: action.eventsList
+    });
+  }
   //returning the state
   return state;
 }
@@ -94,7 +99,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list']
+  blacklist: ['nome_company', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);

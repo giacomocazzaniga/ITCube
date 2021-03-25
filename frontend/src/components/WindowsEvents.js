@@ -4,10 +4,11 @@ import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ToastProvider, useToasts } from 'react-toast-notifications';
 import PopUp from "./PopUp";
-import { servicesList } from "../ActionCreator";
+import { eventsList, servicesList } from "../ActionCreator";
 import { url_lista_servizi, url_lista_serviziFake } from "../REST";
 import axios from "axios";
 import { Accordion, Alert, Card } from "react-bootstrap";
+import { _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 
 /**
  * connect the actions to the component
@@ -15,8 +16,8 @@ import { Accordion, Alert, Card } from "react-bootstrap";
  */
 const mapDispatchToProps = dispatch => {
   return{
-    ServicesList: (services) => {
-      dispatch(servicesList(services))
+    EventsList: (events) => {
+      dispatch(eventsList(events))
     }
   }
 }
@@ -29,7 +30,7 @@ const mapStateToProps = state => {
   return {
     client_list: state.client_list,
     token: state.token,
-    services_list: state.services_list
+    events_list: state.events_list
   }
 }
 
@@ -39,58 +40,70 @@ const WindowsEvents = (props) => {
 
   const { addToast } = useToasts();
 
-  const getServicesList = (selected, token) => {
-    axios.post(url_lista_serviziFake, {
-      nome_client: selected
-    })
+  const getEventsList = () => {
+    _getEventi(props.token, props.id_client)
     .then(function (response) {
-      let list = servicesListMaker(response.data.servizi);
-      props.ServicesList(list)
+      console.log(response.data.eventi)
+      let list = servicesListMaker(response.data.eventi);
+      props.EventsList(list)
     })
     .catch(function (error) {
-      addToast("Errore durante il caricamento delle operazioni", {appearance: 'error',autoDismiss: true});
+      addToast("Errore durante il caricamento dei servizi", {appearance: 'error',autoDismiss: true});
     });
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<><Col xs={8} md={6}><strong><h4>NOME SERVIZIO</h4></strong></Col><Col xs={4} md={6}><strong><h4>STATO</h4></strong></Col></>];
-    let status = ["", "RUNNING", "PROBLEMI", "WARINNG"]
+    let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col><Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={3} md={3}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={4} md={4}><strong><h5>DESCRIZIONE</h5></strong></Col></>];
+    let status = ["", "Error", "Warning", "", "Information", "", "", "", "SuccessAudit", "", "", "", "", "", "", "", "FailureAudit"]
     services.map((service, i) => {
-      switch(service.stato){
-        case "0":
-          returnList = getCard(returnList, service.nome, false, i+1);
-          break;
-        default:
-          returnList = getCard(returnList, service.nome, true, i+1);
-      }
+      returnList = getCard(returnList, service.sottocategoria, service.level, i+1, service.source, service.id_event, service.task_category, service.info, status);
     })
-    return returnList;
+    return returnList
   }
   
-  const getCard = (returnList, opname, enabled, i) => {
+  const toggleMonitora = (servizio, actualValue) => {
+    alert(actualValue)
+    let monitora
+    if(actualValue==true) monitora = false
+    else monitora = true
+    _modificaMonitoraggioServizio(props.token, servizio, props.id_client, monitora)
+    .then(function (response) {
+      getEventsList()
+    }).catch(function (error) {
+      addToast("Errore durante la modifica del servizio", {appearance: 'error',autoDismiss: true});
+    });
+  }
 
-    return (isOdd(i))
-    ? (enabled) 
-      ? returnList = [returnList, 
-          <><Col xs={8} md={6} className="oddColor col-md-6 col-xs-8">{opname}</Col><Col className="oddColor col-md-6 col-xs-4" xs={4} md={6}>ATTIVO</Col></>
-        ]
-      : returnList = [returnList, 
-        <><Col xs={8} md={6} className="oddColor col-md-6 col-xs-8">{opname}</Col><Col className="oddColor col-md-6 col-xs-4" xs={4} md={6}>DISATTIVO</Col></>
+  const getCard = (returnList, sottocategoria, level, i, source, id_event, task_category, info, status) => {
+    if (info == "") info = " "
+    return (!isOdd(i))
+    ? 
+      returnList = [returnList, 
+        <>
+          <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
+          <Col className="oddColor col-md-3 col-xs-3"><p>{source}</p></Col>
+          <Col className="oddColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
+          <Col className="oddColor col-md-2 col-xs-2"><p>{task_category}</p></Col>
+          <Col className="oddColor col-md-4 col-xs-4"><p>{info}</p></Col>
+        </>
       ]
-    : (enabled) 
-      ? returnList = [returnList, 
-        <><Col xs={8} md={6} className="evenColor col-md-6 col-xs-8">{opname}</Col><Col className="evenColor col-md-6 col-xs-4" xs={4} md={6}>ATTIVO</Col></>
-      ]
-      : returnList = [returnList, 
-        <><Col xs={8} md={6} className="evenColor col-md-6 col-xs-8">{opname}</Col><Col className="evenColor col-md-6 col-xs-4" xs={4} md={6}>DISATTIVO</Col></>
+    :
+      returnList = [returnList, 
+        <>
+          <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
+          <Col className="evenColor col-md-3 col-xs-3"><p>{source}</p></Col>
+          <Col className="evenColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
+          <Col className="evenColor col-md-2 col-xs-2"><p>{task_category}</p></Col>
+          <Col className="evenColor col-md-4 col-xs-4"><p>{info}</p></Col>
+        </>
       ]
   }
 
   return (
-    <Box title="Lista degli eventi di Windows" type="primary" collapsable footer={<PopUp title="Gestione degli eventi di Windows" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList(props.selected, props.token)}/>}>
+    <Box title="Lista dei servizi di Windows" type="primary" collapsable footer={<PopUp title="Gestione dei servizi di Windows" linkClass={"clickable"} childs={props.events_list} action={()=>getEventsList()}/>}>
       <Col md={12} xs={12}>
-        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Problemi rilevati oggi: {props.services[0]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Warnings rilevati oggi: {props.services[1]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Problemi rilevati oggi: {props.events[0]}</h4>
+        <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Warnings rilevati oggi: {props.events[1]}</h4>
       </Col>
     </Box>
   );

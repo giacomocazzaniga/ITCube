@@ -9,7 +9,7 @@ import ServicesList from './ServicesList';
 import ClientInfo from './ClientInfo';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getDeepClient, _getServiziOverview } from "../callableRESTs";
+import { _getDeepClient, _getEventiOverview, _getServiziOverview } from "../callableRESTs";
 import { useToasts } from "react-toast-notifications";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
@@ -96,10 +96,11 @@ const mapStateToProps = state => {
 const Dashboard = (props) => {
   const [state, setState] = React.useState({
     clientData: null,
-    servizi_attivi: 0,
-    servizi_esecuzione: 0,
-    servizi_problemi: 0,
-    servizi_warnings: 0
+    n_totali: 0,
+    n_running: 0,
+    n_stop: 0,
+    problemi_oggi: 0,
+    warning_oggi: 0
   })
 
   const { addToast } = useToasts();
@@ -113,15 +114,22 @@ const Dashboard = (props) => {
       });
       _getServiziOverview(props.token, props.id_client)
       .then(function (response) {
-        console.log(response.data)
         setState((previousState) => {
           return { ...previousState, 
-            servizi_attivi: response.data.attivi,
-            servizi_warnings: response.data.warning,
-            servizi_problemi: response.data.problemi,
-            servizi_esecuzione: response.data.esecuzione
+            n_totali: response.data.n_totali,
+            n_running: response.data.n_running,
+            n_stop: response.data.n_stop
           };
         });
+        _getEventiOverview(props.token, props.id_client)
+        .then(function (response) {
+          setState((previousState) => {
+            return { ...previousState, 
+              problemi_oggi: response.data.problemi_oggi,
+              warning_oggi: response.data.warning_oggi
+            };
+          });
+        })
       })
       .catch(function (error) {
         addToast("Errore durante il caricamento di servizi", {appearance: 'error',autoDismiss: true});
@@ -157,10 +165,10 @@ const Dashboard = (props) => {
           <ServicesList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsServices selected={props.title} id_client={props.id_client} services={[state.servizi_attivi, state.servizi_esecuzione, state.servizi_problemi, state.servizi_warnings]}/>
+          <WindowsServices selected={props.title} id_client={props.id_client} services={[state.n_totali, state.n_running, state.n_stop]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsEvents selected={props.title} id_client={props.id_client} services={[state.clientData.servizi_attivi, state.clientData.servizi_esecuzione, state.clientData.servizi_problemi, state.clientData.servizi_warnings]}/>
+          <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]}/>
         </Col>
         {/*<Col md={3} xs={6}>
           <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
