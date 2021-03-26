@@ -48,59 +48,92 @@ const WindowsEvents = (props) => {
       props.EventsList(list)
     })
     .catch(function (error) {
-      addToast("Errore durante il caricamento dei servizi", {appearance: 'error',autoDismiss: true});
+      addToast("Errore durante il caricamento degli eventi.", {appearance: 'error',autoDismiss: true});
     });
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col><Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={3} md={3}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={4} md={4}><strong><h5>DESCRIZIONE</h5></strong></Col></>];
+    let returnList = [<><Col className="popminwidth col-md-12 col-xs-12">Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col></>];
     let status = ["", "Error", "Warning", "", "Information", "", "", "", "SuccessAudit", "", "", "", "", "", "", "", "FailureAudit"]
-    services.map((service, i) => {
-      returnList = getCard(returnList, service.sottocategoria, service.level, i+1, service.source, service.id_event, service.task_category, service.info, status);
-    })
+    //order by category
+    console.log(services)
+    services.sort(function (a, b) {
+      return a.sottocategoria.localeCompare(b.sottocategoria);
+    });
+    console.log(services)
+    //for each category print
+    let categoriesHeaderWasPrinted = [false, false, false, false];
+    let sottocategoria = "";
+    let compare_sottocategoria = "";
+    for(let j=0; j<4; j++){
+      categoriesHeaderWasPrinted[j] = true
+      switch(j){
+        case 0:
+          sottocategoria = "Application";
+          compare_sottocategoria = "A";
+          break;
+        case 1:
+          sottocategoria = "Security";
+          compare_sottocategoria = "C";
+          break;
+        case 2:
+          sottocategoria = "Hardware";
+          compare_sottocategoria = "H";
+          break;
+        case 3:
+          sottocategoria = "System";
+          compare_sottocategoria = "S";
+          break;
+      }
+      
+      //returnList = getCard(returnList, service.sottocategoria, service.level, i+1, service.source, service.id_event, service.task_category, service.info, status, categoriesHeaderWasPrinted);
+      returnList = [returnList, 
+        <div class="winServices">
+          <Card>
+            <Accordion.Toggle as={Card.Header} eventKey={sottocategoria}>
+              <div className="clickable"><h4>{sottocategoria}</h4></div>
+            </Accordion.Toggle>
+            <Accordion.Collapse eventKey={sottocategoria}>
+              <Card.Body>
+              <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
+                {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time))}
+              </Card.Body>
+            </Accordion.Collapse>
+          </Card>
+        </div>
+      ]
+    }
     return returnList
   }
-  
-  const toggleMonitora = (servizio, actualValue) => {
-    alert(actualValue)
-    let monitora
-    if(actualValue==true) monitora = false
-    else monitora = true
-    _modificaMonitoraggioServizio(props.token, servizio, props.id_client, monitora)
-    .then(function (response) {
-      getEventsList()
-    }).catch(function (error) {
-      addToast("Errore durante la modifica del servizio", {appearance: 'error',autoDismiss: true});
-    });
-  }
 
-  const getCard = (returnList, sottocategoria, level, i, source, id_event, task_category, info, status) => {
-    if (info == "") info = " "
-    return (!isOdd(i))
-    ? 
-      returnList = [returnList, 
+  const getCategories = (level, source, id_event, task_category, info, i, status, compare_sottocategoria, sottocategoria, date) => {
+    if (info == "") info = " ";
+    let oddcolor = isOdd(i);
+    if(compare_sottocategoria == sottocategoria)
+      return (oddcolor==true)
+      ? 
         <>
           <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="oddColor col-md-3 col-xs-3"><p>{source}</p></Col>
+          <Col className="oddColor col-md-2 col-xs-2"><p>{date}</p></Col>
+          <Col className="oddColor col-md-2 col-xs-2"><p>{source}</p></Col>
           <Col className="oddColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
           <Col className="oddColor col-md-2 col-xs-2"><p>{task_category}</p></Col>
-          <Col className="oddColor col-md-4 col-xs-4"><p>{info}</p></Col>
+          <Col className="oddColor col-md-3 col-xs-3"><p>{info}</p></Col>
         </>
-      ]
-    :
-      returnList = [returnList, 
+      :
         <>
           <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="evenColor col-md-3 col-xs-3"><p>{source}</p></Col>
+          <Col className="evenColor col-md-2 col-xs-2"><p>{date}</p></Col>
+          <Col className="evenColor col-md-2 col-xs-2"><p>{source}</p></Col>
           <Col className="evenColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
           <Col className="evenColor col-md-2 col-xs-2"><p>{task_category}</p></Col>
-          <Col className="evenColor col-md-4 col-xs-4"><p>{info}</p></Col>
+          <Col className="evenColor col-md-3 col-xs-3"><p>{info}</p></Col>
         </>
-      ]
+    else return <></>
   }
 
   return (
-    <Box title="Lista dei servizi di Windows" type="primary" collapsable footer={<PopUp title="Gestione dei servizi di Windows" linkClass={"clickable"} childs={props.events_list} action={()=>getEventsList()}/>}>
+    <Box title="Lista degli eventi di Windows" type="primary" collapsable footer={<PopUp title="Gestione degli eventi di Windows" linkClass={"clickable"} childs={props.events_list} action={()=>getEventsList()}/>}>
       <Col md={12} xs={12}>
         <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Problemi rilevati oggi: {props.events[0]}</h4>
         <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Warnings rilevati oggi: {props.events[1]}</h4>

@@ -57,7 +57,7 @@ const PopUp = (props) => {
       >
         <div class="modalWrapper">
           <Box title={props.title} style={{"margin-bottom": "0px !important"}} type="primary" footer={<a onClick={closeModal} class="clickable">Chiudi</a>}>
-            <Col md={12} xs={12}>
+            <Col className="col-md-12 col-xs-12">
               <Accordion>
                 {props.childs.length==0 ? <p>Caricamento...</p> : props.childs.map(child => (<>{child}</>))}
               </Accordion>

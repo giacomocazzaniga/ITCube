@@ -82,22 +82,22 @@ const OperationsList = (props) => {
   
   const getCard = (returnList, opname, enabled, i) => {
     returnList = [returnList, 
-    <Card>
-      <Accordion.Toggle as={Card.Header} eventKey={i}>
-        <div className="clickable"><h4>{opname}</h4></div>
-      </Accordion.Toggle>
-      <Accordion.Collapse eventKey={i}>
-        <Card.Body>
-          {enabled 
-          ? <p><input type="checkbox" checked/> <label>Abilita operazione</label></p>
-          : <p><input type="checkbox"/> <label>Abilita operazione</label></p>
-          }
-          
-          <h5>Servizi:</h5>
-        </Card.Body>
-      </Accordion.Collapse>
-    </Card>
-]
+      <Card>
+        <Accordion.Toggle as={Card.Header} eventKey={i}>
+          <div className="clickable"><h4>{opname}</h4></div>
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey={i}>
+          <Card.Body>
+            {enabled 
+            ? <p><input type="checkbox" checked/> <label>Abilita operazione</label></p>
+            : <p><input type="checkbox"/> <label>Abilita operazione</label></p>
+            }
+            
+            <h5>Servizi:</h5>
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+  	]
 
   return returnList
   }

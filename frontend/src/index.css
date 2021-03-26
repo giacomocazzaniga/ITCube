@@ -186,3 +186,12 @@ code {
   max-height: 40px;
   height: 40px;
 }
+
+.winServices .card {
+  width: 110% !important;
+  min-width: 1000px !important;
+}
+
+.popminwidth {
+  min-width: 1000px !important;
+}
