@@ -83,7 +83,7 @@ const LicensesList = (props) => {
     });
   }
 
-  const getChilds = (list) => {
+  const getChilds = () => {
     let childList = [];
     let options = [
       { value: '1', label: 'SISTEMA OPERATIVO' },
@@ -92,7 +92,6 @@ const LicensesList = (props) => {
       { value: '4', label: 'RETE' },
       { value: '5', label: 'VUNERABILITÀ' },
     ];
-    let defaultOption = options[0];
     childList = [
     <>
       <Col xs={8} md={6}><strong><h4>CODICE LICENZA</h4></strong></Col>
@@ -127,7 +126,7 @@ const LicensesList = (props) => {
   }
 
   return (
-    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds(props.list)} action={()=>(console.log("action"))}/></span>}>
+    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Multiselect
         placeholder="Filtra per tipologia"
         emptyRecordMsg="Nessun filtro disponibile"

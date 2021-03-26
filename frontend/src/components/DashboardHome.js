@@ -73,7 +73,8 @@ const mapStateToProps = state => ({
           color: "#dd4b39"
         }
       ]
-    }
+    },
+    sedi: ["Milano", "Venezia", "Torino"]
   }
 );
 
@@ -115,7 +116,7 @@ const DashboardHome = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col xs={12} md={6}>
-          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company}/>
+          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi}/>
         </Col>
         
         {/*<Col md={3} xs={6}>

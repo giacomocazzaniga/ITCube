@@ -113,11 +113,12 @@ const UserData = (props) => {
   }
 
   return (
-    <Box title="Dati dell'utente" type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Dati dell'utente" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
+    <Box title="Dati aziendali" type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Modifica dati aziendali" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Col md={12} xs={12}>
         <h4><b>Indirizzo email: </b>{props.email}</h4>
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
         <h4><b>Ragione sociale: </b>{props.ragioneSociale}</h4>
+        <h4><b>Sedi registrate: </b>{props.sedi.length}</h4>
       </Col>
     </Box>
   );
