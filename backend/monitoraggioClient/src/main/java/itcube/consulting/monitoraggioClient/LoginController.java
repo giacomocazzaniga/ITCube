@@ -154,7 +154,7 @@ public class LoginController {
 				//salva la licenza
 				do
 				{
-					codice=Services.getLicenseCode();
+					codice=Services.getLicenseKey();
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
 				elencoLicenze=new ElencoLicenze();

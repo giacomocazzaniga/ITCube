@@ -283,7 +283,7 @@ public class LicenzeController {
 				
 				do
 				{
-					codice=Services.getLicenseCode();
+					codice=Services.getLicenseKey();
 					
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
