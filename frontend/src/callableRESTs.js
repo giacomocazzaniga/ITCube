@@ -14,7 +14,7 @@ export const _performSignUp = (email, password, email_alert, ragione_sociale) =>
 
 export const _performLogin = (email, password) => {
     let encryptedPsw = md5(password);
-    return axios.post(url_loginFake, {
+    return axios.post(url_login, {
       email: email,
       password: encryptedPsw
     })
