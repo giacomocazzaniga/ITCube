@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { _LICENZE } from '../Constants';
-
 
 /**
  * connect the actions to the component

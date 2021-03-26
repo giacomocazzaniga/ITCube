@@ -2,51 +2,50 @@ import React from "react";
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
 import PopUp from "./PopUp";
 import { servicesList } from "../ActionCreator";
-import { url_lista_servizi, url_lista_serviziFake } from "../REST";
+import { url_lista_serviziFake } from "../REST";
 import axios from "axios";
 import { Accordion, Alert, Card } from "react-bootstrap";
+import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => {
-  return{
+const mapDispatchToProps = dispatch => ({
     ServicesList: (services) => {
       dispatch(servicesList(services))
     }
   }
-}
+);
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     client_list: state.client_list,
     token: state.token,
     services_list: state.services_list
   }
-}
+);
 
 const OperationsList = (props) => {
 
-  const { addToast } = useToasts();
-
   const getServicesList = (selected, token) => {
+    const loadingToast = getLoadingToast("Caricamento...");
     axios.post(url_lista_serviziFake, {
       nome_client: selected
     })
     .then(function (response) {
+      stopLoadingToast(loadingToast);
       let list = servicesListMaker(response.data.servizi);
       props.ServicesList(list)
     })
     .catch(function (error) {
-      addToast("Errore durante il caricamento delle operazioni", {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
   }
 

@@ -2,53 +2,48 @@ import React from "react";
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
 import PopUp from "./PopUp";
 import { servicesList } from "../ActionCreator";
-import { url_lista_servizi, url_lista_serviziFake } from "../REST";
-import axios from "axios";
-import { Accordion, Alert, Card } from "react-bootstrap";
 import { _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
+import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => {
-  return{
+const mapDispatchToProps = dispatch => ({
     ServicesList: (services) => {
       dispatch(servicesList(services))
     }
   }
-}
+);
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     client_list: state.client_list,
     token: state.token,
     services_list: state.services_list
   }
-}
+);
 
 const WindowsServices = (props) => {
 
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
-  const { addToast } = useToasts();
-
   const getServicesList = () => {
+    const loadingToast = getLoadingToast("Caricamento...");
     _getServiziAll(props.token, props.id_client)
     .then(function (response) {
-      console.log(response.data.servizi)
+      stopLoadingToast(loadingToast);
       let list = servicesListMaker(response.data.servizi);
       props.ServicesList(list)
     })
     .catch(function (error) {
-      addToast("Errore durante il caricamento dei servizi", {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
   }
 
@@ -66,15 +61,19 @@ const WindowsServices = (props) => {
   }
   
   const toggleMonitora = (servizio, actualValue) => {
-    alert(actualValue)
+    //alert(actualValue)
     let monitora
     if(actualValue==true) monitora = false
     else monitora = true
+    const loadingToast = getLoadingToast("Modifica monitoraggio servizi...");
     _modificaMonitoraggioServizio(props.token, servizio, props.id_client, monitora)
     .then(function (response) {
+      stopLoadingToast(loadingToast);
+      getSuccessToast(response.data.message);
       getServicesList()
     }).catch(function (error) {
-      addToast("Errore durante la modifica del servizio", {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
   }
 

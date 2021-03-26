@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { searchClient } from './ActionCreator';
 import { _FILTERS, _LICENZE } from './Constants';
 import { ClientFilter } from './HierarchyManager';
+import { toaster } from './toastManager';
 
 /**
  * connect the actions to the component
@@ -139,7 +140,8 @@ const App = (props) => {
   }
   return (
     
-      <ToastProvider>
+      <div>
+        {toaster}
         {props.logged==true 
         ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByPlace(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
             <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
@@ -150,7 +152,7 @@ const App = (props) => {
             <div path="/registrati" title="Registrati"><SignUpPage /></div>
           </AdminLTE>
         }
-      </ToastProvider>
+      </div>
   );
 }
 

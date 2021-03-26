@@ -1,39 +1,32 @@
-import axios from 'axios';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
 import { signUp } from '../ActionCreator';
-import DashboardWrap from './DashboardWrap';
-import { url_signup } from '../REST';
 import { _MSGCODE } from '../Constants';
 import { _performSignUp } from '../callableRESTs';
-
-var md5 = require('md5');
+import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps =  dispatch => {
-  return{
+const mapDispatchToProps =  dispatch => ({
     SignUp: (message, messageCode) => {
       dispatch(signUp(message, messageCode))
     }
   }
-}
+);
 
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     nome_company: state.nome_company,
     message: state.message,
     messageCode: state.messageCode,
   }
-}
+);
 
 const SignUpPage = (props) => {
   
@@ -84,48 +77,50 @@ const SignUpPage = (props) => {
     });
   }
 
-  const { addToast } = useToasts();
-
   const SignUpController = (email, password, email_alert, ragione_sociale) => {
+    const loadingToast = getLoadingToast("Registrazione in corso...");
     _performSignUp(email, password, email_alert, ragione_sociale)
     .then(function (response) {
       if(response.data.messageCode==_MSGCODE.ERR){
         //already registered
-        addToast(response.data.message, {appearance: 'error',autoDismiss: true});
+        stopLoadingToast(loadingToast);
+        getErrorToast(response.data.message);
       }else{
         //signup done
-        addToast(response.data.message, {appearance: 'success',autoDismiss: true});
+        stopLoadingToast(loadingToast);
+        getSuccessToast(response.data.message);
       }
       //props.SignUp(response.data.message, response.data.messageCode);
     })
     .catch(function (error) {
-      addToast("Errore durante la registrazione.", {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
   }
 
   return (
-        <div class="container">
-          <div class="row">
+        <div className="container">
+          <div className="row">
             <br />
-            <div class="col-md-6 col-md-offset-3">
+            <div className="col-md-6 col-md-offset-3">
               <form>
-                <div class="form-group">
+                <div className="form-group">
                   <label for="exampleInputEmail1">Indirizzo email</label>
-                  <input type="email" value={state.emailSignUp} onChange={handleEmailSignUp} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
+                  <input type="email" value={state.emailSignUp} onChange={handleEmailSignUp} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <label for="exampleInputPassword1">Password</label>
-                  <input type="password" value={state.pswSignUp} onChange={handlePswSignUp} class="form-control" id="exampleInputPassword1" placeholder="Password" />
+                  <input type="password" value={state.pswSignUp} onChange={handlePswSignUp} className="form-control" id="exampleInputPassword1" placeholder="Password" />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <label for="exampleInputEmail2">Indirizzo email per le comunicazioni</label>
-                  <input type="email" value={state.emailAlertSignUp} onChange={handleEmailAlertSignUp} class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp" placeholder="Email" />
+                  <input type="email" value={state.emailAlertSignUp} onChange={handleEmailAlertSignUp} className="form-control" id="exampleInputEmail2" aria-describedby="emailHelp" placeholder="Email" />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <label for="exampleInputRagioneSociale">Ragione Sociale</label>
-                  <input value={state.ragioneSocialeSignUp} onChange={handleRagioneSocialeSignUp} class="form-control" id="exampleInputRagioneSociale" aria-describedby="emailHelp" placeholder="Ragione Sociale" />
+                  <input value={state.ragioneSocialeSignUp} onChange={handleRagioneSocialeSignUp} className="form-control" id="exampleInputRagioneSociale" aria-describedby="emailHelp" placeholder="Ragione Sociale" />
                 </div>
-                <button type="button" onClick={() => SignUpController(state.emailSignUp, state.pswSignUp, state.emailAlertSignUp, state.ragioneSocialeSignUp)} class="btn btn-primary">Registrati</button>
+                <button type="button" onClick={() => SignUpController(state.emailSignUp, state.pswSignUp, state.emailAlertSignUp, state.ragioneSocialeSignUp)} className="btn btn-primary">Registrati</button>
               </form>
             </div>
           </div>

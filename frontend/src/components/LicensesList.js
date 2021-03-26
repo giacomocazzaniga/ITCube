@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { addLicense, removeLicense } from '../ActionCreator';
 import PopUp from './PopUp';
 import { _LICENZE } from '../Constants';
+import { getLoadingToast } from '../toastManager';
 
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => {
-  return{
+const mapDispatchToProps = dispatch => ({
     AddLicense: (license) => {
       dispatch(addLicense(license))
     },
@@ -23,14 +22,13 @@ const mapDispatchToProps = dispatch => {
       dispatch(removeLicense(license))
     }
   }
-}
+);
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     options: [{name: _LICENZE.SISTEMA_OPERATIVO.label, id: _LICENZE.SISTEMA_OPERATIVO.tipo},
               {name: _LICENZE.BACKUP.label, id: _LICENZE.BACKUP.tipo},
               {name: _LICENZE.RETE.label, id: _LICENZE.RETE.tipo},
@@ -40,7 +38,7 @@ const mapStateToProps = state => {
     selectedValue: state.licensesList,
     licensesList: state.licensesList
   }
-}
+);
 
 const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
@@ -48,13 +46,15 @@ const LicensesList = (props) => {
 
   useEffect( () => {
     //get list of licenses types
-
+    //const loadingToast = getLoadingToast("Caricamento...");
     /*return _service()
     .then(function (response) {
-        //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getSuccessToast(response.data.message);
     })
     .catch(function (error) {
-      addToast(String(error), {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });*/
   }, []);
 
@@ -65,13 +65,15 @@ const LicensesList = (props) => {
   const clickService = () => {
     console.log(state.selectedValue);
     //buy new license
-
+    const loadingToast = getLoadingToast("Acquistando la licenza...");
     /*return _service()
     .then(function (response) {
-        //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getSuccessToast(response.data.message);
     })
     .catch(function (error) {
-      addToast(String(error), {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });*/
   }
 

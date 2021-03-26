@@ -7,9 +7,8 @@ import History from './History';
 import LicensesList from './LicensesList';
 import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {fake_licenses} from '../fakeData';
 import { _getLicenzeShallow } from '../callableRESTs';
+import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 
 document.body.classList.add('fixed');
 
@@ -23,8 +22,7 @@ const mapDispatchToProps = dispatch => ({});
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     client_list: state.client_list,
     nome_company: state.nome_company,
     email: state.email,
@@ -77,21 +75,25 @@ const mapStateToProps = state => {
       ]
     }
   }
-}
+);
 
 const DashboardHome = (props) => {
   const [state, setState] = React.useState({
     licenses: []
   })
   useEffect(() => {
-    console.log(props.id_company, props.token);
+    const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
+      stopLoadingToast(loadingToast);
       setState(() => {
         return { licenses: response.data.licenzeShallow };  
       });
     })
-    .catch(function (error) {})
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    })
   }, [])
 
   return (<Content title={props.title} browserTitle={props.title}>

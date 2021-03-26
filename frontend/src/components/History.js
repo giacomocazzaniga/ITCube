@@ -14,7 +14,7 @@ const mapDispatchToProps = dispatch => ({});
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {}
+const mapStateToProps = state => ({});
 
 const History = (props) => {
   return (

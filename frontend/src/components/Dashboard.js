@@ -5,15 +5,13 @@ import TrafficLightButtons from './TrafficLightButtons';
 import Communications from './Communications';
 import History from './History';
 import Drive from './Drive';
-import ServicesList from './OperationsList';
 import ClientInfo from './ClientInfo';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ModalProvider } from 'react-simple-hook-modal';
 import { _getDeepClient, _getEventiOverview, _getServiziOverview } from "../callableRESTs";
-import { useToasts } from "react-toast-notifications";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
+import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
 
 document.body.classList.add('fixed');
 
@@ -27,8 +25,7 @@ const mapDispatchToProps = dispatch => ({});
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     client_list: state.client_list,
     nome_company: state.nome_company,
     token: state.token,
@@ -91,8 +88,7 @@ const mapStateToProps = state => {
         }
       ]
     }
-  }
-}
+});
 
 const Dashboard = (props) => {
   const [state, setState] = React.useState({
@@ -104,10 +100,9 @@ const Dashboard = (props) => {
     warning_oggi: 0
   })
 
-  const { addToast } = useToasts();
-
   useEffect( () => {
     //on component mount
+    const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
       setState((previousState) => {
@@ -133,11 +128,13 @@ const Dashboard = (props) => {
         })
       })
       .catch(function (error) {
-        addToast("Errore durante il caricamento di servizi", {appearance: 'error',autoDismiss: true});
+        stopLoadingToast(loadingToast);
+        getErrorToast(String(error));
       });
     })
     .catch(function (error) {
-      addToast("Errore durante il caricamento del dispositivo", {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
     return () => {
       //on component unmount

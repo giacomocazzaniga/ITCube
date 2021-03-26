@@ -14,11 +14,11 @@ export const store = createStore(pReducer,window.__REDUX_DEVTOOLS_EXTENSION__ &&
 export const persistor = persistStore(store);
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById('root')
 );
 

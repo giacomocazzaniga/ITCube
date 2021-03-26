@@ -7,23 +7,21 @@ import { categoryVsPlace } from '../ActionCreator';
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => {
-  return{
+const mapDispatchToProps = dispatch => ({
     Toggle: (actual_state) => {
       dispatch(categoryVsPlace(!actual_state))
     }
   }
-}
+);
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return{
+const mapStateToProps = state => ({
     category_vs_place: state.category_vs_place
   }
-}
+);
 
 const ToggleCategoryPlace = (props) => {
   const onChangeValue = event => {

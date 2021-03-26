@@ -1,32 +1,28 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Box } from 'adminlte-2-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Modal, useModal, ModalTransition } from 'react-simple-hook-modal';
 import PopUp from './PopUp';
 import { _editCompanyData } from '../callableRESTs';
-import { useToasts } from 'react-toast-notifications';
 import { updateCompanyData } from '../ActionCreator';
+import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => {
-  return{
+const mapDispatchToProps = dispatch => ({
     UpdateCompanyData: (nome_company, email, emailNotify, token) => {
       console.log([nome_company, email, emailNotify, token]);
       dispatch(updateCompanyData(nome_company, email, emailNotify, token))
     }
   }
-}
+);
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     client_list: state.client_list,
     nome_company: state.nome_company,
     token: state.token,
@@ -35,11 +31,9 @@ const mapStateToProps = state => {
     emailNotify: state.emailNotify,
     email: state.email
   }
-}
+);
 
 const UserData = (props) => {
-
-  const { addToast } = useToasts();
 
   const [state, setState] = React.useState({
     emailLogin: "",
@@ -51,15 +45,16 @@ const UserData = (props) => {
     let email = (state.emailLogin=="") ? props.email : state.emailLogin;
     let emailAlert = (state.emailLogin2=="") ? props.emailNotify : state.emailLogin2;
     let ragioneSociale = (state.pswLogin=="") ? props.nome_company : state.pswLogin;
+    const loadingToast = getLoadingToast("Modificando i dati...");
     return _editCompanyData(props.id_company, props.token, email, emailAlert, ragioneSociale)
     .then(function (response) {
-        //addToast(String(response.data.message), {appearance: 'success',autoDismiss: true});
+        stopLoadingToast(loadingToast);
         let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
         props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
     })
     .catch(function (error) {
-      console.log(error)
-      addToast(String(error), {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
   }
 

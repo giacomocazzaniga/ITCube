@@ -1,24 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ToastProvider, useToasts } from 'react-toast-notifications';
+import toast from 'react-hot-toast';
 import { login, placesList, categoriesList } from '../ActionCreator';
-import { url_lista_sedi, url_lista_sediFake, url_login } from '../REST';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
 import {_getClientTypes, _getPlaces, _performLogin} from '../callableRESTs'; 
 import { _MSGCODE } from '../Constants';
-import { fake_elencoClients, fake_shallowClientList } from '../fakeData';
-
-var md5 = require('md5');
-
-const axios = require('axios');
+import { fake_shallowClientList } from '../fakeData';
+import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
 
 /**
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps =  dispatch => {
-  return{
+const mapDispatchToProps =  dispatch => ({
     Login: (nome_company, email, emailNotify, client_list, token) => {
       dispatch(login(nome_company, email, emailNotify, client_list, token))
     },
@@ -28,20 +23,18 @@ const mapDispatchToProps =  dispatch => {
       dispatch(login(nome_company, id_company, email, emailNotify, client_list, token))
     }
   }
-}
+);
 
 
 /**
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     client_list: state.client_list,
     nome_company: state.nome_company
-
   }
-}
+);
 
 /**
  * sign in/sign up form
@@ -74,17 +67,20 @@ const LoginPage = (props) => {
     });
   }
 
-  const { addToast } = useToasts();
+  //const { addToast } = useToasts();
 
   const LoginController = (email, psw) => {
+    const loadingToast = getLoadingToast("Accesso in corso...");
     _performLogin(email, psw)
     .then(function (response) {
       if(response.data.messageCode==_MSGCODE.ERR){
         //login failed
-        addToast(response.data.message, {appearance: 'error',autoDismiss: true});
+        stopLoadingToast(loadingToast);
+        getErrorToast(response.data.message);
       }else{
         //login done, need to retieve 'sedi' and 'categories'
-        addToast(response.data.message, {appearance: 'success',autoDismiss: true});
+        stopLoadingToast(loadingToast);
+        getSuccessToast(response.data.message);
         //missing from login: email, emailNotify
         let ragione_sociale = response.data.ragione_sociale;
         let id_company = response.data.id_company;
@@ -104,47 +100,48 @@ const LoginPage = (props) => {
             props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories);
           })
           .catch(function (error) {
-            addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+            stopLoadingToast(loadingToast);
+            getErrorToast(String(error));
           })
         })
         .catch(function (error) {
-          addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
         });
       }
     })
     .catch(function (error) {
-      addToast("Errore durante il login", {appearance: 'error',autoDismiss: true});
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
     });
   }
 
   return (
     (props.nome_company===null) 
     ?
-      <ToastProvider>
-        <div class="container">
-          <div class="row">
-            <br />
-            <div class="col-md-6 col-md-offset-3">
-              <form>
-                <div class="form-group">
-                  <label for="LoginEmail1">Indirizzo email</label>
-                  <input type="email" value={state.emailLogin} class="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder="Email" onChange={handleEmailLogin}/>
-                </div>
-                <div class="form-group">
-                  <label for="LoginPassword1">Password</label>
-                  <input type="password" value={state.pswLogin} class="form-control" id="LoginPassword1" placeholder="Password" onChange={handlePswLogin} />
-                </div>
-              </form>
-              <button class="btn btn-primary" onClick={() => LoginController(state.emailLogin, state.pswLogin)}>Accedi</button>
-            </div>
+      <div className="container">
+        <div className="row">
+          <br />
+          <div className="col-md-6 col-md-offset-3">
+            <form>
+              <div className="form-group">
+                <label htmlFor="LoginEmail1">Indirizzo email</label>
+                <input type="email" value={state.emailLogin} className="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder="Email" onChange={handleEmailLogin}/>
+              </div>
+              <div class="form-group">
+                <label htmlFor="LoginPassword1">Password</label>
+                <input type="password" value={state.pswLogin} className="form-control" id="LoginPassword1" placeholder="Password" onChange={handlePswLogin} />
+              </div>
+            </form>
+            <button className="btn btn-primary" onClick={() => LoginController(state.emailLogin, state.pswLogin)}>Accedi</button>
           </div>
         </div>
-      </ToastProvider>
+      </div>
     :
-      <ToastProvider>
+      <div>
         <DashboardHome path={"/"+props.nome_company} title={props.nome_company} />
         {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} title={item.nome_client} />)}
-      </ToastProvider>
+      </div>
   );
 }
 

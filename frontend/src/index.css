@@ -193,5 +193,6 @@ code {
 }
 
 .popminwidth {
+  width: 110% !important;
   min-width: 1000px !important;
 }
