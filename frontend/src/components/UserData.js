@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Box } from 'adminlte-2-react';
+import Dropdown from 'react-dropdown';
 import PopUp from './PopUp';
 import { _editCompanyData } from '../callableRESTs';
 import { updateCompanyData } from '../ActionCreator';
@@ -32,6 +33,8 @@ const mapStateToProps = state => ({
     email: state.email
   }
 );
+
+
 
 const UserData = (props) => {
 
@@ -91,23 +94,45 @@ const UserData = (props) => {
   const getChilds = () => {
     let childList = [];
     childList = [
-    <>
-      <form>
-        <div class="form-group">
-          <label for="LoginEmail1">Indirizzo email</label>
-          <input type="email" value={state.emailLogin} class="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder={props.email} onChange={handleEmailLogin}/>
+      <>
+        <div className="col-md-6 col-xs-12">
+          <form>
+            <div class="form-group">
+              <label htmlFor="LoginEmail1">Indirizzo email</label>
+              <input type="email" value={state.emailLogin} class="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder={props.email} onChange={handleEmailLogin}/>
+            </div>
+            <div class="form-group">
+              <label htmlFor="LoginEmail2">Indirizzo email per le comunicazioni</label>
+              <input type="email" value={state.emailLogin2} class="form-control" id="LoginEmail2" aria-describedby="emailHelp" placeholder={props.emailNotify} onChange={handleEmailLogin2}/>
+            </div>
+            <div class="form-group">
+              <label htmlFor="LoginPassword1">Ragione Sociale</label>
+              <input value={state.pswLogin} class="form-control" id="LoginPassword1" placeholder={props.ragioneSociale} onChange={handlePswLogin} />
+            </div>
+          </form>
+          <center><button class="btn btn-primary" onClick={() => clickService()}>Modifica</button></center>
         </div>
-        <div class="form-group">
-          <label for="LoginEmail2">Indirizzo email per le comunicazioni</label>
-          <input type="email" value={state.emailLogin2} class="form-control" id="LoginEmail2" aria-describedby="emailHelp" placeholder={props.emailNotify} onChange={handleEmailLogin2}/>
+        <div className="col-md-6 col-xs-12">
+          <form>
+            <div className="col-md-12 col-xs-12">
+              <label>Lista delle sedi</label>
+            </div>
+            <div className="form-group col-md-8 col-xs-8">
+              <Dropdown options={props.sedi} placeholder="Seleziona una sede" />
+            </div>
+            <div className="col-md-4 col-xs-4">
+              <button className="btn btn-primary" onClick={() => clickService()} disabled>Rimuovi</button>
+            </div>
+          </form>
+          <form>
+            <div class="form-group">
+              <label htmlFor="AddPlace">Aggiungi una nuova sede</label>
+              <input type="text" className="form-control" id="AddPlace" aria-describedby="AddPlace"/>
+            </div>
+          </form>
+          <center><button className="btn btn-primary" onClick={() => clickService()}>Aggiungi</button></center>
         </div>
-        <div class="form-group">
-          <label for="LoginPassword1">Ragione Sociale</label>
-          <input value={state.pswLogin} class="form-control" id="LoginPassword1" placeholder={props.ragioneSociale} onChange={handlePswLogin} />
-        </div>
-      </form>
-      <button class="btn btn-primary" onClick={() => clickService()}>Modifica</button>
-    </>
+      </>
     ]
     return childList;
   }

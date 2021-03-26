@@ -196,3 +196,8 @@ code {
   width: 110% !important;
   min-width: 1000px !important;
 }
+
+.Dropdown-control {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
