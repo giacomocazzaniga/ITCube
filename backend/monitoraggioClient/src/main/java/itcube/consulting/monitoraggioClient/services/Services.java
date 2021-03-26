@@ -144,30 +144,25 @@ public final class Services {
 		    return codice;    	
 	}*/
 	
-	public static String getLicenseKey() 
-	{ 
+	public static String getLicenseCode() {
 		String MyKeys = "AB1CD2EF3GH4JK5LM6NP7QR8ST9UVZ";
 		String LicenseKey = "";
-		var _random = new Random();
 		int CharControl = 0;
 		int CharValue = 0;
-		// per 2 volte
-		for (var i = 0; i < 2; i++) {
-			// da 1 a 7
-			for (var j = 0; j < 7; j++) {
-				// random lettera maiuscola, minuscola o numero
-				int RandomChoice = _random.nextInt(MyKeys.length()); //ho rimosso lo zero, spero funzioni lo stesso
+		Random rand = new Random();
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 7; j++) {
+				int RandomChoice = rand.nextInt(MyKeys.length() - 0) + 0;
 				CharValue += RandomChoice;
-				LicenseKey += MyKeys.substring(RandomChoice, 1);
+				LicenseKey = LicenseKey.concat(MyKeys.substring(RandomChoice, RandomChoice + 1));
 			}
-			// aggiungo carattere di controllo al termine
 			CharControl += CharValue;
 			int ctrlch = CharControl / LicenseKey.length();
 			CharControl = (int) ctrlch;
-			LicenseKey += MyKeys.substring(CharControl, 1);
+			LicenseKey = LicenseKey.concat(MyKeys.substring(CharControl, CharControl + 1));
 		}
 		return LicenseKey;
-	} 
+	}
 	
 	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
 	    long diffInMillies = date2.getTime() - date1.getTime();

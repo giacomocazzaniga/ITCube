@@ -15,7 +15,7 @@ public class MacroCategorieEventi {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToMany(mappedBy = "macroCategorieEventi")
+	/*@OneToMany(mappedBy = "macroCategorieEventi")
 	private List<VisualizzazioneEventi> visualizzazioneEventi;
 	//private int classe;
 	
@@ -24,11 +24,10 @@ public class MacroCategorieEventi {
 	}
 	public void setVisualizzazioneEventi(List<VisualizzazioneEventi> visualizzazioneEventi) {
 		this.visualizzazioneEventi = visualizzazioneEventi;
-	}
+	}*/
 	private String nome_categoria;
 	
 	public MacroCategorieEventi() {
-		super();
 	}
 	public int getId() {
 		return id;

@@ -1,6 +1,8 @@
 package itcube.consulting.monitoraggioClient;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
+import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
@@ -27,6 +32,7 @@ import itcube.consulting.monitoraggioClient.repositories.MonitoraggioRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
+import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziOverviewResponse;
@@ -70,6 +76,9 @@ public class ServicesAndEventsController {
 	@Autowired
 	private MonitoraggioRepository monitoraggioRepository;
 	
+	@Autowired
+	private VisualizzazioneEventiRepository visualizzazioneEventiRepository;
+	
 	@PostMapping(path="/inserimentoServizi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
@@ -87,7 +96,9 @@ public class ServicesAndEventsController {
 			servizi=(List<ConfWindowsServices>)body.get("servizi");
 			if(servizi.size()!=0)
 			{
-				//ricavare date and time
+				SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+				Date date = new Date(System.currentTimeMillis());
+				String dateNow=formatter.format(date);
 				
 				for(ConfWindowsServices i:servizi)
 				{
@@ -251,6 +262,105 @@ public class ServicesAndEventsController {
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
 			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/modificaMonitoraggioServizio",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> modificaMonitoraggioServizio (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		String nome_servizio;
+		boolean monitora;
+		
+		try 
+		{
+			id_client=(Integer)body.get("id_client");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			nome_servizio=(String)body.get("nome_servizio");
+			monitora=(boolean)body.get("monitoraggio");
+			
+			if(validToken.isValid())
+			{
+				monitoraggioRepository.updateMonitoraggio(nome_servizio, monitora);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				generalResponse.setMessage("Operazione effettuata con successo");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(newToken);
+				
+				return ResponseEntity.ok(generalResponse); 
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/inserimentoEventi",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity <GeneralResponse> inserimentoEventi (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		List<VisualizzazioneEventi> eventi=new ArrayList<VisualizzazioneEventi>();
+		ObjectMapper mapper = new ObjectMapper();
+		
+		try
+		{
+			eventi=(List<VisualizzazioneEventi>)body.get("eventi");
+			
+			if(eventi.size()!=0)
+			{
+				SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+				Date date = new Date(System.currentTimeMillis());
+				String dateNow=formatter.format(date);
+				
+				System.out.println(eventi.get(0));
+				
+				for(Object i:eventi)
+				{
+					VisualizzazioneEventi pojo = mapper.convertValue(i, VisualizzazioneEventi.class);
+					pojo.setDate_and_time(date);
+					visualizzazioneEventiRepository.save(pojo);
+				}
+				
+				generalResponse.setMessage("Operazione effettuata con successo");
+				generalResponse.setMessageCode(0);
+	
+				return ResponseEntity.ok(generalResponse);
+			}
+			else
+			{
+				generalResponse.setMessage("Nessun evento presente");
+				generalResponse.setMessageCode(-2);
+				
+				return ResponseEntity.ok(generalResponse);
+			}
 		}
 		catch(Exception e)
 		{

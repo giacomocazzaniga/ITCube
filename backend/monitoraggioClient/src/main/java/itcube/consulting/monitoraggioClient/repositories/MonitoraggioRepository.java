@@ -12,4 +12,9 @@ public interface MonitoraggioRepository extends CrudRepository<Monitoraggio,Inte
 	
 	@Query(value="Select * from Monitoraggio Where id_client = :id_client", nativeQuery=true)
 	public List<Monitoraggio> getServiziClient(@Param("id_client") int id_client);
+	
+	@Query(value="UPDATE monitoraggio\n"
+			+ "SET monitoraggio = :monitoraggio\n"
+			+ "WHERE nome_servizio= :nome_servizio;", nativeQuery=true)
+	public void updateMonitoraggio(@Param("nome_servizio") String nome_servizio, @Param("monitoraggio") boolean monitoraggio);
 }

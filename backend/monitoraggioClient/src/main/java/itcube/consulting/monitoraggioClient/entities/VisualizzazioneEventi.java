@@ -17,10 +17,10 @@ public class VisualizzazioneEventi {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name = "macro_categoria")
-	private MacroCategorieEventi macroCategorieEventi;
-	//private int macro_categoria;
+	private MacroCategorieEventi macroCategorieEventi;*/
+	private int macro_categoria;
 	
 	private int sottocategoria;
 	private int level;
@@ -54,20 +54,20 @@ public class VisualizzazioneEventi {
 		this.elencoClients = elencoClients;
 	}
 	
-	/*public int getMacro_categoria() {
+	public int getMacro_categoria() {
 		return macro_categoria;
 	}
 	public void setMacro_categoria(int macro_categoria) {
 		this.macro_categoria = macro_categoria;
-	}*/
+	}
 	
-	public MacroCategorieEventi getMacroCategorieEventi() {
+	/*public MacroCategorieEventi getMacroCategorieEventi() {
 		return macroCategorieEventi;
 	}
 
 	public void setMacroCategorieEventi(MacroCategorieEventi macroCategorieEventi) {
 		this.macroCategorieEventi = macroCategorieEventi;
-	}
+	}*/
 	
 	public int getSottocategoria() {
 		return sottocategoria;
