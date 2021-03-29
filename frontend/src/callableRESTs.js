@@ -73,10 +73,13 @@ export const _getServiziAll = (token, id_client) => {
   })
 }
 
-export const _getEventi = (token, id_client) => {
+export const _getEventi = (token, id_client, sottocategoria="*", slot=1, n=20) => {
   return axios.post(url_get_eventiFake, {
     id_client: id_client, 
-    token: token
+    token: token,
+    sottocategoria: sottocategoria,
+    slot: slot,
+    n: n
   })
 }
 

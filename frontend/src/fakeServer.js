@@ -199,7 +199,17 @@ app.post('/getEventiOverview', function (req, res) {
     "message": "",
     "messageCode": "0",
     "problemi_oggi": "3",
-    "warning_oggi": "2"
+    "warning_oggi": "2",
+    "tot_per_sottocategoria": [
+      {"sottocategoria" : "A",
+      "numero" : "6"},
+      {"sottocategoria" : "C",
+      "numero" : "2"},
+      {"sottocategoria" : "H",
+      "numero" : "0"},
+      {"sottocategoria" : "S",
+      "numero" : "0"}
+    ]
   };
   console.log("/getEventiOverview");
   res.send(result);
@@ -352,6 +362,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "A",
       "level" : "1",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "Bonjour Service",
       "id_event" : "100",
       "task_category" : "None",
@@ -359,6 +370,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "C",
       "level" : "2",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "SQLISService120",
       "id_event" : "274",
       "task_category" : "Service Control",
@@ -366,6 +378,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "A",
       "level" : "1",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "Bonjour Service",
       "id_event" : "100",
       "task_category" : "None",
@@ -373,6 +386,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "A",
       "level" : "2",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "SQLISService120",
       "id_event" : "274",
       "task_category" : "Service Control",
@@ -380,6 +394,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "C",
       "level" : "4",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "Bonjour Service",
       "id_event" : "100",
       "task_category" : "None",
@@ -387,6 +402,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "A",
       "level" : "8",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "SQLISService120",
       "id_event" : "274",
       "task_category" : "Service Control",
@@ -394,6 +410,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "A",
       "level" : "1",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "Bonjour Service",
       "id_event" : "100",
       "task_category" : "None",
@@ -401,6 +418,7 @@ app.post('/getEventi', function (req, res) {
       {"sottocategoria" : "A",
       "level" : "16",
       "date_and_time" : "2020-02-05 at 10:11:33 UTC",
+      "date_and_time_evento" : "2020-02-05 at 11:11:33 UTC",
       "source" : "SQLISService120",
       "id_event" : "274",
       "task_category" : "Service Control",

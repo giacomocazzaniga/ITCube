@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import { eventsList } from "../ActionCreator";
 import { Accordion, Card } from "react-bootstrap";
 import { _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * connect the actions to the component
@@ -39,6 +40,7 @@ const WindowsEvents = (props) => {
     _getEventi(props.token, props.id_client)
     .then(function (response) {
       stopLoadingToast(loadingToast);
+      console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
       let list = servicesListMaker(response.data.eventi);
       props.EventsList(list)
     })
@@ -59,7 +61,20 @@ const WindowsEvents = (props) => {
     let categoriesHeaderWasPrinted = [false, false, false, false];
     let sottocategoria = "";
     let compare_sottocategoria = "";
+    let n_sottocategoria = 0;
     for(let j=0; j<4; j++){
+      if(props.tot_per_sottocategoria[j].sottocategoria=="A"){
+        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      }
+      if(props.tot_per_sottocategoria[j].sottocategoria=="C"){
+        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      }
+      if(props.tot_per_sottocategoria[j].sottocategoria=="H"){
+        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      }
+      if(props.tot_per_sottocategoria[j].sottocategoria=="S"){
+        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      }
       categoriesHeaderWasPrinted[j] = true
       switch(j){
         case 0:
@@ -84,13 +99,13 @@ const WindowsEvents = (props) => {
       returnList = [returnList, 
         <div class="winServices">
           <Card>
-            <Accordion.Toggle as={Card.Header} eventKey={sottocategoria}>
-              <div className="clickable"><h4>{sottocategoria}</h4></div>
+            <Accordion.Toggle as={Card.Header} eventKey={sottocategoria} >
+              <div className="clickable"><h4>{sottocategoria} ({n_sottocategoria})</h4></div>
             </Accordion.Toggle>
             <Accordion.Collapse eventKey={sottocategoria}>
               <Card.Body>
               <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
-                {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time))}
+                {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
               </Card.Body>
             </Accordion.Collapse>
           </Card>

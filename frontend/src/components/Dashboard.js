@@ -97,7 +97,8 @@ const Dashboard = (props) => {
     n_running: 0,
     n_stop: 0,
     problemi_oggi: 0,
-    warning_oggi: 0
+    warning_oggi: 0,
+    tot_per_sottocategoria: []
   })
 
   useEffect( () => {
@@ -122,7 +123,8 @@ const Dashboard = (props) => {
           setState((previousState) => {
             return { ...previousState, 
               problemi_oggi: response.data.problemi_oggi,
-              warning_oggi: response.data.warning_oggi
+              warning_oggi: response.data.warning_oggi,
+              tot_per_sottocategoria: response.data.tot_per_sottocategoria
             };
           });
         })
@@ -166,7 +168,7 @@ const Dashboard = (props) => {
           <WindowsServices selected={props.title} id_client={props.id_client} services={[state.n_totali, state.n_running, state.n_stop]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]}/>
+          <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>
         </Col>
         {/*<Col md={3} xs={6}>
           <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
