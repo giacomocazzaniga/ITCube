@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import Knob from 'react-canvas-knob';
+import { CircularProgressbar, buildStyles  } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 
 /**
@@ -17,14 +19,15 @@ const mapDispatchToProps = dispatch => ({});
 const mapStateToProps = state => ({});
 
 const Drive = (props) => {
-  return (
+  const percentage = props.occupiedSpace;
+  return(
     <Box title={"Drive "+props.driveLabel+": "+parseInt(100-props.occupiedSpace)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+props.lastUpdate}>
-      <Col md={4} xs={12}>
+      <Col className="col-md-4 col-xs-6 offset-xs-3">
         {parseInt(props.occupiedSpace) >= 90 
-        ?<Knob value={props.occupiedSpace} fgColor="#dd4b39" height="97" width="97"/>
+        ? <CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#dd4b39'}, text: {fill: '#dd4b39'}}}/>
         : parseInt(props.occupiedSpace) >= 80 
-          ? <Knob value={props.occupiedSpace} fgColor="#f39c12" height="97" width="97"/>
-          : <Knob value={props.occupiedSpace} fgColor="#00a65a" height="97" width="97"/>
+          ? <CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#f39c12'}, text: {fill: '#f39c12'}}}/>
+          : <CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#00a65a'}, text: {fill: '#00a65a'}}}/>
         }
       </Col>
       <Col md={8} xs={12}>
