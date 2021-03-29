@@ -22,12 +22,12 @@ const Drive = (props) => {
   const percentage = props.occupiedSpace;
   return(
     <Box title={"Drive "+props.driveLabel+": "+parseInt(100-props.occupiedSpace)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+props.lastUpdate}>
-      <Col className="col-md-4 col-xs-6 offset-xs-3">
+      <Col md={4} xs={12}>
         {parseInt(props.occupiedSpace) >= 90 
-        ? <CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#dd4b39'}, text: {fill: '#dd4b39'}}}/>
+        ? <center><CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#dd4b39'}, text: {fill: '#dd4b39'}}}/></center>
         : parseInt(props.occupiedSpace) >= 80 
-          ? <CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#f39c12'}, text: {fill: '#f39c12'}}}/>
-          : <CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#00a65a'}, text: {fill: '#00a65a'}}}/>
+          ? <center><CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#f39c12'}, text: {fill: '#f39c12'}}}/></center>
+          : <center><CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#00a65a'}, text: {fill: '#00a65a'}}}/></center>
         }
       </Col>
       <Col md={8} xs={12}>
