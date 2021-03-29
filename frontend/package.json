@@ -29,6 +29,7 @@
     "react-bootstrap-switch": "^15.5.3",
     "react-canvas-knob": "^0.5.0",
     "react-circular-progressbar": "^2.0.4",
+    "react-collapsible": "^2.8.3",
     "react-dom": "^17.0.1",
     "react-dropdown": "^1.9.2",
     "react-hot-toast": "^1.0.2",

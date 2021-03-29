@@ -8,6 +8,7 @@ import { url_lista_serviziFake } from "../REST";
 import axios from "axios";
 import { Accordion, Alert, Card } from "react-bootstrap";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
+import Collapsible from "react-collapsible";
 
 /**
  * connect the actions to the component
@@ -49,26 +50,25 @@ const OperationsList = (props) => {
     });
   }
 
+  const openToggle = (id) => {
+    var elem = document.getElementsByClassName("arrowAccordion"+id)[0];
+    elem.style.transform = "rotate(90deg)";
+    elem.style.transition = "transform 1s ease";
+    elem.style.display = "inline-block";
+  }
+
+  const closeToggle = (id) => {
+    var elem = document.getElementsByClassName("arrowAccordion"+id)[0];
+    elem.style.transform = "rotate(0deg)";
+    elem.style.transition = "transform 1s ease";
+    elem.style.display = "inline-block";
+  }
+
   const servicesListMaker = (services) => {
     let returnList = [<p class="infoDisabled">* Operazione non selezionabile con la licenza in uso.</p>];
     let status = ["", "RUNNING", "PROBLEMI", "WARINNG"]
     services.map((service, i) => {
       switch(service.stato){
-        /*case "0": //disattivato
-          (service.attivo=="true") 
-          ? returnList=[returnList, <p class="disabled"><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} checked disabled/> <span class="infoDisabled">*</span>{service.nome}</p>]
-          : returnList=[returnList, <p class="disabled"><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} disabled/> <span class="infoDisabled">*</span>{service.nome}</p>]
-          break;
-        case "1": //attivo
-          (service.attivo=="true") 
-          ? returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} checked/> <label for={"service"+i}> {service.nome}</label></p>]
-          : returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome}/> <label for={"service"+i}> {service.nome}</label></p>]
-          break;
-        default: //attivo con problemi o warning
-          (service.attivo=="true") 
-          ? returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} checked/> <label for={"service"+i}> {service.nome}</label> {status[service.stato]}</p>]
-          : returnList=[returnList, <p><input type="checkbox" id={"service"+i} name={"service"+i} value={service.nome} /> <label for={"service"+i}> {service.nome}</label></p>]
-        */
         case "0":
           returnList = getCard(returnList, service.nome, false, i+1);
           break;
@@ -81,21 +81,14 @@ const OperationsList = (props) => {
   
   const getCard = (returnList, opname, enabled, i) => {
     returnList = [returnList, 
-      <Card>
-        <Accordion.Toggle as={Card.Header} eventKey={i}>
-          <div className="clickable"><h4>{opname}</h4></div>
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey={i}>
-          <Card.Body>
-            {enabled 
-            ? <p><input type="checkbox" checked/> <label>Abilita operazione</label></p>
-            : <p><input type="checkbox"/> <label>Abilita operazione</label></p>
-            }
-            
-            <h5>Servizi:</h5>
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
+      <Collapsible onOpen={()=>openToggle(i)} onClose={()=>closeToggle(i)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+i}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {opname}</h4></div>}>
+        {enabled 
+          ? <p><input type="checkbox" checked/> <label>Abilita operazione</label></p>
+          : <p><input type="checkbox"/> <label>Abilita operazione</label></p>
+        }
+        <h5>Descrizione:</h5>  
+      </Collapsible>
+
   	]
 
   return returnList
@@ -105,7 +98,6 @@ const OperationsList = (props) => {
     <Box title="Lista delle operazioni" type="primary" collapsable footer={<PopUp title="Gestione delle operazioni" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList(props.selected, props.token)}/>}>
       <Col md={12} xs={12}>
         <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Operazioni attive: {props.ops[0]}</h4>
-        <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Operazioni in esecuzione: {props.ops[1]}</h4>
         <h4><FontAwesomeIcon icon={["fas", "times-circle"]} /> Operazioni con problemi: {props.ops[2]}</h4>
         <h4><FontAwesomeIcon icon={["fas", "exclamation-circle"]} /> Operazioni con warnings: {props.ops[3]}</h4>
       </Col>

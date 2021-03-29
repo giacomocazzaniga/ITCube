@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
+import Collapsible from 'react-collapsible';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUp from "./PopUp";
 import { eventsList } from "../ActionCreator";
-import { Accordion, Card } from "react-bootstrap";
 import { _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
@@ -48,6 +48,20 @@ const WindowsEvents = (props) => {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
     });
+  }
+
+  const openToggle = (id) => {
+    var elem = document.getElementsByClassName("arrowAccordion"+id)[0];
+    elem.style.transform = "rotate(90deg)";
+    elem.style.transition = "transform 1s ease";
+    elem.style.display = "inline-block";
+  }
+
+  const closeToggle = (id) => {
+    var elem = document.getElementsByClassName("arrowAccordion"+id)[0];
+    elem.style.transform = "rotate(0deg)";
+    elem.style.transition = "transform 1s ease";
+    elem.style.display = "inline-block";
   }
 
   const servicesListMaker = (services) => {
@@ -94,21 +108,12 @@ const WindowsEvents = (props) => {
           compare_sottocategoria = "S";
           break;
       }
-      
-      //returnList = getCard(returnList, service.sottocategoria, service.level, i+1, service.source, service.id_event, service.task_category, service.info, status, categoriesHeaderWasPrinted);
       returnList = [returnList, 
         <div class="winServices">
-          <Card>
-            <Accordion.Toggle as={Card.Header} eventKey={sottocategoria} >
-              <div className="clickable"><h4>{sottocategoria} ({n_sottocategoria})</h4></div>
-            </Accordion.Toggle>
-            <Accordion.Collapse eventKey={sottocategoria}>
-              <Card.Body>
-              <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
-                {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
+          <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {sottocategoria} ({n_sottocategoria})</h4></div>}>
+            <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
+            {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
+          </Collapsible>
         </div>
       ]
     }

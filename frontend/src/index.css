@@ -187,7 +187,7 @@ code {
   height: 40px;
 }
 
-.winServices .card {
+.winServices .Collapsible {
   width: 110% !important;
   min-width: 1000px !important;
 }
