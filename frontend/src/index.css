@@ -210,3 +210,8 @@ code {
 .reactPaginate {
   max-width: 84% !important;
 }
+
+.treeview-menu span svg {
+  font-size: 11px !important;
+  display: none;
+}

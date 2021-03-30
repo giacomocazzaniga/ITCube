@@ -172,9 +172,6 @@ const Dashboard = (props) => {
         <Col md={4} xs={6}>
           <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>
         </Col>
-        {/*<Col md={3} xs={6}>
-          <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
-        </Col>*/}
       </ModalProvider>
     </Row>
   </Content>

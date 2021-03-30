@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Box } from 'adminlte-2-react';
 import Chart from "react-apexcharts";
+import { defaultUpperBound } from '../callableRESTs';
+import ReactPaginate from 'react-paginate';
 
 
 /**
