@@ -94,6 +94,7 @@ const Dashboard = (props) => {
   const [state, setState] = React.useState({
     clientData: null,
     n_totali: 0,
+    n_monitorati: 0,
     n_running: 0,
     n_stop: 0,
     problemi_oggi: 0,
@@ -115,7 +116,8 @@ const Dashboard = (props) => {
           return { ...previousState, 
             n_totali: response.data.n_totali,
             n_running: response.data.n_running,
-            n_stop: response.data.n_stop
+            n_stop: response.data.n_stop,
+            n_monitorati: response.data.n_monitorati
           };
         });
         _getEventiOverview(props.token, props.id_client)
@@ -165,7 +167,7 @@ const Dashboard = (props) => {
           <OperationsList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsServices selected={props.title} id_client={props.id_client} services={[state.n_totali, state.n_running, state.n_stop]}/>
+          <WindowsServices selected={props.title} id_client={props.id_client} services={[state.n_monitorati, state.n_running, state.n_stop, state.n_totali]}/>
         </Col>
         <Col md={4} xs={6}>
           <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>

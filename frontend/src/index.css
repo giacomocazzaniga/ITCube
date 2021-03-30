@@ -206,3 +206,7 @@ code {
   max-width: 100px !important;
   max-height: 100px !important;
 }
+
+.reactPaginate {
+  max-width: 84% !important;
+}

@@ -4,8 +4,9 @@ import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUp from "./PopUp";
 import { servicesList } from "../ActionCreator";
-import { _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
+import { defaultUpperBound, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
+import ReactPaginate from "react-paginate";
 
 /**
  * connect the actions to the component
@@ -57,6 +58,7 @@ const WindowsServices = (props) => {
         returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, status, service.description, null);
       }
     })
+    returnList = [returnList, <Col className="col-xs-12 col-md-12 reactPaginate"><ReactPaginate previousLabel={"← Precedente"} nextLabel={"Successivo →"} containerClassName={"pagination"} pageCount={Math.ceil(props.services[3]/defaultUpperBound)}/></Col>]
     return returnList
   }
   

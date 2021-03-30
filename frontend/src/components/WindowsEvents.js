@@ -3,11 +3,11 @@ import Collapsible from 'react-collapsible';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ReactPaginate from 'react-paginate';
 import PopUp from "./PopUp";
 import { eventsList } from "../ActionCreator";
-import { _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
+import { defaultUpperBound, _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * connect the actions to the component
@@ -113,6 +113,7 @@ const WindowsEvents = (props) => {
           <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {sottocategoria} ({n_sottocategoria})</h4></div>}>
             <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
             {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
+            <Col className="col-xs-12 col-md-12 reactPaginate"><ReactPaginate previousLabel={"← Precedente"} nextLabel={"Successivo →"} containerClassName={"pagination"} pageCount={Math.ceil(n_sottocategoria/defaultUpperBound)}/></Col>
           </Collapsible>
         </div>
       ]

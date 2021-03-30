@@ -2,6 +2,9 @@ const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_dee
 const axios = require('axios');
 var md5 = require('md5');
 
+export const defaultUpperBound = 20;
+export const defaultSlot = 1;
+
 export const _performSignUp = (email, password, email_alert, ragione_sociale) => {
   let encryptedPsw = md5(password);
   return axios.post(url_signup, {
@@ -73,7 +76,7 @@ export const _getServiziAll = (token, id_client) => {
   })
 }
 
-export const _getEventi = (token, id_client, sottocategoria="*", slot=1, n=20) => {
+export const _getEventi = (token, id_client, sottocategoria="*", slot=defaultSlot, n=defaultUpperBound) => {
   return axios.post(url_get_eventiFake, {
     id_client: id_client, 
     token: token,

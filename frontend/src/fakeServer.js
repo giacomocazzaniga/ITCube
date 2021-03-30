@@ -187,7 +187,8 @@ app.post('/getServiziOverview', function (req, res) {
     "messageCode": "0",
     "n_totali": "12",
     "n_running": "9",
-    "n_stop": "3"
+    "n_stop": "1",
+    "n_monitorati": "10"
   };
   console.log("/getServiziOverview");
   res.send(result);
