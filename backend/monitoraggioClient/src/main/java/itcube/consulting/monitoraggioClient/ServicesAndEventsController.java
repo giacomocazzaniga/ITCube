@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
+import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
@@ -27,8 +29,9 @@ import itcube.consulting.monitoraggioClient.repositories.MonitoraggioRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
+import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
-import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
+import itcube.consulting.monitoraggioClient.response.ServiziResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
@@ -70,6 +73,9 @@ public class ServicesAndEventsController {
 	@Autowired
 	private MonitoraggioRepository monitoraggioRepository;
 	
+	@Autowired
+	private VisualizzazioneEventiRepository visualizzazioneEventiRepository;
+	
 	@PostMapping(path="/inserimentoServizi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
@@ -84,13 +90,14 @@ public class ServicesAndEventsController {
 		
 		try
 		{
+			id_client=(Integer)body.get("id_client");
 			servizi=(List<ConfWindowsServices>)body.get("servizi");
 			if(servizi.size()!=0)
 			{
-				//ricavare date and time
 				
 				for(ConfWindowsServices i:servizi)
 				{
+					i.setDate_and_time(Services.getCurrentDate());
 					confWindowsServicesRepository.save(i);
 				}
 				
@@ -166,7 +173,49 @@ public class ServicesAndEventsController {
 	}
 	
 
-	@PostMapping(path="/getServiziAll",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path="/inserimentoEventi",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> inserimentoEventi (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_client;
+		List<VisualizzazioneEventi> eventi=new ArrayList<VisualizzazioneEventi>();
+		
+		try
+		{
+			id_client=(Integer)body.get("id_client");
+			eventi=(List<VisualizzazioneEventi>)body.get("eventi");
+			if(eventi!=null)
+			{
+				for(VisualizzazioneEventi i:eventi)
+				{
+					i.setDate_and_time(Services.getCurrentDate());
+					visualizzazioneEventiRepository.save(i);
+				}
+				generalResponse.setMessage("Operazione effettuata con successo");
+				generalResponse.setMessageCode(0);
+			
+				return ResponseEntity.ok(generalResponse); 
+			}
+			else
+			{
+				generalResponse.setMessage("Lista dei servizi vuota");
+				generalResponse.setMessageCode(-2);
+			
+				return ResponseEntity.ok(generalResponse); 
+			}
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/getServiziAll",produces=MediaType.APPLICATION_JSON_VALUE) //ritorna tutti indipendentemente se sono monitorati o no
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> getServiziAll (@RequestBody Map<String,Object> body)
 	{
@@ -175,7 +224,7 @@ public class ServicesAndEventsController {
 		int id_company;
 		int id_client;
 		String token;
-		ServiziMonitoratiResponse response=new ServiziMonitoratiResponse();
+		ServiziResponse response=new ServiziResponse();
 		List<ConfWindowsServices> serviziMonitorati=new ArrayList<ConfWindowsServices>();
 		
 		try
@@ -187,7 +236,7 @@ public class ServicesAndEventsController {
 			
 			if(validToken.isValid())
 			{
-				serviziMonitorati=confWindowsServicesRepository.getServiziMonitorati(id_client);
+				serviziMonitorati=confWindowsServicesRepository.getServizi(id_client);
 				
 				response.setConfWindowsSerives(serviziMonitorati);
 				

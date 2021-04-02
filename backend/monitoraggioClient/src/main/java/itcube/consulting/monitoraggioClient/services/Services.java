@@ -1,9 +1,15 @@
 package itcube.consulting.monitoraggioClient.services;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -148,23 +154,19 @@ public final class Services {
 	{ 
 		String MyKeys = "AB1CD2EF3GH4JK5LM6NP7QR8ST9UVZ";
 		String LicenseKey = "";
-		var _random = new Random();
 		int CharControl = 0;
 		int CharValue = 0;
-		// per 2 volte
-		for (var i = 0; i < 2; i++) {
-			// da 1 a 7
-			for (var j = 0; j < 7; j++) {
-				// random lettera maiuscola, minuscola o numero
-				int RandomChoice = _random.nextInt(MyKeys.length()); //ho rimosso lo zero, spero funzioni lo stesso
+		Random rand = new Random();
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 7; j++) {
+				int RandomChoice = rand.nextInt(MyKeys.length() - 0) + 0;
 				CharValue += RandomChoice;
-				LicenseKey += MyKeys.substring(RandomChoice, 1);
+				LicenseKey = LicenseKey.concat(MyKeys.substring(RandomChoice, RandomChoice + 1));
 			}
-			// aggiungo carattere di controllo al termine
 			CharControl += CharValue;
 			int ctrlch = CharControl / LicenseKey.length();
 			CharControl = (int) ctrlch;
-			LicenseKey += MyKeys.substring(CharControl, 1);
+			LicenseKey = LicenseKey.concat(MyKeys.substring(CharControl, CharControl + 1));
 		}
 		return LicenseKey;
 	} 
@@ -173,10 +175,22 @@ public final class Services {
 	    long diffInMillies = date2.getTime() - date1.getTime();
 	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
 	}
-	public static String getCurrentDate() {
-		SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date =  new Date(System.currentTimeMillis());
-		return formatter.format(date);
+	
+	public static Date getCurrentDate() {
+		/*
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date now = new Date();
+
+		String dateAsString = sdf.format(date); 
+		Date dateFromString = sdf.parse(dateAsString);
+		return dateFromString;
+		 */
+		DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss z", Locale.ITALIAN);
+		Date date =  new Date();
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z").format(Calendar.getInstance().getTime());
+		System.out.println(timeStamp);
+		LocalDateTime d = LocalDateTime.parse(timeStamp, formatter);
+		return Date.from(d.atZone(ZoneId.systemDefault()).toInstant());
 	}
 	
 	public static Date getScadenza()

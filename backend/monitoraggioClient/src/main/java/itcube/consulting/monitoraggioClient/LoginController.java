@@ -205,7 +205,6 @@ public class LoginController {
 			
 			numCompany=elencoCompaniesRepository.Login(email, password);
 			
-	
 			if(numCompany<1)
 			{
 				generalResponse.setMessage("Password sbagliata o utente non presente");
@@ -225,14 +224,16 @@ public class LoginController {
 					token=_tokenCompany;
 				
 				Services.putToken(company.getId(),token);
-
+				
 				responseLogin.setMessage("Login avvenuto con successo");
 				responseLogin.setMessageCode(0);
 				responseLogin.setRagione_sociale(company.getRagione_sociale());
 				responseLogin.setId_company(company.getId());
 				responseLogin.setEmailNotify(company.getEmail_alert());
 				responseLogin.setToken(token);
+				
 				System.out.println(Services.getCurrentDate()+" /login SUCCESS "+email);
+				
 				return ResponseEntity.ok(responseLogin);
 			}
 		}

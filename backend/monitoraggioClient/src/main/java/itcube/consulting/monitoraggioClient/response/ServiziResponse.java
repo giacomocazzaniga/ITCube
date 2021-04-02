@@ -4,10 +4,10 @@ import java.util.List;
 
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 
-public class ServiziMonitoratiResponse extends GeneralResponse {
+public class ServiziResponse extends GeneralResponse {
 	private List<ConfWindowsServices> confWindowsSerives;
 	
-	public ServiziMonitoratiResponse() {
+	public ServiziResponse() {
 		
 	}
 

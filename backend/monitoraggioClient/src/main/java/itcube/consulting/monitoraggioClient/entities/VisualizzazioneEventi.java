@@ -25,6 +25,7 @@ public class VisualizzazioneEventi {
 	private int sottocategoria;
 	private int level;
 	private Date date_and_time;
+	private Date date_and_time_evento;
 	private String source;
 	private int id_event;
 	private String task_category;
@@ -113,6 +114,15 @@ public class VisualizzazioneEventi {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+
+	public Date getDate_and_time_evento() {
+		return date_and_time_evento;
+	}
+
+	public void setDate_and_time_evento(Date date_and_time_evento) {
+		this.date_and_time_evento = date_and_time_evento;
+	}
+	
 	/*public int getId_client() {
 		return id_client;
 	}
