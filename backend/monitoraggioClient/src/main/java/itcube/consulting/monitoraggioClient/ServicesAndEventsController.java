@@ -2,6 +2,7 @@ package itcube.consulting.monitoraggioClient;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRepository;
+import itcube.consulting.monitoraggioClient.response.EventiOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.OperazioniOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
@@ -263,9 +266,9 @@ public class ServicesAndEventsController {
 	}
 	
 
-	@PostMapping(path="/getServiziOverView",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path="/getServiziOverview",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
-	public ResponseEntity<GeneralResponse> getServiziOverView (@RequestBody Map<String,Object> body)
+	public ResponseEntity<GeneralResponse> getServiziOverview (@RequestBody Map<String,Object> body)
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
 		ValidToken validToken=new ValidToken();
@@ -297,6 +300,113 @@ public class ServicesAndEventsController {
 				return ResponseEntity.ok(response); 
 				
 			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/getEventiOverview",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getEventiOverview (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		EventiOverviewResponse response=new EventiOverviewResponse();
+		HashMap<Integer, Integer> tot=new HashMap<Integer, Integer>();
+		
+		try
+		{
+			id_client=(Integer)body.get("id_client");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				int problemi_oggi=visualizzazioneEventiRepository.getProblemiOggi(id_client);
+				int warning_oggi=visualizzazioneEventiRepository.getWarningOggi(id_client);
+				List<Integer> sottocategorie=visualizzazioneEventiRepository.getSottocategorie(id_client);
+				for(Integer i:sottocategorie)
+				{
+					int num=visualizzazioneEventiRepository.contaSottocategoria(id_client, i);
+					tot.put(i, num);
+				}
+				
+				response.setProblemi_oggi(problemi_oggi);
+				response.setWarning_oggi(warning_oggi);
+				response.setTot_per_sottocategoria(tot);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/getOperazioniOverview",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getOperazioniOverview (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		OperazioniOverviewResponse response=new OperazioniOverviewResponse();
+		try
+		{
+			//assumo che in stato ci siano tutte le info
+			id_client=(Integer)body.get("id_client");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				int attive= elencoOperazioniRepository.countStato("attiva", id_client);
+				int esecuzione= elencoOperazioniRepository.countStato("esecuzione", id_client);
+				int problemi= elencoOperazioniRepository.countStato("error", id_client);
+				int warning= elencoOperazioniRepository.countStato("warning", id_client);
+				
+				response.setAttive(attive);
+				response.setEsecuzione(esecuzione);
+				response.setProblemi(problemi);
+				response.setWarning(warning);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
 			return ResponseEntity.badRequest().body(generalResponse);

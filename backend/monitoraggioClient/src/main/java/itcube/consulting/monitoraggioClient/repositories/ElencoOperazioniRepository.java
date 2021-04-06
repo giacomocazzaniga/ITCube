@@ -8,8 +8,6 @@ import itcube.consulting.monitoraggioClient.entities.ElencoOperazioni;
 
 public interface ElencoOperazioniRepository extends CrudRepository<ElencoOperazioni,Integer>{
 	
-	@Query(value="Select count(*) from elenco_licenze where codice= :codice", nativeQuery=true)
-	int countCodes(@Param("codice") String codice);
-	
-	
+	@Query(value="Select count(*) from elenco_operazioni join config on config.id_operazione=elenco_operazioni.id where elenco_operazioni.stato= :stato and config.id_client= :id_client", nativeQuery=true)
+	public int countStato(@Param("stato") String stato, @Param("id_client") int id_client);
 }
