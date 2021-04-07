@@ -125,6 +125,8 @@ const LicensesList = (props) => {
     props.RemoveLicense(selectedList);
   }
 
+  
+
   return (
     <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Multiselect
@@ -139,6 +141,7 @@ const LicensesList = (props) => {
         displayValue="name" // Property name to display in the dropdown options
       />
       <br />
+      {console.log(props.list)}
       {props.list.map((license) => {
         return (JSON.stringify(props.licensesList).toUpperCase().includes(license.tipologia.toUpperCase())) 
         ? <>

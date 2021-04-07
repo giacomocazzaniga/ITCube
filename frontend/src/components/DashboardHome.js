@@ -86,6 +86,7 @@ const DashboardHome = (props) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
+      console.log(response);
       stopLoadingToast(loadingToast);
       setState(() => {
         return { licenses: response.data.licenzeShallow };  

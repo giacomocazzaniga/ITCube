@@ -232,7 +232,7 @@ public class ServicesAndEventsController {
 		
 		try
 		{
-			id_client=(Integer)body.get("id_client");
+			id_client=Integer.parseInt((String) body.get("id_client"));
 			id_company=elencoClientsRepository.getIdCompany(id_client);
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
@@ -279,7 +279,7 @@ public class ServicesAndEventsController {
 		
 		try 
 		{
-			id_client=(Integer)body.get("id_client");
+			id_client=Integer.parseInt((String)body.get("id_client"));
 			id_company=elencoClientsRepository.getIdCompany(id_client);
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
@@ -290,6 +290,8 @@ public class ServicesAndEventsController {
 				response.setN_totali((confWindowsServicesRepository.getTotServizi(id_client)));
 				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 1));
 				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 2));
+				response.setN_monitorati(monitoraggioRepository.getNServiziMonitorati(id_client));
+				
 				
 				String newToken=Services.checkThreshold(id_company, token);
 				

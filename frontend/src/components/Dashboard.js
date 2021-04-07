@@ -116,7 +116,7 @@ const Dashboard = (props) => {
           return { ...previousState, 
             n_totali: response.data.n_totali,
             n_running: response.data.n_running,
-            n_stop: response.data.n_stop,
+            n_stop: response.data.n_stopped,
             n_monitorati: response.data.n_monitorati
           };
         });

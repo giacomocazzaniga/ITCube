@@ -4,6 +4,7 @@ public class ServiziOverviewResponse extends GeneralResponse{
 	private int n_totali;
 	private int n_running;
 	private int n_stopped;
+	private int n_monitorati;
 
 	public ServiziOverviewResponse() {
 	}
@@ -24,6 +25,12 @@ public class ServiziOverviewResponse extends GeneralResponse{
 	}
 	public void setN_stopped(int n_stopped) {
 		this.n_stopped = n_stopped;
+	}
+	public int getN_monitorati() {
+		return n_monitorati;
+	}
+	public void setN_monitorati(int n_monitorati) {
+		this.n_monitorati = n_monitorati;
 	}
 	
 	

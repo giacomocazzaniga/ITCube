@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Monitoraggio {
+public class Monitoraggio implements java.io.Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
