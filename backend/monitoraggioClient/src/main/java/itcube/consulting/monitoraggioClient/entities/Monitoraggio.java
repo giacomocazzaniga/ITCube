@@ -18,14 +18,8 @@ public class Monitoraggio implements java.io.Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne
-	@JoinColumn(name = "id_client")
-	private ElencoClients elencoClients;
-	//private int id_client;
-	
-	@OneToMany(mappedBy = "monitoraggio")
-	List<ConfWindowsServices> confWindowsServices;
-	
+	private int id_client;
+
 	@Column(name="nome_servizio")
 	private String nome_servizio;
 	
@@ -37,34 +31,23 @@ public class Monitoraggio implements java.io.Serializable{
 	public Monitoraggio(ElencoClients elencoClients, List<ConfWindowsServices> confWindowsServices,
 			boolean monitora) {
 		super();
-		this.elencoClients = elencoClients;
-		this.confWindowsServices = confWindowsServices;
 		this.monitora = monitora;
 	}
+	
 
+	public int getId_client() {
+		return id_client;
+	}
 
+	public void setId_client(int id_client) {
+		this.id_client = id_client;
+	}
 
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
-	}
-	
-	public ElencoClients getElencoClients() {
-		return elencoClients;
-	}
-
-	public void setElencoClients(ElencoClients elencoClients) {
-		this.elencoClients = elencoClients;
-	}
-
-	public List<ConfWindowsServices> getConfWindowsServices() {
-		return confWindowsServices;
-	}
-
-	public void setConfWindowsServices(List<ConfWindowsServices> confWindowsServices) {
-		this.confWindowsServices = confWindowsServices;
 	}
 
 	public boolean isMonitora() {

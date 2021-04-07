@@ -23,18 +23,17 @@ public class ConfWindowsServices {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "nome_servizio", referencedColumnName = "nome_servizio")
-	private Monitoraggio monitoraggio;
+	private String nome_servizio;
 	
-	/*@Column(name="nome_servizio")
-	private String nome_servizio;*/
-	
-	@OneToOne
-	@JoinColumn(name = "id_client")
-	private ElencoClients elencoClients;
+
+//	@OneToOne
+//	@JoinColumn(name = "id_client")
+	private int id_client;
 	//private int id_client;
 	
+
+
+
 	private int stato;
 	private String description;
 	private String display_name;
@@ -44,6 +43,14 @@ public class ConfWindowsServices {
 	
 	public ConfWindowsServices() {
 		
+	}
+	
+	public int getId_client() {
+		return id_client;
+	}
+
+	public void setId_client(int id_client) {
+		this.id_client = id_client;
 	}
 
 	public int getId() {
@@ -62,28 +69,12 @@ public class ConfWindowsServices {
 		this.date_and_time = date_and_time;
 	}
 
-	public ElencoClients getElencoClients() {
-		return elencoClients;
-	}
-
-	public void setElencoClients(ElencoClients elencoClients) {
-		this.elencoClients = elencoClients;
-	}
-
 	public int getStato() {
 		return stato;
 	}
 
 	public void setStato(int stato) {
 		this.stato = stato;
-	}
-
-	public Monitoraggio getMonitoraggio() {
-		return monitoraggio;
-	}
-
-	public void setMonitoraggio(Monitoraggio monitoraggio) {
-		this.monitoraggio = monitoraggio;
 	}
 
 	public String getDescription() {
@@ -118,12 +109,21 @@ public class ConfWindowsServices {
 		this.service_type = service_type;
 	}
 	
-	public Monitoraggio toMonitoraggio(ConfWindowsServices service, ConfWindowsServicesRepository repo)
+	public String getNome_servizio() {
+		return nome_servizio;
+	}
+
+	public void setNome_servizio(String nome_servizio) {
+		this.nome_servizio = nome_servizio;
+	}
+
+	
+	public Monitoraggio toMonitoraggio(ConfWindowsServices service)
 	{
 		Monitoraggio monitoraggio=new Monitoraggio();
 		monitoraggio.setMonitora(true);
-		monitoraggio.setConfWindowsServices(repo.getServiziClient(service.getDisplay_name()));
-		monitoraggio.setElencoClients(service.getElencoClients());
+		monitoraggio.setNome_servizio(service.getNome_servizio());
+		monitoraggio.setId_client(service.getId_client());
 		
 		return monitoraggio;
 	}

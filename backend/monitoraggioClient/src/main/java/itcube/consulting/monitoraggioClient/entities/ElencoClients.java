@@ -29,13 +29,7 @@ public class ElencoClients {
 	private ConfTotalFreeDiscSpace confTotalFreeDiscSpace;
 	
 	@OneToOne(mappedBy = "elencoClients")
-	private ConfWindowsServices confWindowsServices;
-	
-	@OneToOne(mappedBy = "elencoClients")
 	private VisualizzazioneEventi visualizzazioneEventi;
-	
-	@OneToOne(mappedBy = "elencoClients")
-	private Monitoraggio monitoraggio;
 	
 	private String nome;
 	
@@ -144,28 +138,12 @@ public class ElencoClients {
 		this.confTotalFreeDiscSpace = confTotalFreeDiscSpace;
 	}
 
-	public ConfWindowsServices getConfWindowsServices() {
-		return confWindowsServices;
-	}
-
-	public void setConfWindowsServices(ConfWindowsServices confWindowsServices) {
-		this.confWindowsServices = confWindowsServices;
-	}
-
 	public String getSede() {
 		return sede;
 	}
 
 	public void setSede(String sede) {
 		this.sede = sede;
-	}
-	
-	public Monitoraggio getMonitoraggio() {
-		return monitoraggio;
-	}
-
-	public void setMonitoraggio(Monitoraggio monitoraggio) {
-		this.monitoraggio = monitoraggio;
 	}
 
 	public boolean hasLicenza (TipologieLicenze licenza) {

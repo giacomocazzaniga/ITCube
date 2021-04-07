@@ -93,15 +93,23 @@ public class ServicesAndEventsController {
 		
 		try
 		{
-			id_client=(Integer)body.get("id_client");
+			id_client=Integer.parseInt((String)body.get("id_client"));
 			servizi=(List<ConfWindowsServices>)body.get("servizi");
+			System.out.println(servizi.get(0));
 			if(servizi.size()!=0)
 			{
 				
-				for(ConfWindowsServices i:servizi)
+				for(int i=0; i < servizi.size(); i++)
 				{
-					i.setDate_and_time(Services.getCurrentDate());
-					confWindowsServicesRepository.save(i);
+					ConfWindowsServices tmp = new ConfWindowsServices();
+					tmp.setId_client(id_client);
+					tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("nome_servizio"));
+					tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("display_name"));
+					tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
+					tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
+					tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
+					tmp.setDate_and_time(Services.getCurrentDate());
+					confWindowsServicesRepository.save(tmp);
 				}
 				
 				/*for (Object servizio : servizi) {
@@ -131,25 +139,49 @@ public class ServicesAndEventsController {
 				}*/
 				
 				System.out.println("Prova 1");
-				id_client=servizi.get(0).getElencoClients().getId();
+				id_client=Integer.parseInt((String) body.get("id_client"));
 				System.out.println("Prova 2");
 				monitoraggio=monitoraggioRepository.getServiziClient(id_client);
-				System.out.println("Prova 3");
+				System.out.println(monitoraggio.get(0).getNome_servizio());
 				if(monitoraggio!=null)
 				{
-					for(ConfWindowsServices i: servizi)
+					
+					
+					for(int i=0; i < servizi.size(); i++)
 					{
-						if(!monitoraggio.contains(i.toMonitoraggio(i, confWindowsServicesRepository)))
+						ConfWindowsServices tmp = new ConfWindowsServices();
+						tmp.setId_client(id_client);
+						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("nome_servizio"));
+						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("display_name"));
+						tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
+						tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
+						tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
+						tmp.setDate_and_time(Services.getCurrentDate());
+						
+					
+						if(!monitoraggio.contains(tmp.toMonitoraggio(tmp)))
 						{
-							monitoraggioRepository.save(i.toMonitoraggio(i, confWindowsServicesRepository));
+							monitoraggioRepository.save(tmp.toMonitoraggio(tmp));
 						}
 					}
 				}
 				else
 				{
-					for(ConfWindowsServices i: servizi)
+					
+					
+					for(int i=0; i < servizi.size(); i++)
 					{
-						monitoraggioRepository.save(i.toMonitoraggio(i, confWindowsServicesRepository));
+						ConfWindowsServices tmp = new ConfWindowsServices();
+						tmp.setId_client(id_client);
+						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("nome_servizio"));
+						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("display_name"));
+						tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
+						tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
+						tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
+						tmp.setDate_and_time(Services.getCurrentDate());
+					
+				
+						monitoraggioRepository.save(tmp.toMonitoraggio(tmp));
 					}
 				}
 			

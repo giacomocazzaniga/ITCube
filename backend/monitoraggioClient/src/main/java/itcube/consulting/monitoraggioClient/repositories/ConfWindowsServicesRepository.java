@@ -24,7 +24,7 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	@Query(value="Select * from conf_windows_services where nome_servizio= :nome_servizio", nativeQuery=true)
 	List<ConfWindowsServices> getServiziClient(@Param("nome_servizio") String nome_servizio);
 	
-	@Query(value="select * from monitoraggio where id_client= :id_client", nativeQuery=true)
+	@Query(value="select * from conf_windows_services inner join monitoraggio on conf_windows_services.nome_servizio = monitoraggio.nome_servizio where monitoraggio.id_client= :id_client", nativeQuery=true)
 	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client);
 	
 	@Query(value="select count(*) from conf_windows_services where stato= :stato and id_client= :id_client", nativeQuery=true)
