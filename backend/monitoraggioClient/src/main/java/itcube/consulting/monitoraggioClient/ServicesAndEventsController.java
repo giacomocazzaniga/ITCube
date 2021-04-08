@@ -34,6 +34,7 @@ import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRe
 import itcube.consulting.monitoraggioClient.response.EventiOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.OperazioniOverviewResponse;
+import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
@@ -453,4 +454,101 @@ public class ServicesAndEventsController {
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
+	
+	@PostMapping(path="/getServiziMonitorati",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getServiziMonitorati (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		ServiziMonitoratiResponse response=new ServiziMonitoratiResponse();	
+		
+		try
+		{
+			//assumo che in stato ci siano tutte le info
+			id_client=Integer.parseInt((String) body.get("id_client"));
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {
+				List<Monitoraggio> monitorati= monitoraggioRepository.getListaMonitorati(id_client);
+				
+				
+				response.setMonitoraggi(monitorati);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/modificaMonitoraggioServizio",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> modificaMonitoraggioServizio (@RequestBody Map<String,Object> body) {
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		String nome_servizio;
+		boolean monitora;
+		
+		try
+		{
+			//assumo che in stato ci siano tutte le info
+			id_client=Integer.parseInt((String) body.get("id_client"));
+			nome_servizio = (String) body.get("nome_servizio");
+			monitora = Boolean.parseBoolean((String) body.get("monitora"));
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {
+				
+				monitoraggioRepository.updateMonitora(monitora, nome_servizio);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				generalResponse.setMessage("Operazione effettuata con successo");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(newToken);
+				
+				return ResponseEntity.ok(generalResponse); 
+			}
+			
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
 }

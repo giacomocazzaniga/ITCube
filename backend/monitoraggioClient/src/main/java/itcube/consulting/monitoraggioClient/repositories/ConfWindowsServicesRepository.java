@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
+import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
 
 public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindowsServices,Integer>{
 	@Query(value="Select count(*) from conf_windows_services where tipo_alert = :tipo_alert", nativeQuery=true)

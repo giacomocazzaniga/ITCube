@@ -2,6 +2,9 @@ package itcube.consulting.monitoraggioClient.repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +18,13 @@ public interface MonitoraggioRepository extends CrudRepository<Monitoraggio,Inte
 	
 	@Query(value="Select count(*) from Monitoraggio Where id_client = :id_client and monitora = 1", nativeQuery=true)
 	public int getNServiziMonitorati(@Param("id_client") int id_client);
+	
+	@Query(value="select * from monitoraggio where id_client= :id_client", nativeQuery=true)
+	List<Monitoraggio> getListaMonitorati(@Param("id_client") int id_client);
+	
+	@Modifying
+	@Transactional
+	@Query(value="update monitoraggio set monitora = :monitora where nome_servizio= :nome_servizio", nativeQuery=true)
+	void updateMonitora(@Param("monitora") boolean monitora, @Param("nome_servizio") String nome_servizio);
+
 }
