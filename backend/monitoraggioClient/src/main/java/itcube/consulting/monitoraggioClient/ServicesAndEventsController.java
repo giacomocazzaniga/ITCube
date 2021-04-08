@@ -300,10 +300,10 @@ public class ServicesAndEventsController {
 			
 			if(validToken.isValid())
 			{
-				//ho assunto: 1=running, 2=stopped
+				//Stopped=1, StartPending=2, StopPending=3, Running=4, ContinuePending=5, PausePending=6, Paused=7
 				response.setN_totali((confWindowsServicesRepository.getTotServizi(id_client)));
-				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 1));
-				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 2));
+				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 4));
+				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 1));
 				response.setN_monitorati(monitoraggioRepository.getNServiziMonitorati(id_client));
 				
 				
