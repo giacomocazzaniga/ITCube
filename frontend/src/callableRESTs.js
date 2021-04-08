@@ -1,4 +1,4 @@
-const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2 } = require('./REST');
+const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -17,7 +17,7 @@ export const _performSignUp = (email, password, email_alert, ragione_sociale) =>
 
 export const _performLogin = (email, password) => {
     let encryptedPsw = md5(password);
-    return axios.post(url_loginFake, {
+    return axios.post(url_login, {
       email: email,
       password: encryptedPsw
     })
@@ -63,14 +63,14 @@ export const _editCompanyData = (id_company, token, email, emailAlert, ragioneSo
 }
 
 export const _getServiziMonitorati = (token, id_client) => {
-  return axios.post(url_get_servizi_monitoratiFake2, {
+  return axios.post(url_get_servizi_monitorati, {
     id_client: id_client, 
     token: token
   })
 }
 
 export const _getServiziAll = (token, id_client) => {
-  return axios.post(url_get_servizi_allFake2, {
+  return axios.post(url_get_servizi_all, {
     id_client: id_client, 
     token: token
   })
@@ -101,7 +101,7 @@ export const _getEventiOverview = (token, id_client) => {
 }
 
 export const _modificaMonitoraggioServizio = (token, nome_servizio, id_client, monitora) => {
-  return axios.post(url_get_servizi_allFake, {
+  return axios.post(url_modifica_monitoraggio_servizio, {
     id_client: id_client, 
     token: token,
     nome_servizio: nome_servizio,
