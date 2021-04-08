@@ -83,8 +83,8 @@ const WindowsServices = (props) => {
   const toggleMonitora = (servizio, actualValue) => {
     //alert(actualValue)
     let monitora
-    if(actualValue==true) monitora = false
-    else monitora = true
+    if(actualValue==true || actualValue=="true") monitora = "false"
+    else monitora = "true"
     const loadingToast = getLoadingToast("Modifica monitoraggio servizi...");
     _modificaMonitoraggioServizio(props.token, servizio, props.id_client, monitora)
     .then(function (response) {
