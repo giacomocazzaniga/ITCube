@@ -34,13 +34,31 @@ const WindowsServices = (props) => {
 
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
+  const merge_object_arrays = (arr1, arr2, match) => {
+    arr1.map((elem1) => arr2.map((elem2) => {
+      if(elem1.nome_servizio==elem2.nome_servizio){
+        elem1.monitora = elem2.monitora
+      }
+    }))
+    return arr1;
+  }
+
   const getServicesList = () => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getServiziAll(props.token, props.id_client)
     .then(function (response) {
-      stopLoadingToast(loadingToast);
-      let list = servicesListMaker(response.data.servizi);
-      props.ServicesList(list)
+      let tmp_list = response.data.confWindowsServices
+      _getServiziMonitorati(props.token, props.id_client)
+      .then(function (response) {
+        stopLoadingToast(loadingToast);
+        let tmp_list2 = merge_object_arrays(tmp_list, response.data.monitoraggi, 'nome_servizio')
+        let list = servicesListMaker(tmp_list2);
+        props.ServicesList(list)
+      })
+      .catch(function (error) {
+        stopLoadingToast(loadingToast);
+        getErrorToast(String(error));
+      });
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -85,7 +103,7 @@ const WindowsServices = (props) => {
     ? 
       monitora != null
       ?
-        monitora == "true"
+        monitora == true
         ?
           returnList = [returnList, 
             <>
@@ -116,7 +134,7 @@ const WindowsServices = (props) => {
     : 
       monitora != null
       ?
-        monitora == "true"
+        monitora == true
         ?
           returnList = [returnList, 
             <>

@@ -239,6 +239,64 @@ app.post('/signup', function (req, res) {
   res.send(result);
 });
 
+app.post('/getServiziAll2', function (req, res) {
+  result = {
+    "message": "Operazione effettuata con successo",
+    "messageCode": 0,
+    "token": null,
+    "confWindowsServices": [
+        {
+            "id": 1,
+            "nome_servizio": "servizio1",
+            "id_client": 1,
+            "stato": 1,
+            "description": "descrizione",
+            "display_name": "servizio 1",
+            "start_type": 1,
+            "service_type": 1,
+            "date_and_time": "2021-04-06T22:00:00.000+00:00"
+        },
+        {
+          "id": 2,
+          "nome_servizio": "servizio2",
+          "id_client": 1,
+          "stato": 1,
+          "description": "descrizione",
+          "display_name": "servizio 2",
+          "start_type": 1,
+          "service_type": 1,
+          "date_and_time": "2021-04-06T22:00:00.000+00:00"
+      }
+      ]
+  }
+  console.log("/getServiziAll2");
+  res.send(result);
+});
+
+app.post('/getServiziMonitorati2', function (req, res) {
+  result = {
+    "message": "Operazione effettuata con successo",
+    "messageCode": 0,
+    "token": null,
+    "monitoraggi": [
+        {
+            "id": 1,
+            "monitora": false,
+            "id_client": 1,
+            "nome_servizio": "servizio1"
+        },
+        {
+            "id": 2,
+            "monitora": true,
+            "id_client": 1,
+            "nome_servizio": "servizio2"
+        }
+    ]
+  }
+  console.log("/getServiziMonitorati2");
+  res.send(result);
+});
+
 app.post('/getServiziMonitorati', function (req, res) {
   result = {
     "servizi" : [
@@ -306,7 +364,7 @@ app.post('/getServiziAll', function (req, res) {
         "description" : "",
         "date_and_time" : "2020-02-05 at 10:11:33 UTC",
         "stato" : "1",
-        "monitora" : "true"},
+        "monitora" : "false"},
       {"nome_servizio" : "ActiveX Installer (AxInstSV)",
         "description" : "Provides User Account Control validation for the installation of ActiveX controls from the Internet and enables management of ActiveX control installation based on Group Policy settings. This service is started on demand and if disabled the installation of ActiveX controls will behave according to default browser settings.",
         "date_and_time" : "2020-02-05 at 10:11:33 UTC",
