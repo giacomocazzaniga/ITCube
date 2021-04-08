@@ -2,6 +2,7 @@ package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +17,7 @@ public class RealTime {
 	private int id;
 	private String operazione;
 	private int stato;
-	private Timestamp timestamp;
+	private LocalDateTime timestamp;
 	
 	public RealTime() {
 		
@@ -46,11 +47,11 @@ public class RealTime {
 		this.stato = stato;
 	}
 
-	public Timestamp getTimestamp() {
+	public LocalDateTime getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Timestamp timestamp) {
+	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
 }

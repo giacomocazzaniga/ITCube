@@ -16,14 +16,13 @@ public class Monitoraggio implements java.io.Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	
-	private int id_client;
+	private Boolean monitora;
+	
+	private Integer id_client;
 
-	@Column(name="nome_servizio")
 	private String nome_servizio;
-	
-	private boolean monitora;
 	
 	public Monitoraggio() {
 	}
@@ -32,6 +31,14 @@ public class Monitoraggio implements java.io.Serializable{
 			boolean monitora) {
 		super();
 		this.monitora = monitora;
+	}
+	
+	public Monitoraggio(int id, boolean monitora, int id_client, String nome_servizio) {
+		this.id = id;
+		this.monitora = monitora;
+		this.id_client = id_client;
+		this.nome_servizio = nome_servizio;
+		System.out.println(monitora);
 	}
 	
 

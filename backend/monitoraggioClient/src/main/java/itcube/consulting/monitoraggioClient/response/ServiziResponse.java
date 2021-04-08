@@ -5,17 +5,17 @@ import java.util.List;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 
 public class ServiziResponse extends GeneralResponse {
-	private List<ConfWindowsServices> confWindowsSerives;
+	private List<ConfWindowsServices> confWindowsServices;
 	
 	public ServiziResponse() {
 		
 	}
 
 	public List<ConfWindowsServices> getConfWindowsSerives() {
-		return confWindowsSerives;
+		return confWindowsServices;
 	}
 
 	public void setConfWindowsSerives(List<ConfWindowsServices> confWindowsSerives) {
-		this.confWindowsSerives = confWindowsSerives;
+		this.confWindowsServices = confWindowsSerives;
 	}
 }
