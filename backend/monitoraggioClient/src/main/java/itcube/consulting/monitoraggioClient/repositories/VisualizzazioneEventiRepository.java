@@ -10,10 +10,10 @@ import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
 
 public interface VisualizzazioneEventiRepository extends CrudRepository<VisualizzazioneEventi, Integer>{
 	
-	@Query(value="select count(*) from visualizzazione_eventi where id_client= :id_client and level='Error' and date_and_time_evento=CURDATE()",nativeQuery=true)
+	@Query(value="SELECT count(*) from visualizzazione_eventi where id_client= :id_client and level= 1 and CAST( date_and_time AS Date) = CAST( CURDATE() AS Date )",nativeQuery=true)
 	public int getProblemiOggi(@Param("id_client") int id_client);
 	
-	@Query(value="select count(*) from visualizzazione_eventi where id_client= :id_client and level='Warning' and date_and_time_evento=CURDATE()",nativeQuery=true)
+	@Query(value="SELECT count(*) from visualizzazione_eventi where id_client= :id_client and level= 2 and CAST( date_and_time AS Date) = CAST( CURDATE() AS Date )",nativeQuery=true)
 	public int getWarningOggi(@Param("id_client") int id_client);
 	
 	@Query(value="select count(*) from visualizzazione_eventi where id_client= :id_client and sottocategoria= :sottocategoria",nativeQuery=true)

@@ -16,11 +16,11 @@ public class Monitoraggio implements java.io.Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private int id;
 	
 	private Boolean monitora;
 	
-	private Integer id_client;
+	private int id_client;
 
 	private String nome_servizio;
 	

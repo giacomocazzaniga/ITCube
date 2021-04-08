@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -93,6 +94,7 @@ public class ServicesAndEventsController {
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
 		LocalDateTime timestamp=java.time.LocalDateTime.now();
+		System.out.println(timestamp);
 		
 		try
 		{
@@ -106,11 +108,11 @@ public class ServicesAndEventsController {
 				{
 					ConfWindowsServices tmp = new ConfWindowsServices();
 					tmp.setId_client(id_client);
-					tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("nome_servizio"));
-					tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("display_name"));
-					tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
-					tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
-					tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
+					tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+					tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("DisplayName"));
+					tmp.setStato(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status")));
+					tmp.setStart_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("StartType")));
+					tmp.setService_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType")));
 					tmp.setDate_and_time(timestamp);
 					confWindowsServicesRepository.save(tmp);
 				}
@@ -126,11 +128,11 @@ public class ServicesAndEventsController {
 					{
 						ConfWindowsServices tmp = new ConfWindowsServices();
 						tmp.setId_client(id_client);
-						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("nome_servizio"));
-						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("display_name"));
-						tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
-						tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
-						tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
+						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("DisplayName"));
+						tmp.setStato(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status")));
+						tmp.setStart_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("StartType")));
+						tmp.setService_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType")));
 						tmp.setDate_and_time(timestamp);
 						
 					
@@ -147,11 +149,11 @@ public class ServicesAndEventsController {
 					{
 						ConfWindowsServices tmp = new ConfWindowsServices();
 						tmp.setId_client(id_client);
-						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("nome_servizio"));
-						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("display_name"));
-						tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
-						tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
-						tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
+						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("DisplayName"));
+						tmp.setStato(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status")));
+						tmp.setStart_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("StartType")));
+						tmp.setService_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType")));
 						tmp.setDate_and_time(timestamp);
 					
 				
@@ -204,14 +206,19 @@ public class ServicesAndEventsController {
 					//sottocategoria, level, source, id_event, task_category, info, date_and_time
 					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
 					tmp.setId_client(id_client);
-					tmp.setSottocategoria((int) ((Map<String, Object>) eventi.get(i)).get("sottocategoria"));
-					tmp.setLevel((int) ((Map<String, Object>) eventi.get(i)).get("level"));
+					tmp.setSottocategoria(Integer.parseInt((String)((Map<String, Object>) eventi.get(i)).get("sottocategoria")));
+					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) eventi.get(i)).get("level")));
 					tmp.setSource((String) ((Map<String, Object>) eventi.get(i)).get("source"));
-					tmp.setId_event((int) ((Map<String, Object>) eventi.get(i)).get("id_event"));
+					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) eventi.get(i)).get("id_event")));
 					tmp.setTask_category((String) ((Map<String, Object>) eventi.get(i)).get("task_category"));
 					tmp.setInfo((String) ((Map<String, Object>) eventi.get(i)).get("info"));
 					tmp.setDate_and_time(timestamp);
-					tmp.setDate_and_time_evento((LocalDateTime) ((Map<String, Object>) eventi.get(i)).get("date_and_time_evento"));
+					
+					String dateTime = (String) ((Map<String, Object>) eventi.get(i)).get("date_and_time_evento");
+			        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			        LocalDateTime formatDateTime = LocalDateTime.parse(dateTime, FORMATTER);
+			        
+					tmp.setDate_and_time_evento(formatDateTime);
 					visualizzazioneEventiRepository.save(tmp);
 				}
 				generalResponse.setMessage("Operazione effettuata con successo");
@@ -347,7 +354,7 @@ public class ServicesAndEventsController {
 		
 		try
 		{
-			id_client=(Integer)body.get("id_client");
+			id_client=Integer.parseInt((String) body.get("id_client"));
 			id_company=elencoClientsRepository.getIdCompany(id_client);
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
