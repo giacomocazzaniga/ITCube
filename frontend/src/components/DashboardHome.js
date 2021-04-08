@@ -88,6 +88,7 @@ const DashboardHome = (props) => {
     .then(function (response) {
       console.log(response);
       stopLoadingToast(loadingToast);
+      console.log(response.data.licenzeShallow)
       setState(() => {
         return { licenses: response.data.licenzeShallow };  
       });
@@ -117,7 +118,10 @@ const DashboardHome = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col xs={12} md={6}>
-          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi}/>
+          {(state.licenses.length>=1)
+          ? <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi} chiave={(state.licenses.filter(function(item){return item.tipologia.toUpperCase() == "SISTEMA OPERATIVO";}))[0]}/>
+          : <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi} chiave={{codice:""}}/>
+          }
         </Col>
         
         {/*<Col md={3} xs={6}>

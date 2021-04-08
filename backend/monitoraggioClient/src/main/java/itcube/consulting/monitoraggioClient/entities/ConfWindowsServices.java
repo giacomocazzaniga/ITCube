@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -30,16 +31,13 @@ public class ConfWindowsServices {
 //	@JoinColumn(name = "id_client")
 	private int id_client;
 	//private int id_client;
-	
-
-
 
 	private int stato;
 	private String description;
 	private String display_name;
 	private int start_type;
 	private int service_type;
-	private Date date_and_time;
+	private LocalDateTime date_and_time;
 	
 	public ConfWindowsServices() {
 		
@@ -61,11 +59,11 @@ public class ConfWindowsServices {
 		this.id = id;
 	}
 
-	public Date getDate_and_time() {
+	public LocalDateTime getDate_and_time() {
 		return date_and_time;
 	}
 
-	public void setDate_and_time(Date date_and_time) {
+	public void setDate_and_time(LocalDateTime date_and_time) {
 		this.date_and_time = date_and_time;
 	}
 

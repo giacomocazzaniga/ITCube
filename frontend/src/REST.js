@@ -30,6 +30,7 @@ export const url_lista_gruppiFake = buildurlFake+"listagruppi";
 export const url_lista_serviziFake = buildurlFake+"listaservizi";
 export const url_lista_tipo_dispositiviFake = buildurlFake+"listatipodispositivi";
 export const url_lista_licenzeFake = buildurlFake+"listalicenze";
+export const url_shallow_licenzeFake = buildurlFake+"getLicenzeShallow";
 export const url_deep_clientFake = buildurlFake+"deepClient";
 export const url_edit_company_dataFake = buildurlFake+"editCompanyData";
 export const url_get_servizi_monitoratiFake = buildurlFake+"getServiziMonitorati";

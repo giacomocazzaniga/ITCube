@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient.entities;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -24,8 +25,8 @@ public class VisualizzazioneEventi {
 	
 	private int sottocategoria;
 	private int level;
-	private Date date_and_time;
-	private Date date_and_time_evento;
+	private LocalDateTime date_and_time;
+	private LocalDateTime date_and_time_evento;
 	private String source;
 	private int id_event;
 	private String task_category;
@@ -84,10 +85,10 @@ public class VisualizzazioneEventi {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	public Date getDate_and_time() {
+	public LocalDateTime getDate_and_time() {
 		return date_and_time;
 	}
-	public void setDate_and_time(Date date_and_time) {
+	public void setDate_and_time(LocalDateTime date_and_time) {
 		this.date_and_time = date_and_time;
 	}
 	public String getSource() {
@@ -115,11 +116,11 @@ public class VisualizzazioneEventi {
 		this.info = info;
 	}
 
-	public Date getDate_and_time_evento() {
+	public LocalDateTime getDate_and_time_evento() {
 		return date_and_time_evento;
 	}
 
-	public void setDate_and_time_evento(Date date_and_time_evento) {
+	public void setDate_and_time_evento(LocalDateTime date_and_time_evento) {
 		this.date_and_time_evento = date_and_time_evento;
 	}
 	

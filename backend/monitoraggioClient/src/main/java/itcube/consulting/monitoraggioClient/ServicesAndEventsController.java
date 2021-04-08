@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -91,6 +92,7 @@ public class ServicesAndEventsController {
 		List<ConfWindowsServices> servizi=new ArrayList<ConfWindowsServices>();
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
+		LocalDateTime timestamp=java.time.LocalDateTime.now();
 		
 		try
 		{
@@ -109,39 +111,11 @@ public class ServicesAndEventsController {
 					tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
 					tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
 					tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
-					tmp.setDate_and_time(Services.getCurrentDate());
+					tmp.setDate_and_time(timestamp);
 					confWindowsServicesRepository.save(tmp);
 				}
 				
-				/*for (Object servizio : servizi) {
-					String[] words = ((String)servizio).split(",");
-
-					for (int i = 0; i < words.length - 1; i++) {
-						String word = words[i];
-						System.out.println("Word: " + word);
-
-						confWindowsServices.setNomeServizio(word);
-						nomeServizio = confWindowsServices.getNomeServizio();
-						System.out.println("\nNome servizio: " + nomeServizio);
-						
-						confWindowsServices.setStato(0);
-						stato = confWindowsServices.getStato();
-						System.out.println("Stato: " + stato);
-
-						confWindowsServicesRepository.insertWindowsService(id, nomeServizio, stato, idClient);
-						System.out.println("\nSALVATO/I!!!\n");
-
-						System.out.println("Nome servizio: " + nomeServizio);
-						System.out.println("Stato: " + stato);
-						System.out.println("Id client: " + idClient);
-
-						System.out.println("\n--------------------------------------------------\n");
-					}
-				}*/
-				
-				System.out.println("Prova 1");
 				id_client=Integer.parseInt((String) body.get("id_client"));
-				System.out.println("Prova 2");
 				monitoraggio=monitoraggioRepository.getServiziClient(id_client);
 				System.out.println(monitoraggio.get(0).getNome_servizio());
 				if(monitoraggio!=null)
@@ -157,7 +131,7 @@ public class ServicesAndEventsController {
 						tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
 						tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
 						tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
-						tmp.setDate_and_time(Services.getCurrentDate());
+						tmp.setDate_and_time(timestamp);
 						
 					
 						if(!monitoraggio.contains(tmp.toMonitoraggio(tmp)))
@@ -169,7 +143,6 @@ public class ServicesAndEventsController {
 				else
 				{
 					
-					
 					for(int i=0; i < servizi.size(); i++)
 					{
 						ConfWindowsServices tmp = new ConfWindowsServices();
@@ -179,7 +152,7 @@ public class ServicesAndEventsController {
 						tmp.setStato((int) ((Map<String, Object>) servizi.get(i)).get("stato"));
 						tmp.setStart_type((int) ((Map<String, Object>) servizi.get(i)).get("start_type"));
 						tmp.setService_type((int) ((Map<String, Object>) servizi.get(i)).get("service_type"));
-						tmp.setDate_and_time(Services.getCurrentDate());
+						tmp.setDate_and_time(timestamp);
 					
 				
 						monitoraggioRepository.save(tmp.toMonitoraggio(tmp));
@@ -226,7 +199,7 @@ public class ServicesAndEventsController {
 			{
 				for(VisualizzazioneEventi i:eventi)
 				{
-					i.setDate_and_time(Services.getCurrentDate());
+					i.setDate_and_time(java.time.LocalDateTime.now());
 					visualizzazioneEventiRepository.save(i);
 				}
 				generalResponse.setMessage("Operazione effettuata con successo");
