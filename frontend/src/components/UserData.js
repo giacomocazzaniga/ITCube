@@ -38,6 +38,7 @@ const mapStateToProps = state => ({
 
 const UserData = (props) => {
 
+
   const [state, setState] = React.useState({
     emailLogin: "",
     emailLogin2: "",
@@ -136,7 +137,7 @@ const UserData = (props) => {
     ]
     return childList;
   }
-
+  console.log(props.chiave)
   return (
     <Box title="Dati aziendali" type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Modifica dati aziendali" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Col md={12} xs={12}>
@@ -144,6 +145,7 @@ const UserData = (props) => {
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
         <h4><b>Ragione sociale: </b>{props.ragioneSociale}</h4>
         <h4><b>Sedi registrate: </b>{props.sedi.length}</h4>
+        <h4><b>Chiave di registrazione: </b>{props.chiave.codice}</h4>
       </Col>
     </Box>
   );

@@ -53,6 +53,20 @@ app.post('/login', function (req, res) {
   res.send(result);
 });
 
+app.post('/getLicenzeShallow', function (req, res) {
+  result = {
+    "licenzeShallow": [
+      {"codice": "HFB5-74YG-9DN4-ASD8",
+      "classe": 1,
+      "tipologia": "Sistema operativo"}
+    ],
+    "message" : "...",
+    "messageCode" : 0,
+    "token" : null
+    }
+  res.send(result);
+});
+
 app.post('/listasedi', function (req, res) {
   result = {
     "sedi" : [
