@@ -190,17 +190,29 @@ public class ServicesAndEventsController {
 		ValidToken validToken=new ValidToken();
 		int id_client;
 		List<VisualizzazioneEventi> eventi=new ArrayList<VisualizzazioneEventi>();
+		LocalDateTime timestamp=java.time.LocalDateTime.now();
 		
 		try
 		{
-			id_client=(Integer)body.get("id_client");
+			id_client=Integer.parseInt((String) body.get("id_client"));
 			eventi=(List<VisualizzazioneEventi>)body.get("eventi");
 			if(eventi!=null)
 			{
-				for(VisualizzazioneEventi i:eventi)
+				for(int i=0; i < eventi.size(); i++)
 				{
-					i.setDate_and_time(java.time.LocalDateTime.now());
-					visualizzazioneEventiRepository.save(i);
+					
+					//sottocategoria, level, source, id_event, task_category, info, date_and_time
+					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
+					tmp.setId_client(id_client);
+					tmp.setSottocategoria((int) ((Map<String, Object>) eventi.get(i)).get("sottocategoria"));
+					tmp.setLevel((int) ((Map<String, Object>) eventi.get(i)).get("level"));
+					tmp.setSource((String) ((Map<String, Object>) eventi.get(i)).get("source"));
+					tmp.setId_event((int) ((Map<String, Object>) eventi.get(i)).get("id_event"));
+					tmp.setTask_category((String) ((Map<String, Object>) eventi.get(i)).get("task_category"));
+					tmp.setInfo((String) ((Map<String, Object>) eventi.get(i)).get("info"));
+					tmp.setDate_and_time(timestamp);
+					tmp.setDate_and_time_evento((LocalDateTime) ((Map<String, Object>) eventi.get(i)).get("date_and_time_evento"));
+					visualizzazioneEventiRepository.save(tmp);
 				}
 				generalResponse.setMessage("Operazione effettuata con successo");
 				generalResponse.setMessageCode(0);
@@ -209,7 +221,7 @@ public class ServicesAndEventsController {
 			}
 			else
 			{
-				generalResponse.setMessage("Lista dei servizi vuota");
+				generalResponse.setMessage("Lista degli eventi vuota");
 				generalResponse.setMessageCode(-2);
 			
 				return ResponseEntity.ok(generalResponse); 
@@ -247,7 +259,7 @@ public class ServicesAndEventsController {
 			{
 				serviziMonitorati=confWindowsServicesRepository.getServizi(id_client);
 				
-				response.setConfWindowsSerives(serviziMonitorati);
+				response.setConfWindowsServices(serviziMonitorati);
 				
 				String newToken=Services.checkThreshold(id_company, token);
 				

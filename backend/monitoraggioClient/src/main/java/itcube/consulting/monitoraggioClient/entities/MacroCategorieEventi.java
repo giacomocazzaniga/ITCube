@@ -15,16 +15,22 @@ public class MacroCategorieEventi {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToMany(mappedBy = "macroCategorieEventi")
-	private List<VisualizzazioneEventi> visualizzazioneEventi;
-	//private int classe;
+//	@OneToMany(mappedBy = "macroCategorieEventi")
+//	private List<VisualizzazioneEventi> visualizzazioneEventi;
+	private int classe;
 	
-	public List<VisualizzazioneEventi> getVisualizzazioneEventi() {
-		return visualizzazioneEventi;
+	public int getClasse() {
+		return classe;
 	}
-	public void setVisualizzazioneEventi(List<VisualizzazioneEventi> visualizzazioneEventi) {
-		this.visualizzazioneEventi = visualizzazioneEventi;
+	public void setClasse(int classe) {
+		this.classe = classe;
 	}
+	//	public List<VisualizzazioneEventi> getVisualizzazioneEventi() {
+//		return visualizzazioneEventi;
+//	}
+//	public void setVisualizzazioneEventi(List<VisualizzazioneEventi> visualizzazioneEventi) {
+//		this.visualizzazioneEventi = visualizzazioneEventi;
+//	}
 	private String nome_categoria;
 	
 	public MacroCategorieEventi() {

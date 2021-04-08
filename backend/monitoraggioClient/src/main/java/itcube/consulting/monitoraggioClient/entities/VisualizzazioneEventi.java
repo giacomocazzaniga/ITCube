@@ -18,11 +18,11 @@ public class VisualizzazioneEventi {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@ManyToOne
-	@JoinColumn(name = "macro_categoria")
-	private MacroCategorieEventi macroCategorieEventi;
-	//private int macro_categoria;
-	
+//	@ManyToOne
+//	@JoinColumn(name = "macro_categoria")
+//	private MacroCategorieEventi macroCategorieEventi;
+	private int macro_categoria;
+
 	private int sottocategoria;
 	private int level;
 	private LocalDateTime date_and_time;
@@ -32,13 +32,29 @@ public class VisualizzazioneEventi {
 	private String task_category;
 	private String info;
 	
-	@OneToOne
-	@JoinColumn(name = "id_client")
-	private ElencoClients elencoClients;
-	//private int id_client;
+//	@OneToOne
+//	@JoinColumn(name = "id_client")
+//	private ElencoClients elencoClients;
+	private int id_client;
 
 	public VisualizzazioneEventi() {
 
+	}
+	
+	public int getId_client() {
+		return id_client;
+	}
+
+	public void setId_client(int id_client) {
+		this.id_client = id_client;
+	}
+	
+	public int getMacro_categoria() {
+		return macro_categoria;
+	}
+
+	public void setMacro_categoria(int macro_categoria) {
+		this.macro_categoria = macro_categoria;
 	}
 	
 	public int getId() {
@@ -48,13 +64,13 @@ public class VisualizzazioneEventi {
 		this.id = id;
 	}
 	
-	public ElencoClients getElencoClients() {
-		return elencoClients;
-	}
-
-	public void setElencoClients(ElencoClients elencoClients) {
-		this.elencoClients = elencoClients;
-	}
+//	public ElencoClients getElencoClients() {
+//		return elencoClients;
+//	}
+//
+//	public void setElencoClients(ElencoClients elencoClients) {
+//		this.elencoClients = elencoClients;
+//	}
 	
 	/*public int getMacro_categoria() {
 		return macro_categoria;
@@ -63,13 +79,13 @@ public class VisualizzazioneEventi {
 		this.macro_categoria = macro_categoria;
 	}*/
 	
-	public MacroCategorieEventi getMacroCategorieEventi() {
-		return macroCategorieEventi;
-	}
-
-	public void setMacroCategorieEventi(MacroCategorieEventi macroCategorieEventi) {
-		this.macroCategorieEventi = macroCategorieEventi;
-	}
+//	public MacroCategorieEventi getMacroCategorieEventi() {
+//		return macroCategorieEventi;
+//	}
+//
+//	public void setMacroCategorieEventi(MacroCategorieEventi macroCategorieEventi) {
+//		this.macroCategorieEventi = macroCategorieEventi;
+//	}
 	
 	public int getSottocategoria() {
 		return sottocategoria;

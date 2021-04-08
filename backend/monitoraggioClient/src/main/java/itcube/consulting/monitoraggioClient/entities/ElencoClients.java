@@ -28,8 +28,8 @@ public class ElencoClients {
 	@OneToOne(mappedBy = "elencoClients")
 	private ConfTotalFreeDiscSpace confTotalFreeDiscSpace;
 	
-	@OneToOne(mappedBy = "elencoClients")
-	private VisualizzazioneEventi visualizzazioneEventi;
+//	@OneToOne(mappedBy = "elencoClients")
+//	private VisualizzazioneEventi visualizzazioneEventi;
 	
 	private String nome;
 	
@@ -66,13 +66,13 @@ public class ElencoClients {
 	}
 
 	
-	public VisualizzazioneEventi getVisualizzazioneEventi() {
-		return visualizzazioneEventi;
-	}
-
-	public void setVisualizzazioneEventi(VisualizzazioneEventi visualizzazioneEventi) {
-		this.visualizzazioneEventi = visualizzazioneEventi;
-	}
+//	public VisualizzazioneEventi getVisualizzazioneEventi() {
+//		return visualizzazioneEventi;
+//	}
+//
+//	public void setVisualizzazioneEventi(VisualizzazioneEventi visualizzazioneEventi) {
+//		this.visualizzazioneEventi = visualizzazioneEventi;
+//	}
 	
 	public List<ElencoLicenze> getElencoLicenze() {
 		return elencoLicenze;

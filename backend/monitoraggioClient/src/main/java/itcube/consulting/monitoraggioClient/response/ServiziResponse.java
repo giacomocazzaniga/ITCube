@@ -11,11 +11,11 @@ public class ServiziResponse extends GeneralResponse {
 		
 	}
 
-	public List<ConfWindowsServices> getConfWindowsSerives() {
+	public List<ConfWindowsServices> getConfWindowsServices() {
 		return confWindowsServices;
 	}
 
-	public void setConfWindowsSerives(List<ConfWindowsServices> confWindowsSerives) {
-		this.confWindowsServices = confWindowsSerives;
+	public void setConfWindowsServices(List<ConfWindowsServices> confWindowsServices) {
+		this.confWindowsServices = confWindowsServices;
 	}
 }
