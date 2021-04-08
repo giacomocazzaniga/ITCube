@@ -53,3 +53,10 @@ export const eventsList = (eventsList) => ({
   type: types.EVENTSLIST,
   eventsList: eventsList
 })
+export const serviziOverview = (n_totali, n_running, n_stop, n_monitorati) => ({
+  type: types.SERVIZIOVERVIEW,
+  n_totali: n_totali,
+  n_running: n_running,
+  n_stop: n_stop,
+  n_monitorati: n_monitorati
+})

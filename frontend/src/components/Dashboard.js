@@ -12,6 +12,7 @@ import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
+import { serviziOverview } from "../ActionCreator";
 
 document.body.classList.add('fixed');
 
@@ -19,7 +20,11 @@ document.body.classList.add('fixed');
  * connect the actions to the component
  * @param {*} dispatch 
  */
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
+    dispatch(serviziOverview(n_totali, n_running, n_stop, n_monitorati))
+  }
+});
 
 /**
  * connect the redux state to the component
@@ -30,6 +35,10 @@ const mapStateToProps = state => ({
     nome_company: state.nome_company,
     token: state.token,
     logged: state.logged,
+    n_totali: state.n_totali,
+    n_running: state.n_running,
+    n_stop: state.n_stop,
+    n_monitorati: state.n_monitorati,
     clientOverview: {
       problems: 3,
       warnings: 12,
@@ -93,10 +102,6 @@ const mapStateToProps = state => ({
 const Dashboard = (props) => {
   const [state, setState] = React.useState({
     clientData: null,
-    n_totali: 0,
-    n_monitorati: 0,
-    n_running: 0,
-    n_stop: 0,
     problemi_oggi: 0,
     warning_oggi: 0,
     tot_per_sottocategoria: []
@@ -112,14 +117,7 @@ const Dashboard = (props) => {
       });
       _getServiziOverview(props.token, props.id_client)
       .then(function (response) {
-        setState((previousState) => {
-          return { ...previousState, 
-            n_totali: response.data.n_totali,
-            n_running: response.data.n_running,
-            n_stop: response.data.n_stopped,
-            n_monitorati: response.data.n_monitorati
-          };
-        });
+        props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
         _getEventiOverview(props.token, props.id_client)
         .then(function (response) {
           setState((previousState) => {
@@ -167,7 +165,7 @@ const Dashboard = (props) => {
           <OperationsList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsServices selected={props.title} id_client={props.id_client} services={[state.n_monitorati, state.n_running, state.n_stop, state.n_totali]}/>
+          <WindowsServices selected={props.title} id_client={props.id_client} services={[props.n_monitorati, props.n_running, props.n_stop, props.n_totali]}/>
         </Col>
         <Col md={4} xs={6}>
           <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>

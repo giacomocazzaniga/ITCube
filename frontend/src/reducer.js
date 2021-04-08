@@ -24,7 +24,11 @@ const initialState = {
   categories_list : [],
   category_vs_place : true, //true==category, false==place
   services_list : [],
-  events_list : []
+  events_list : [],
+  n_totali: 0,
+  n_running: 0,
+  n_stop: 0,
+  n_monitorati: 0
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -90,6 +94,14 @@ export function rootReducer(state = initialState, action) {
   if (action.type === types.EVENTSLIST) {
     return Object.assign({}, state, {
       events_list: action.eventsList
+    });
+  }
+  if (action.type === types.SERVIZIOVERVIEW) {
+    return Object.assign({}, state, {
+      n_totali: action.n_totali,
+      n_running: action.n_running,
+      n_stop: action.n_stop,
+      n_monitorati: action.n_monitorati
     });
   }
   //returning the state

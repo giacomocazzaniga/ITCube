@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUp from "./PopUp";
-import { servicesList } from "../ActionCreator";
-import { defaultUpperBound, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
+import { servicesList, serviziOverview } from "../ActionCreator";
+import { defaultUpperBound, _getServiziAll, _getServiziMonitorati, _getServiziOverview, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 import ReactPaginate from "react-paginate";
 
@@ -15,6 +15,9 @@ import ReactPaginate from "react-paginate";
 const mapDispatchToProps = dispatch => ({
     ServicesList: (services) => {
       dispatch(servicesList(services))
+    },
+    SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
+      dispatch(serviziOverview(n_totali, n_running, n_stop, n_monitorati))
     }
   }
 );
@@ -26,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
     client_list: state.client_list,
     token: state.token,
-    services_list: state.services_list
+    services_list: state.services_list,
   }
 );
 
@@ -67,13 +70,22 @@ const WindowsServices = (props) => {
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col><Col xs={1} md={1}><strong><h5>MONITORA</h5></strong></Col><Col xs={4} md={4}><strong><h5>NOME SERVIZIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>STATO</h5></strong></Col><Col xs={5} md={5}><strong><h5>DESCRIZIONE</h5></strong></Col></>];
-    let status = ["", "Running", "Stop"]
+    let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col><Col xs={1} md={1}><strong><h5>MONITORA</h5></strong></Col><Col xs={5} md={5}><strong><h5>NOME SERVIZIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>STATO</h5></strong></Col><Col xs={2} md={2}><strong><h5>TIPO DI AVVIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>TIPO DI SERVIZIO</h5></strong></Col></>];
+    let ServiceControllerStatus = ["", "Stop", "Start (pending)", "Stop (pending)", "Running", "Continue (pending)", "In pausa (pending)", "In pausa"]
+    let ServiceStartMode = ["Boot", "System", "Automatico", "Manuale", "Disabilitato"] 
+    let ServiceType = []
+    ServiceType[1] = "KernelDriver";
+    ServiceType[2] = "FileSystemDriver";
+    ServiceType[4] = "Adapter";
+    ServiceType[8] = "RecognizerDriver";
+    ServiceType[16] = "Win32OwnProcess";
+    ServiceType[32] = "Win32ShareProcess";
+    ServiceType[256] = "InteractiveProcess";
     services.map((service, i) => {
       if(service.hasOwnProperty('monitora')){
-        returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, status, service.description, service.monitora);
+        returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, ServiceControllerStatus, ServiceStartMode, ServiceType, service.start_type, service.service_type, service.monitora);
       }else{
-        returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, status, service.description, null);
+        returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, ServiceControllerStatus, ServiceStartMode, ServiceType, service.start_type, service.service_type, null);
       }
     })
     returnList = [returnList, <Col className="col-xs-12 col-md-12 reactPaginate"><ReactPaginate previousLabel={"← Precedente"} nextLabel={"Successivo →"} containerClassName={"pagination"} pageCount={Math.ceil(props.services[3]/defaultUpperBound)}/></Col>]
@@ -88,17 +100,23 @@ const WindowsServices = (props) => {
     const loadingToast = getLoadingToast("Modifica monitoraggio servizi...");
     _modificaMonitoraggioServizio(props.token, servizio, props.id_client, monitora)
     .then(function (response) {
-      stopLoadingToast(loadingToast);
-      getSuccessToast(response.data.message);
       getServicesList()
+      _getServiziOverview(props.token, props.id_client)
+      .then(function (response) {
+        stopLoadingToast(loadingToast);
+        props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+      })
+      .catch(function (error) {
+        stopLoadingToast(loadingToast);
+        getErrorToast(String(error));
+      });
     }).catch(function (error) {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
     });
   }
 
-  const getCard = (returnList, opname, stato, i, status, description, monitora) => {
-    if (description == "") description = " "
+  const getCard = (returnList, opname, stato, i, ServiceControllerStatus, ServiceStartMode, ServiceType, start_type, service_type, monitora) => {
     return (!isOdd(i))
     ? 
       monitora != null
@@ -108,27 +126,30 @@ const WindowsServices = (props) => {
           returnList = [returnList, 
             <>
               <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-              <Col className="oddColor col-md-4 col-xs-4"><p>{opname}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(stato)]}</p></Col>
-              <Col className="oddColor col-md-5 col-xs-5"><p>{description}</p></Col>
+              <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
         :
           returnList = [returnList, 
             <>
               <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname}/></Col>
-              <Col className="oddColor col-md-4 col-xs-4"><p>{opname}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(stato)]}</p></Col>
-              <Col className="oddColor col-md-5 col-xs-5"><p>{description}</p></Col>
+              <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
       :
         returnList = [returnList, 
           <>
             <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-            <Col className="oddColor col-md-4 col-xs-4"><p>{opname}</p></Col>
-            <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(stato)]}</p></Col>
-            <Col className="oddColor col-md-5 col-xs-5"><p>{description}</p></Col>
+            <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
+            <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+            <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+            <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
           </>
         ]
     : 
@@ -139,27 +160,30 @@ const WindowsServices = (props) => {
           returnList = [returnList, 
             <>
               <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-              <Col className="evenColor col-md-4 col-xs-4"><p>{opname}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(stato)]}</p></Col>
-              <Col className="evenColor col-md-5 col-xs-5"><p>{description}</p></Col>
+              <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
         :
           returnList = [returnList, 
             <>
               <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname}/></Col>
-              <Col className="evenColor col-md-4 col-xs-4"><p>{opname}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(stato)]}</p></Col>
-              <Col className="evenColor col-md-5 col-xs-5"><p>{description}</p></Col>
+              <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
       :
         returnList = [returnList, 
           <>
             <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-            <Col className="evenColor col-md-4 col-xs-4"><p>{opname}</p></Col>
-            <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(stato)]}</p></Col>
-            <Col className="evenColor col-md-5 col-xs-5"><p>{description}</p></Col>
+            <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
+            <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+            <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+            <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
           </>
         ]
   }
