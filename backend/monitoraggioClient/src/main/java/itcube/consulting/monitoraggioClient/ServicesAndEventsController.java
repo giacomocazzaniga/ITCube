@@ -34,6 +34,7 @@ import itcube.consulting.monitoraggioClient.repositories.TipologieClientReposito
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRepository;
 import itcube.consulting.monitoraggioClient.response.EventiOverviewResponse;
+import itcube.consulting.monitoraggioClient.response.EventiResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.OperazioniOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
@@ -527,6 +528,79 @@ public class ServicesAndEventsController {
 				generalResponse.setToken(newToken);
 				
 				return ResponseEntity.ok(generalResponse); 
+			}
+			
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	//ritorna n oggetti appartenenti alla sottocategoria in posizione slot, cioè se ho n=50,
+	//slot=1 e sottocategoria=”A”, ritorna i primi 50*1 elementi con sottocategoria=”A” (da 0 a 49), 
+	//se lo slot è 2 i secondi 50 (da 50 a 99) e così via. 
+	//Se la sottocategoria è “*” allora restituisci gli elementi indipendentemente dalla loro sottocategoria, 
+	//quindi qualsiasi evento rispettando n e slot.
+	
+	@PostMapping(path="/getEventi",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getEventi (@RequestBody Map<String,Object> body) {
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		int id_client;
+		String token;
+		int sottocategoria;
+		int slot;
+		int n;
+		List<VisualizzazioneEventi> eventi = new ArrayList<VisualizzazioneEventi>();
+		List<VisualizzazioneEventi> eventiSlot = new ArrayList<VisualizzazioneEventi>();
+		EventiResponse response = new EventiResponse();
+		
+		try
+		{
+			//assumo che in stato ci siano tutte le info
+			id_client=Integer.parseInt((String) body.get("id_client"));
+			sottocategoria = Integer.parseInt((String) body.get("sottocategoria"));
+			slot = Integer.parseInt((String) body.get("slot"));
+			n = Integer.parseInt((String) body.get("n"));
+			
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {
+				
+//				monitoraggioRepository.updateMonitora(monitora, nome_servizio);
+				eventi = visualizzazioneEventiRepository.getEventi(id_client, sottocategoria);
+				
+				int Npartenza = (n-1)*slot;
+				int Narrivo = n*slot;
+				
+				if(Narrivo > eventi.size())
+					Narrivo = eventi.size();
+				
+				for(int i=Npartenza; i< Narrivo; i++) {
+					eventiSlot.add(eventi.get(i));
+					System.out.println("el N: " + i + " " + eventi);
+				}
+				
+				response.setEventi(eventiSlot);
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
 			}
 			
 			generalResponse.setMessage("Autenticazione fallita");
