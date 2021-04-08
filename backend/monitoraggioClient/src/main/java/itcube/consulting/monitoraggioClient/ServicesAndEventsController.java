@@ -95,13 +95,11 @@ public class ServicesAndEventsController {
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
 		LocalDateTime timestamp=java.time.LocalDateTime.now();
-		System.out.println(timestamp);
 		
 		try
 		{
 			id_client=Integer.parseInt((String)body.get("id_client"));
 			servizi=(List<ConfWindowsServices>)body.get("servizi");
-			System.out.println(servizi.get(0));
 			if(servizi.size()!=0)
 			{
 				
@@ -118,28 +116,23 @@ public class ServicesAndEventsController {
 					confWindowsServicesRepository.save(tmp);
 				}
 				
-				id_client=Integer.parseInt((String) body.get("id_client"));
 				monitoraggio=monitoraggioRepository.getServiziClient(id_client);
-				System.out.println(monitoraggio.get(0).getNome_servizio());
-				if(monitoraggio!=null)
+				if(monitoraggio.size()!=0)
 				{
 					
 					
 					for(int i=0; i < servizi.size(); i++)
 					{
-						ConfWindowsServices tmp = new ConfWindowsServices();
-						tmp.setId_client(id_client);
-						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
-						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("DisplayName"));
-						tmp.setStato(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status")));
-						tmp.setStart_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("StartType")));
-						tmp.setService_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType")));
-						tmp.setDate_and_time(timestamp);
+						Monitoraggio temp=new Monitoraggio();
+						temp.setId_client(id_client);
+						temp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+						temp.setMonitora(true);
 						
-					
-						if(!monitoraggio.contains(tmp.toMonitoraggio(tmp)))
+						Integer idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+						
+						if(idMonitoraggio==null)
 						{
-							monitoraggioRepository.save(tmp.toMonitoraggio(tmp));
+							monitoraggioRepository.save(temp);
 						}
 					}
 				}
@@ -148,17 +141,12 @@ public class ServicesAndEventsController {
 					
 					for(int i=0; i < servizi.size(); i++)
 					{
-						ConfWindowsServices tmp = new ConfWindowsServices();
-						tmp.setId_client(id_client);
-						tmp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
-						tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("DisplayName"));
-						tmp.setStato(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status")));
-						tmp.setStart_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("StartType")));
-						tmp.setService_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType")));
-						tmp.setDate_and_time(timestamp);
-					
+						Monitoraggio temp=new Monitoraggio();
+						temp.setId_client(id_client);
+						temp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+						temp.setMonitora(true);
 				
-						monitoraggioRepository.save(tmp.toMonitoraggio(tmp));
+						monitoraggioRepository.save(temp);
 					}
 				}
 			
