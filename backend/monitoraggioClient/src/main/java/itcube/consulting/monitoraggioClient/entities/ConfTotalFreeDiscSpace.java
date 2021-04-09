@@ -63,9 +63,7 @@ public class ConfTotalFreeDiscSpace {
 
 	public double setPerc_free_disc_space(double total_size, double total_free_disc_space) {
 		double tmp=total_free_disc_space/total_size;
-		System.out.println(tmp);
 		this.perc_free_disc_space = tmp*100;
-		System.out.println(this.perc_free_disc_space);
 		return this.perc_free_disc_space;
 	}
 

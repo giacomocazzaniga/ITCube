@@ -35,6 +35,7 @@ import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRepository;
+import itcube.consulting.monitoraggioClient.response.AgentResponse;
 import itcube.consulting.monitoraggioClient.response.EventiOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.EventiResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
@@ -87,9 +88,9 @@ public class ServicesAndEventsController {
 	
 	@PostMapping(path="/inserimentoServizi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
-	public ResponseEntity<GeneralResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
+	public ResponseEntity<AgentResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
 	{
-		GeneralResponse generalResponse=new GeneralResponse();
+		AgentResponse generalResponse=new AgentResponse();
 		ValidToken validToken=new ValidToken();
 		int id_client;
 		String token;
@@ -228,53 +229,125 @@ public class ServicesAndEventsController {
 
 	@PostMapping(path="/inserimentoEventi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
-	public ResponseEntity<GeneralResponse> inserimentoEventi (@RequestBody Map<String,Object> body)
+	public ResponseEntity<AgentResponse> inserimentoEventi (@RequestBody Map<String,Object> body)
 	{
-		GeneralResponse generalResponse=new GeneralResponse();
-		ValidToken validToken=new ValidToken();
+		AgentResponse generalResponse=new AgentResponse();
 		int id_client;
-		List<VisualizzazioneEventi> eventi=new ArrayList<VisualizzazioneEventi>();
+		List<VisualizzazioneEventi> MyApplicationsLogs=new ArrayList<VisualizzazioneEventi>();
+		List<VisualizzazioneEventi> MyHardwareLogs=new ArrayList<VisualizzazioneEventi>();
+		List<VisualizzazioneEventi> MySystemLogs=new ArrayList<VisualizzazioneEventi>();
+		List<VisualizzazioneEventi> MySecurityLogs=new ArrayList<VisualizzazioneEventi>();
 		LocalDateTime timestamp=java.time.LocalDateTime.now();
 		
 		try
 		{
-			id_client=Integer.parseInt((String) body.get("id_client"));
-			eventi=(List<VisualizzazioneEventi>)body.get("eventi");
-			if(eventi!=null)
+			id_client=Integer.parseInt((String) body.get("MyID"));
+			MyApplicationsLogs=(List<VisualizzazioneEventi>)body.get("MyApplicationsLogs");
+			MyHardwareLogs=(List<VisualizzazioneEventi>)body.get("MyHardwareLogs");
+			MySystemLogs=(List<VisualizzazioneEventi>)body.get("MySystemLogs");
+			MySecurityLogs=(List<VisualizzazioneEventi>)body.get("MySecurityLogs");
+			
+			System.out.println(MyApplicationsLogs.get(0));
+			if(MyApplicationsLogs!=null)
 			{
-				for(int i=0; i < eventi.size(); i++)
+				for(int i=0; i < MyApplicationsLogs.size(); i++)
 				{
 					
 					//sottocategoria, level, source, id_event, task_category, info, date_and_time
 					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
 					tmp.setId_client(id_client);
-					tmp.setSottocategoria((String) ((Map<String, Object>) eventi.get(i)).get("sottocategoria"));
-					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) eventi.get(i)).get("level")));
-					tmp.setSource((String) ((Map<String, Object>) eventi.get(i)).get("source"));
-					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) eventi.get(i)).get("id_event")));
-					tmp.setTask_category((String) ((Map<String, Object>) eventi.get(i)).get("task_category"));
-					tmp.setInfo((String) ((Map<String, Object>) eventi.get(i)).get("info"));
+					tmp.setSottocategoria("A");
+					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("EntryType")));
+					tmp.setSource((String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("LogOrigin"));
+					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("LogEventID")));
+					tmp.setInfo((String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("LogMessage"));
 					tmp.setDate_and_time(timestamp);
 					
-					String dateTime = (String) ((Map<String, Object>) eventi.get(i)).get("date_and_time_evento");
+					String dateTime = (String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("LogDate");
 			        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			        LocalDateTime formatDateTime = LocalDateTime.parse(dateTime, FORMATTER);
 			        
 					tmp.setDate_and_time_evento(formatDateTime);
 					visualizzazioneEventiRepository.save(tmp);
 				}
-				generalResponse.setMessage("Operazione effettuata con successo");
-				generalResponse.setMessageCode(0);
-			
-				return ResponseEntity.ok(generalResponse); 
 			}
-			else
+			
+			if(MyHardwareLogs!=null)
 			{
-				generalResponse.setMessage("Lista degli eventi vuota");
-				generalResponse.setMessageCode(-2);
-			
-				return ResponseEntity.ok(generalResponse); 
+				for(int i=0; i < MyHardwareLogs.size(); i++)
+				{
+					
+					//sottocategoria, level, source, id_event, task_category, info, date_and_time
+					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
+					tmp.setId_client(id_client);
+					tmp.setSottocategoria("H");
+					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("EntryType")));
+					tmp.setSource((String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("LogOrigin"));
+					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("LogEventID")));
+					tmp.setInfo((String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("LogMessage"));
+					tmp.setDate_and_time(timestamp);
+					
+					String dateTime = (String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("LogDate");
+			        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			        LocalDateTime formatDateTime = LocalDateTime.parse(dateTime, FORMATTER);
+			        
+					tmp.setDate_and_time_evento(formatDateTime);
+					visualizzazioneEventiRepository.save(tmp);
+				}
 			}
+			
+			if(MySystemLogs!=null)
+			{
+				for(int i=0; i < MySystemLogs.size(); i++)
+				{
+					
+					//sottocategoria, level, source, id_event, task_category, info, date_and_time
+					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
+					tmp.setId_client(id_client);
+					tmp.setSottocategoria("S");
+					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) MySystemLogs.get(i)).get("EntryType")));
+					tmp.setSource((String) ((Map<String, Object>) MySystemLogs.get(i)).get("LogOrigin"));
+					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) MySystemLogs.get(i)).get("LogEventID")));
+					tmp.setInfo((String) ((Map<String, Object>) MySystemLogs.get(i)).get("LogMessage"));
+					tmp.setDate_and_time(timestamp);
+					
+					String dateTime = (String) ((Map<String, Object>) MySystemLogs.get(i)).get("LogDate");
+			        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			        LocalDateTime formatDateTime = LocalDateTime.parse(dateTime, FORMATTER);
+			        
+					tmp.setDate_and_time_evento(formatDateTime);
+					visualizzazioneEventiRepository.save(tmp);
+				}
+			}
+			
+			if(MySecurityLogs!=null)
+			{
+				for(int i=0; i < MySecurityLogs.size(); i++)
+				{
+					
+					//sottocategoria, level, source, id_event, task_category, info, date_and_time
+					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
+					tmp.setId_client(id_client);
+					tmp.setSottocategoria("C");
+					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) MySecurityLogs.get(i)).get("EntryType")));
+					tmp.setSource((String) ((Map<String, Object>) MySecurityLogs.get(i)).get("LogOrigin"));
+					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) MySecurityLogs.get(i)).get("LogEventID")));
+					tmp.setInfo((String) ((Map<String, Object>) MySecurityLogs.get(i)).get("LogMessage"));
+					tmp.setDate_and_time(timestamp);
+					
+					String dateTime = (String) ((Map<String, Object>) MySecurityLogs.get(i)).get("LogDate");
+			        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			        LocalDateTime formatDateTime = LocalDateTime.parse(dateTime, FORMATTER);
+			        
+					tmp.setDate_and_time_evento(formatDateTime);
+					visualizzazioneEventiRepository.save(tmp);
+				}
+			}
+			
+			generalResponse.setMessage("Operazione effettuata con successo");
+			generalResponse.setMessageCode(0);
+		
+			return ResponseEntity.ok(generalResponse); 
 		}
 		catch(Exception e)
 		{
