@@ -30,4 +30,7 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	
 	@Query(value="Select id from elenco_clients where nome= :nome and mac_address= :mac_address", nativeQuery=true)
 	int getIdFromInfo(@Param("nome") String nome, @Param("mac_address") String mac_address);
+	
+	@Query(value="Select * from elenco_clients where id= :id_client", nativeQuery=true)
+	ElencoClients getClientFromId(@Param("id_client") int id_client);
 }

@@ -17,13 +17,16 @@ public class ConfTotalFreeDiscSpace {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@OneToOne
+	/*@OneToOne
 	@JoinColumn(name = "id_client")
-	private ElencoClients elencoClients;
-	//private int id_client;
+	private ElencoClients elencoClients;*/
+	private int id_client;
 	
 	private String drive;
-	private int perc_free_disc_space;
+	private String descrizione;
+	private long total_free_disc_space;
+	private long total_size;
+	private double perc_free_disc_space;
 	private LocalDateTime date_and_time;
 	
 	public ConfTotalFreeDiscSpace() {
@@ -54,21 +57,25 @@ public class ConfTotalFreeDiscSpace {
 		this.drive = drive;
 	}
 
-	public int getPerc_free_disc_space() {
+	public double getPerc_free_disc_space() {
 		return perc_free_disc_space;
 	}
 
-	public void setPerc_free_disc_space(int perc_free_disc_space) {
-		this.perc_free_disc_space = perc_free_disc_space;
+	public double setPerc_free_disc_space(double total_size, double total_free_disc_space) {
+		double tmp=total_free_disc_space/total_size;
+		System.out.println(tmp);
+		this.perc_free_disc_space = tmp*100;
+		System.out.println(this.perc_free_disc_space);
+		return this.perc_free_disc_space;
 	}
 
-	public ElencoClients getElencoClients() {
+	/*public ElencoClients getElencoClients() {
 		return elencoClients;
 	}
 
 	public void setElencoClients(ElencoClients elencoClients) {
 		this.elencoClients = elencoClients;
-	}
+	}*/
 
 	public LocalDateTime getDate_and_time() {
 		return date_and_time;
@@ -76,6 +83,38 @@ public class ConfTotalFreeDiscSpace {
 
 	public void setDate_and_time(LocalDateTime date_and_time) {
 		this.date_and_time = date_and_time;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
+	public long getTotal_free_disc_space() {
+		return total_free_disc_space;
+	}
+
+	public void setTotal_free_disc_space(long total_free_disc_space) {
+		this.total_free_disc_space = total_free_disc_space;
+	}
+
+	public long getTotal_size() {
+		return total_size;
+	}
+
+	public void setTotal_size(long total_size) {
+		this.total_size = total_size;
+	}
+
+	public int getId_client() {
+		return id_client;
+	}
+
+	public void setId_client(int id_client) {
+		this.id_client = id_client;
 	}
 }
 

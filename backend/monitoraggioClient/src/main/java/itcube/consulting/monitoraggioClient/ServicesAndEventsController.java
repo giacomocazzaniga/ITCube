@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
+import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
 import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
@@ -95,12 +97,27 @@ public class ServicesAndEventsController {
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
 		LocalDateTime timestamp=java.time.LocalDateTime.now();
-		
+		List<ConfTotalFreeDiscSpace> disco=new ArrayList<ConfTotalFreeDiscSpace>();
+		boolean serviziNotNull;
+		boolean dischiNotNull;
 		try
 		{
-			id_client=Integer.parseInt((String)body.get("id_client"));
-			servizi=(List<ConfWindowsServices>)body.get("servizi");
+			id_client=Integer.parseInt((String)body.get("MyID"));
+			servizi=(List<ConfWindowsServices>)body.get("Services");
+			disco=(List<ConfTotalFreeDiscSpace>)body.get("MyDrives");
+			
 			if(servizi.size()!=0)
+				serviziNotNull=true;
+			else
+				serviziNotNull=false;
+			
+			
+			if(disco.size()!=0)
+				dischiNotNull=true;
+			else
+				dischiNotNull=false;
+				
+			if(serviziNotNull)
 			{
 				
 				for(int i=0; i < servizi.size(); i++)
@@ -150,6 +167,42 @@ public class ServicesAndEventsController {
 					}
 				}
 			
+			}
+			
+			if(dischiNotNull)
+			{
+				//VolumeName, VolumeLabel, TotalSize, TotalFreeSpace
+				for(int i=0; i < disco.size(); i++)
+				{
+					ConfTotalFreeDiscSpace tmp = new ConfTotalFreeDiscSpace();
+					
+					String drive=(String) ((Map<String, Object>) disco.get(i)).get("VolumeName");
+					String descrizione=(String) ((Map<String, Object>) disco.get(i)).get("VolumeLabel");
+					long total_size=Integer.parseInt((String) ((Map<String, Object>) disco.get(i)).get("TotalSize"));
+					long total_free_disc_space=Integer.parseInt((String) ((Map<String, Object>) disco.get(i)).get("TotalFreeSpace"));
+
+					tmp.setId_client(id_client);
+					tmp.setDrive(drive);
+					tmp.setDescrizione(descrizione);
+					tmp.setTotal_size(total_size);
+					tmp.setTotal_free_disc_space(total_free_disc_space);
+					double perc_free_disc_space=tmp.setPerc_free_disc_space(total_size,total_free_disc_space);
+					tmp.setDate_and_time(timestamp);
+					
+					if(confTotalFreeDiscSpaceRepository.isPresent(drive, id_client)==null)
+					{
+						confTotalFreeDiscSpaceRepository.save(tmp);
+					}
+					else
+					{
+
+						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space);
+					}
+				}
+			}
+
+			if(dischiNotNull || serviziNotNull)
+			{
 				generalResponse.setMessage("Operazione effettuata con successo");
 				generalResponse.setMessageCode(0);
 			
@@ -157,7 +210,7 @@ public class ServicesAndEventsController {
 			}
 			else
 			{
-				generalResponse.setMessage("Lista dei servizi vuota");
+				generalResponse.setMessage("Liste dei servizi vuote");
 				generalResponse.setMessageCode(-2);
 			
 				return ResponseEntity.ok(generalResponse); 

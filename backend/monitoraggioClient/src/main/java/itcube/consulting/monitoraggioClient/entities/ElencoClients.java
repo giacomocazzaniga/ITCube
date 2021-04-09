@@ -25,8 +25,8 @@ public class ElencoClients {
 	@OneToOne(mappedBy = "elencoClients")
 	private Config config;
 	
-	@OneToOne(mappedBy = "elencoClients")
-	private ConfTotalFreeDiscSpace confTotalFreeDiscSpace;
+//	@OneToOne(mappedBy = "elencoClients")
+//	private ConfTotalFreeDiscSpace confTotalFreeDiscSpace;
 	
 //	@OneToOne(mappedBy = "elencoClients")
 //	private VisualizzazioneEventi visualizzazioneEventi;
@@ -131,13 +131,13 @@ public class ElencoClients {
 		this.config = config;
 	}
 
-	public ConfTotalFreeDiscSpace getConfTotalFreeDiscSpace() {
+	/*public ConfTotalFreeDiscSpace getConfTotalFreeDiscSpace() {
 		return confTotalFreeDiscSpace;
 	}
 
 	public void setConfTotalFreeDiscSpace(ConfTotalFreeDiscSpace confTotalFreeDiscSpace) {
 		this.confTotalFreeDiscSpace = confTotalFreeDiscSpace;
-	}
+	}*/
 
 	public String getSede() {
 		return sede;
