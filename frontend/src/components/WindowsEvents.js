@@ -8,6 +8,7 @@ import PopUp from "./PopUp";
 import { eventsList } from "../ActionCreator";
 import { defaultUpperBound, _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
+import { Pagination } from "react-bootstrap";
 
 /**
  * connect the actions to the component
@@ -33,16 +34,52 @@ const mapStateToProps = state => ({
 
 const WindowsEvents = (props) => {
 
+  const [state, setState] = React.useState({
+    currentSlot : [1,1,1,1]
+  })
+
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
-  const getEventsList = () => {
+  const getEventsList = (currentSlot=[1,1,1,1]) => {
     const loadingToast = getLoadingToast("Caricamento...");
-    _getEventi(props.token, props.id_client)
+    _getEventi(props.token, props.id_client, "A", currentSlot[0])
     .then(function (response) {
       stopLoadingToast(loadingToast);
-      console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
-      let list = servicesListMaker(response.data.eventi);
-      props.EventsList(list)
+      //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
+      let listA = response.data.eventi;
+      _getEventi(props.token, props.id_client, "C", currentSlot[1])
+      .then(function (response) {
+        stopLoadingToast(loadingToast);
+        //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'C' }).length)
+        let listC = response.data.eventi;
+        _getEventi(props.token, props.id_client, "H", currentSlot[2])
+        .then(function (response) {
+          stopLoadingToast(loadingToast);
+          //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'H' }).length)
+          let listH = response.data.eventi;
+          _getEventi(props.token, props.id_client, "S", currentSlot[3])
+          .then(function (response) {
+            stopLoadingToast(loadingToast);
+            //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'S' }).length)
+            let listS = response.data.eventi;
+            let merged = [...listA, ...listC, ...listH, ...listS];
+            let list = servicesListMaker(merged);
+            props.EventsList(list)
+          })
+          .catch(function (error) {
+            stopLoadingToast(loadingToast);
+            getErrorToast(String(error));
+          });
+        })
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        });
+      })
+      .catch(function (error) {
+        stopLoadingToast(loadingToast);
+        getErrorToast(String(error));
+      });
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -62,6 +99,26 @@ const WindowsEvents = (props) => {
     elem.style.transform = "rotate(0deg)";
     elem.style.transition = "transform 1s ease";
     elem.style.display = "inline-block";
+  }
+
+  const pagination_foo = (currentSlot, posSlot, add, n_sottocategoria) => {
+    if(add==false){
+      if(currentSlot[posSlot]>1){
+        currentSlot[posSlot]--; 
+        setState((previousState) => {
+          return { ...previousState, currentSlot: currentSlot };
+        });
+        getEventsList(currentSlot)
+      }
+    }else{
+      if(currentSlot[posSlot]<Math.ceil(n_sottocategoria/defaultUpperBound)){
+        currentSlot[posSlot]++; 
+        setState((previousState) => {
+          return { ...previousState, currentSlot: currentSlot };
+        });
+        getEventsList(currentSlot)
+      }
+    }
   }
 
   const servicesListMaker = (services) => {
@@ -113,7 +170,7 @@ const WindowsEvents = (props) => {
           <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {sottocategoria} ({n_sottocategoria})</h4></div>}>
             <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
             {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
-            <Col className="col-xs-12 col-md-12 reactPaginate"><ReactPaginate previousLabel={"← Precedente"} nextLabel={"Successivo →"} containerClassName={"pagination"} pageCount={Math.ceil(n_sottocategoria/defaultUpperBound)}/></Col>
+            <Col className="col-xs-12 col-md-12 reactPaginate"><a class="clickable" onClick={()=>pagination_foo(state.currentSlot, j, false, props.tot_per_sottocategoria[j].numero)}>← Precedente</a> {state.currentSlot[j]}/{Math.ceil(n_sottocategoria/defaultUpperBound)} <a class="clickable" onClick={()=>pagination_foo(state.currentSlot, j, true, props.tot_per_sottocategoria[j].numero)}>Successivo →</a></Col>
           </Collapsible>
         </div>
       ]
