@@ -15,4 +15,7 @@ public interface TipologieClientRepository extends CrudRepository<TipologiaClien
 	
 	@Query(value="Select * from tipologia_client where tipologia_client.nome_tipologia= :nome", nativeQuery=true)
 	TipologiaClient getSpecificType(@Param ("nome") String nome);
+	
+	@Query(value="Select * from tipologia_client where id= :tipologiaClient", nativeQuery=true)
+	TipologiaClient getNomeFromNum(@Param ("tipologiaClient") int tipologiaClient);
 }

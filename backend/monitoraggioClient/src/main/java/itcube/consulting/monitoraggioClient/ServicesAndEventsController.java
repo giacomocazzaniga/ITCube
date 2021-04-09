@@ -195,7 +195,7 @@ public class ServicesAndEventsController {
 					//sottocategoria, level, source, id_event, task_category, info, date_and_time
 					VisualizzazioneEventi tmp = new VisualizzazioneEventi();
 					tmp.setId_client(id_client);
-					tmp.setSottocategoria(Integer.parseInt((String)((Map<String, Object>) eventi.get(i)).get("sottocategoria")));
+					tmp.setSottocategoria((String) ((Map<String, Object>) eventi.get(i)).get("sottocategoria"));
 					tmp.setLevel(Integer.parseInt((String) ((Map<String, Object>) eventi.get(i)).get("level")));
 					tmp.setSource((String) ((Map<String, Object>) eventi.get(i)).get("source"));
 					tmp.setId_event(Integer.parseInt((String) ((Map<String, Object>) eventi.get(i)).get("id_event")));
@@ -497,7 +497,6 @@ public class ServicesAndEventsController {
 		
 		try
 		{
-			//assumo che in stato ci siano tutte le info
 			id_client=Integer.parseInt((String) body.get("id_client"));
 			nome_servizio = (String) body.get("nome_servizio");
 			monitora = Boolean.parseBoolean((String) body.get("monitora"));
@@ -555,7 +554,6 @@ public class ServicesAndEventsController {
 		
 		try
 		{
-			//assumo che in stato ci siano tutte le info
 			id_client=Integer.parseInt((String) body.get("id_client"));
 			sottocategoria = Integer.parseInt((String) body.get("sottocategoria"));
 			slot = Integer.parseInt((String) body.get("slot"));

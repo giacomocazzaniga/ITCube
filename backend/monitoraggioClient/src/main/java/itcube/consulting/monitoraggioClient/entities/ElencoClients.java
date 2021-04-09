@@ -32,6 +32,7 @@ public class ElencoClients {
 //	private VisualizzazioneEventi visualizzazioneEventi;
 	
 	private String nome;
+	private String descrizione;
 	
 	@ManyToOne
 	@JoinColumn(name = "tipologiaClient")
@@ -144,6 +145,14 @@ public class ElencoClients {
 
 	public void setSede(String sede) {
 		this.sede = sede;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 
 	public boolean hasLicenza (TipologieLicenze licenza) {

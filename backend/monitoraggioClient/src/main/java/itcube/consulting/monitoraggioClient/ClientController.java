@@ -52,6 +52,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.TipologiaClient;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
@@ -75,6 +76,7 @@ import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
+import itcube.consulting.monitoraggioClient.response.AgentResponse;
 import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -467,6 +469,81 @@ public class ClientController {
 			generalResponse.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/MyInfo",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<AgentResponse> MyInfo(@RequestBody Map<String,Object> body)
+	{
+		AgentResponse response=new AgentResponse();
+		
+		try
+		{
+			//MyID, LicenseKey, MachineName, MachineLabel, Type, MACAddress): MyID, Message, MessageCode
+			Integer id_client=Integer.parseInt((String)body.get("MyID"));
+			String codice=(String)body.get("LicenseKey");
+			String nome=(String)body.get("MachineName");
+			String descrizione=(String)body.get("MachineLabel");
+			int tipologiaClient=Integer.parseInt((String)body.get("Type"));
+			String mac_address=(String)body.get("MACAddress");
+			
+			if(id_client==0)
+			{
+				//salva nel db
+				ElencoClients newClient=new ElencoClients();
+				newClient.setNome(nome);
+				newClient.setDescrizione(descrizione);
+				TipologiaClient tipo=new TipologiaClient();
+				tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
+				System.out.println(tipo);
+				newClient.setTipologiaClient(tipo);
+				newClient.setMac_address(mac_address);
+				//id_company
+				Integer id_company=elencoLicenzeRepository.getIdCompanyFromLicenza(codice);
+				
+				if(id_company!=null)
+				{
+					ElencoCompanies company=new ElencoCompanies();
+					company=elencoCompaniesRepository.getInfoCompany(id_company);
+					newClient.setElencoCompanies(company);
+					//licenza in uso
+					List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
+					elencoLicenze.add(elencoLicenzeRepository.getLicenza(codice));
+					newClient.setElencoLicenze(elencoLicenze);
+					//sede
+					
+					elencoClientsRepository.save(newClient);
+					
+					response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
+					response.setMessage("OK");
+					response.setMessageCode(0);
+					return ResponseEntity.ok(response);
+				}
+				else
+				{
+					response.setMyID(null);
+					response.setMessage("Licenza non registrata");
+					response.setMessageCode(-1);
+					return ResponseEntity.badRequest().body(response);
+				}
+			}
+			else
+			{
+				//ping --> return
+				response.setMyID(null);
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				return ResponseEntity.ok(response);
+			}
+		}
+		catch(Exception e)
+		{
+			response.setMyID(null);
+			response.setMessage("KO");
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 }
