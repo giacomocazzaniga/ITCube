@@ -242,7 +242,7 @@ public class ServicesAndEventsController {
 		try
 		{
 			id_client=Integer.parseInt((String) body.get("MyID"));
-			MyApplicationsLogs=(List<VisualizzazioneEventi>)body.get("MyApplicationsLogs");
+			MyApplicationsLogs=(List<VisualizzazioneEventi>)body.get("MyApplicationLogs");
 			MyHardwareLogs=(List<VisualizzazioneEventi>)body.get("MyHardwareLogs");
 			MySystemLogs=(List<VisualizzazioneEventi>)body.get("MySystemLogs");
 			MySecurityLogs=(List<VisualizzazioneEventi>)body.get("MySecurityLogs");
@@ -465,7 +465,7 @@ public class ServicesAndEventsController {
 		int id_client;
 		String token;
 		EventiOverviewResponse response=new EventiOverviewResponse();
-		HashMap<Integer, Integer> tot=new HashMap<Integer, Integer>();
+		HashMap<String, Integer> tot=new HashMap<String, Integer>();
 		
 		try
 		{
@@ -478,8 +478,8 @@ public class ServicesAndEventsController {
 			{
 				int problemi_oggi=visualizzazioneEventiRepository.getProblemiOggi(id_client);
 				int warning_oggi=visualizzazioneEventiRepository.getWarningOggi(id_client);
-				List<Integer> sottocategorie=visualizzazioneEventiRepository.getSottocategorie(id_client);
-				for(Integer i:sottocategorie)
+				List<String> sottocategorie=visualizzazioneEventiRepository.getSottocategorie(id_client);
+				for(String i:sottocategorie)
 				{
 					int num=visualizzazioneEventiRepository.contaSottocategoria(id_client, i);
 					tot.put(i, num);
@@ -671,7 +671,7 @@ public class ServicesAndEventsController {
 		int id_company;
 		int id_client;
 		String token;
-		int sottocategoria;
+		String sottocategoria;
 		int slot;
 		int n;
 		List<VisualizzazioneEventi> eventi = new ArrayList<VisualizzazioneEventi>();
@@ -681,7 +681,7 @@ public class ServicesAndEventsController {
 		try
 		{
 			id_client=Integer.parseInt((String) body.get("id_client"));
-			sottocategoria = Integer.parseInt((String) body.get("sottocategoria"));
+			sottocategoria = (String) body.get("sottocategoria");
 			slot = Integer.parseInt((String) body.get("slot"));
 			n = Integer.parseInt((String) body.get("n"));
 			
@@ -693,10 +693,11 @@ public class ServicesAndEventsController {
 				
 //				monitoraggioRepository.updateMonitora(monitora, nome_servizio);
 				eventi = visualizzazioneEventiRepository.getEventi(id_client, sottocategoria);
-				
-				int Npartenza = (n-1)*slot;
-				int Narrivo = n*slot;
-				
+				System.out.println(eventi.size());
+				int Npartenza = n*(slot-1);
+				int Narrivo = (n*slot)-1;
+				System.out.println(Npartenza);
+				System.out.println(Narrivo);
 				if(Narrivo > eventi.size())
 					Narrivo = eventi.size();
 				

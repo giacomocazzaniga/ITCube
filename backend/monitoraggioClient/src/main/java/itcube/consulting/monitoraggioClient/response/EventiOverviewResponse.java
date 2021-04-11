@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class EventiOverviewResponse extends GeneralResponse{
 	private int problemi_oggi;
 	private int warning_oggi;
-	HashMap<Integer, Integer> tot_per_sottocategoria=new HashMap<Integer, Integer>();
+	HashMap<String, Integer> tot_per_sottocategoria=new HashMap<String, Integer>();
 	
 	public EventiOverviewResponse() {
 		super();
@@ -23,11 +23,11 @@ public class EventiOverviewResponse extends GeneralResponse{
 	public void setWarning_oggi(int warning_oggi) {
 		this.warning_oggi = warning_oggi;
 	}
-	public HashMap<Integer, Integer> getTot_per_sottocategoria() {
+	public HashMap<String, Integer> getTot_per_sottocategoria() {
 		return tot_per_sottocategoria;
 	}
-	public void setTot_per_sottocategoria(HashMap<Integer, Integer> tot_per_sottocategoria) {
-		this.tot_per_sottocategoria = tot_per_sottocategoria;
+	public void setTot_per_sottocategoria(HashMap<String, Integer> tot) {
+		this.tot_per_sottocategoria = tot;
 	}
 	
 	
