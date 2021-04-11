@@ -63,6 +63,7 @@ const WindowsEvents = (props) => {
             //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'S' }).length)
             let listS = response.data.eventi;
             let merged = [...listA, ...listC, ...listH, ...listS];
+            //console.log(merged)
             let list = servicesListMaker(merged);
             props.EventsList(list)
           })
@@ -128,25 +129,28 @@ const WindowsEvents = (props) => {
     services.sort(function (a, b) {
       return a.sottocategoria.localeCompare(b.sottocategoria);
     });
+    //console.log(services)
     //for each category print
     let categoriesHeaderWasPrinted = [false, false, false, false];
     let sottocategoria = "";
     let compare_sottocategoria = "";
     let n_sottocategoria = 0;
     for(let j=0; j<4; j++){
-      if(props.tot_per_sottocategoria[j].sottocategoria=="A"){
-        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      if(j==0){
+        n_sottocategoria = props.tot_per_sottocategoria.A
       }
-      if(props.tot_per_sottocategoria[j].sottocategoria=="C"){
-        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      if(j==1){
+        n_sottocategoria = props.tot_per_sottocategoria.C
       }
-      if(props.tot_per_sottocategoria[j].sottocategoria=="H"){
-        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      if(j==2){
+        n_sottocategoria = props.tot_per_sottocategoria.H
       }
-      if(props.tot_per_sottocategoria[j].sottocategoria=="S"){
-        n_sottocategoria = props.tot_per_sottocategoria[j].numero
+      if(j==3){
+        n_sottocategoria = props.tot_per_sottocategoria.S
       }
       categoriesHeaderWasPrinted[j] = true
+      console.log(n_sottocategoria)
+      console.log(categoriesHeaderWasPrinted)
       switch(j){
         case 0:
           sottocategoria = "Application";
