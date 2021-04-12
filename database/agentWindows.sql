@@ -1,17 +1,24 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.7
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Generation Time: Apr 09, 2021 at 03:34 PM
--- Server version: 5.7.32
--- PHP Version: 7.4.12
+-- Host: 127.0.0.1
+-- Generation Time: Apr 12, 2021 at 09:24 AM
+-- Server version: 10.4.17-MariaDB
+-- PHP Version: 7.3.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
--- Database: `agentWindows`
+-- Database: `agentwindows`
 --
 
 -- --------------------------------------------------------
@@ -44,14 +51,6 @@ CREATE TABLE `conf_total_free_disc_space` (
   `total_size` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `conf_total_free_disc_space`
---
-
-INSERT INTO `conf_total_free_disc_space` (`id`, `date_and_time`, `descrizione`, `drive`, `id_client`, `perc_free_disc_space`, `total_free_disc_space`, `total_size`) VALUES
-(1, '2021-04-09 16:28:36.937747', 'Nuovo Disco 1', 'Disco 1', 3, 62.5, 20000, 32000),
-(2, '2021-04-09 16:28:36.937747', 'Nuovo Disco 2', 'Disco 2', 3, 53.84615384615385, 7000, 13000);
-
 -- --------------------------------------------------------
 
 --
@@ -75,82 +74,7 @@ CREATE TABLE `conf_windows_services` (
 --
 
 INSERT INTO `conf_windows_services` (`id`, `date_and_time`, `description`, `display_name`, `service_type`, `start_type`, `stato`, `id_client`, `nome_servizio`) VALUES
-(3, '2021-04-08 14:52:34.158157', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(4, '2021-04-08 14:52:34.158157', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(5, '2021-04-08 14:56:53.950022', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(6, '2021-04-08 14:56:53.950022', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(7, '2021-04-08 14:58:09.256694', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(8, '2021-04-08 14:58:09.256694', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(9, '2021-04-08 15:01:35.195411', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(10, '2021-04-08 15:01:35.195411', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(11, '2021-04-08 15:02:09.680904', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(12, '2021-04-08 15:02:09.680904', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(13, '2021-04-08 15:03:49.138922', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(14, '2021-04-08 15:03:49.138922', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(15, '2021-04-08 15:04:24.471745', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(16, '2021-04-08 15:04:24.471745', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(17, '2021-04-08 15:05:04.225321', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(18, '2021-04-08 15:05:04.225321', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(19, '2021-04-08 15:09:59.572757', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(20, '2021-04-08 15:09:59.572757', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(21, '2021-04-08 15:14:11.427701', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(22, '2021-04-08 15:14:11.427701', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(23, '2021-04-08 15:20:37.869466', NULL, 'BBB', 3, 2, 1, 1, 'AAA'),
-(24, '2021-04-08 15:20:37.869466', NULL, 'DDD', 6, 5, 4, 1, 'CCC'),
-(25, '2021-04-08 15:21:43.667291', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(26, '2021-04-08 15:21:43.667291', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(27, '2021-04-08 15:22:21.636640', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(28, '2021-04-08 15:22:21.636640', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(29, '2021-04-08 15:22:54.846360', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(30, '2021-04-08 15:22:54.846360', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(31, '2021-04-08 15:23:20.143197', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(32, '2021-04-08 15:23:20.143197', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(33, '2021-04-08 15:23:26.514552', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(34, '2021-04-08 15:23:26.514552', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(35, '2021-04-08 15:28:14.800353', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(36, '2021-04-08 15:28:14.800353', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(37, '2021-04-08 15:28:41.275378', NULL, 'www', 3, 2, 1, 1, 'NuovoServizio1'),
-(38, '2021-04-08 15:28:41.275378', NULL, 'qqq', 6, 5, 4, 1, 'NuovoServizio2'),
-(39, '2021-04-08 15:31:06.470254', NULL, 'www', 3, 2, 1, 3, 'NuovoServizio1'),
-(40, '2021-04-08 15:31:06.470254', NULL, 'qqq', 6, 5, 4, 3, 'NuovoServizio2'),
-(41, '2021-04-08 15:32:18.699747', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(42, '2021-04-08 15:32:18.699747', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(43, '2021-04-08 15:35:43.125683', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(44, '2021-04-08 15:35:43.125683', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(45, '2021-04-09 15:46:08.725101', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(46, '2021-04-09 15:46:08.725101', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(47, '2021-04-09 15:47:21.931276', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(48, '2021-04-09 15:47:21.931276', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(49, '2021-04-09 15:49:17.273554', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(50, '2021-04-09 15:49:17.273554', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(51, '2021-04-09 15:50:39.717633', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(52, '2021-04-09 15:50:39.717633', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(53, '2021-04-09 16:05:30.043096', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(54, '2021-04-09 16:05:30.043096', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(55, '2021-04-09 16:08:17.540682', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(56, '2021-04-09 16:08:17.540682', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(57, '2021-04-09 16:08:34.362559', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(58, '2021-04-09 16:08:34.362559', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(59, '2021-04-09 16:11:08.899736', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(60, '2021-04-09 16:11:08.899736', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(61, '2021-04-09 16:17:52.658760', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(62, '2021-04-09 16:17:52.658760', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(63, '2021-04-09 16:20:47.525267', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(64, '2021-04-09 16:20:47.525267', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(65, '2021-04-09 16:22:21.595437', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(66, '2021-04-09 16:22:21.595437', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(67, '2021-04-09 16:22:58.642193', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(68, '2021-04-09 16:22:58.642193', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(69, '2021-04-09 16:24:03.028779', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(70, '2021-04-09 16:24:03.028779', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(71, '2021-04-09 16:24:23.309149', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(72, '2021-04-09 16:24:23.309149', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(73, '2021-04-09 16:25:57.595914', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(74, '2021-04-09 16:25:57.595914', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(75, '2021-04-09 16:27:05.583746', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(76, '2021-04-09 16:27:05.583746', NULL, 'qqq', 6, 5, 4, 3, 'lalalala'),
-(77, '2021-04-09 16:28:36.937747', NULL, 'www', 3, 2, 1, 3, 'prova'),
-(78, '2021-04-09 16:28:36.937747', NULL, 'qqq', 6, 5, 4, 3, 'lalalala');
+(1, '2021-04-09 18:56:07.000000', 'Adobe Update Service', 'Adobe Update Service', 1, 1, 4, 1, 'Adobe Update Service');
 
 -- --------------------------------------------------------
 
@@ -173,10 +97,9 @@ CREATE TABLE `elenco_clients` (
 --
 
 INSERT INTO `elenco_clients` (`id`, `mac_address`, `nome`, `sede`, `id_company`, `tipologia_client`, `descrizione`) VALUES
-(1, NULL, 'Agent Client', NULL, 3, NULL, 'Questa è una nuova macchina client'),
-(2, NULL, 'Agent Client', NULL, 3, NULL, 'Questa è una nuova macchina client'),
-(3, 'MACAddress', 'Agent Client', NULL, 3, NULL, 'Questa è una nuova macchina client'),
-(5, 'XX-XX-XX-XX-XX-XX', 'Prova finale', NULL, 3, 1, 'Funziona?');
+(1, '00:1B:44:11:3A:B7', 'DESKTOP-3874', 'Venezia', 1, 1, 'DESKTOP-3874'),
+(2, '00:1B:94:51:4N:B0', 'DESKTOP-2049', 'Venezia', 1, 1, 'DESKTOP-2049'),
+(3, '00:09:20:39:4M:J0', 'SERVER-2209', 'Venezia', 1, 2, 'SERVER-2209');
 
 -- --------------------------------------------------------
 
@@ -188,16 +111,6 @@ CREATE TABLE `elenco_clients_elenco_licenze` (
   `licenza_in_uso` int(11) NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `elenco_clients_elenco_licenze`
---
-
-INSERT INTO `elenco_clients_elenco_licenze` (`licenza_in_uso`, `id`) VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(5, 1);
 
 -- --------------------------------------------------------
 
@@ -218,9 +131,7 @@ CREATE TABLE `elenco_companies` (
 --
 
 INSERT INTO `elenco_companies` (`id`, `email`, `email_alert`, `password`, `ragione_sociale`) VALUES
-(1, 'io@prova.it', 'alert@io.it', 'password', 'io'),
-(2, 'pio@prova.it', 'alert@pio.it', 'password', 'pio'),
-(3, 're@prova.it', 'alert@re.it', 'password', 're');
+(1, 'email@itcubeconsulting.it', 'alert@itcubeconsulting.it', '5f4dcc3b5aa765d61d8327deb882cf99', 'ITCUBE');
 
 -- --------------------------------------------------------
 
@@ -241,7 +152,7 @@ CREATE TABLE `elenco_licenze` (
 --
 
 INSERT INTO `elenco_licenze` (`id`, `codice`, `scadenza`, `acquistato_da`, `id_tipo`) VALUES
-(1, '9PV9AAPMSU2R2AKL', '2021-04-02 16:17:04.643000', 3, NULL);
+(1, 'T896-ZJ7Q-E5KP-NKQN', '2021-04-09 19:02:39.000000', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -297,14 +208,7 @@ CREATE TABLE `monitoraggio` (
 --
 
 INSERT INTO `monitoraggio` (`id`, `monitora`, `nome_servizio`, `id_client`) VALUES
-(2, b'1', 'AAA', 1),
-(3, b'1', 'CCC', 1),
-(7, b'1', 'NuovoServizio1', 1),
-(8, b'1', 'NuovoServizio2', 1),
-(11, b'1', 'NuovoServizio1', 3),
-(12, b'1', 'NuovoServizio2', 3),
-(13, b'1', 'prova', 3),
-(14, b'1', 'lalalala', 3);
+(1, b'1', 'Adobe Update Service', 1);
 
 -- --------------------------------------------------------
 
@@ -350,6 +254,17 @@ CREATE TABLE `tipologie_licenze` (
   `nome_tipologia` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tipologie_licenze`
+--
+
+INSERT INTO `tipologie_licenze` (`id`, `classe`, `nome_tipologia`) VALUES
+(1, 1, 'SISTEMA OPERATIVO'),
+(2, 2, 'BACKUP'),
+(3, 3, 'ANTIVIRUS'),
+(4, 4, 'RETE'),
+(5, 5, 'VULNERABILITA\'');
+
 -- --------------------------------------------------------
 
 --
@@ -375,20 +290,12 @@ CREATE TABLE `visualizzazione_eventi` (
 --
 
 INSERT INTO `visualizzazione_eventi` (`id`, `date_and_time`, `id_event`, `info`, `level`, `macro_categoria`, `sottocategoria`, `source`, `task_category`, `id_client`, `date_and_time_evento`) VALUES
-(2, '2021-04-09 17:26:58.598270', 945, 'Info3', 6, 0, 'H', 'LOP', NULL, 1, '2020-07-21 15:35:00.000000'),
-(3, '2021-04-09 17:26:58.598270', 564, 'Info4', 12, 0, 'H', 'ETR', NULL, 1, '2020-07-21 15:35:00.000000'),
-(4, '2021-04-09 17:26:58.598270', 867, 'Info5', 5, 0, 'S', 'EBV', NULL, 1, '2020-07-21 15:35:00.000000'),
-(5, '2021-04-09 17:26:58.598270', 967, 'Info6', 11, 0, 'S', '549', NULL, 1, '2020-07-21 15:35:00.000000'),
-(6, '2021-04-09 17:26:58.598270', 385, 'Info7', 7, 0, 'C', 'PRE', NULL, 1, '2020-07-21 15:35:00.000000'),
-(7, '2021-04-09 17:26:58.598270', 943, 'Info8', 9, 0, 'C', 'TYU', NULL, 1, '2020-07-21 15:35:00.000000'),
-(8, '2021-04-09 17:32:39.632328', 324, 'Info1', 3, 0, 'A', 'CVX', NULL, 1, '2020-07-21 15:35:00.000000'),
-(9, '2021-04-09 17:32:39.632328', 124, 'Info2', 4, 0, 'A', 'XYZ', NULL, 1, '2020-07-21 15:35:00.000000'),
-(10, '2021-04-09 17:32:39.632328', 945, 'Info3', 6, 0, 'H', 'LOP', NULL, 1, '2020-07-21 15:35:00.000000'),
-(11, '2021-04-09 17:32:39.632328', 564, 'Info4', 12, 0, 'H', 'ETR', NULL, 1, '2020-07-21 15:35:00.000000'),
-(12, '2021-04-09 17:32:39.632328', 867, 'Info5', 5, 0, 'S', 'EBV', NULL, 1, '2020-07-21 15:35:00.000000'),
-(13, '2021-04-09 17:32:39.632328', 967, 'Info6', 11, 0, 'S', '549', NULL, 1, '2020-07-21 15:35:00.000000'),
-(14, '2021-04-09 17:32:39.632328', 385, 'Info7', 7, 0, 'C', 'PRE', NULL, 1, '2020-07-21 15:35:00.000000'),
-(15, '2021-04-09 17:32:39.632328', 943, 'Info8', 9, 0, 'C', 'TYU', NULL, 1, '2020-07-21 15:35:00.000000');
+(1, '2021-04-09 18:57:04.000000', 100, 'Updating Adobe products', 1, 0, 'A', 'source', 'category', 1, '2021-04-09 18:57:04.000000'),
+(2, '2021-04-09 18:58:20.000000', 100, 'Updating Adobe products', 1, 1, 'A', 'source', 'category', 1, '2021-04-09 18:58:20.000000'),
+(4, '2021-04-11 10:16:48.000000', 100, 'Info test A', 1, 0, 'A', 'Source A', NULL, 1, '2021-04-11 18:57:00.000000'),
+(5, '2021-04-11 10:16:48.000000', 100, 'Info test H', 1, 0, 'H', 'Source H', NULL, 1, '2021-04-11 18:57:00.000000'),
+(6, '2021-04-11 10:16:48.000000', 100, 'Info test S', 1, 0, 'S', 'Source S', NULL, 1, '2021-04-11 18:57:00.000000'),
+(7, '2021-04-11 10:16:48.000000', 100, 'Info test C', 1, 0, 'C', 'Source C', NULL, 1, '2021-04-11 18:57:00.000000');
 
 --
 -- Indexes for dumped tables
@@ -509,25 +416,25 @@ ALTER TABLE `config`
 -- AUTO_INCREMENT for table `conf_total_free_disc_space`
 --
 ALTER TABLE `conf_total_free_disc_space`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `conf_windows_services`
 --
 ALTER TABLE `conf_windows_services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `elenco_clients`
 --
 ALTER TABLE `elenco_clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `elenco_companies`
 --
 ALTER TABLE `elenco_companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `elenco_licenze`
@@ -551,7 +458,7 @@ ALTER TABLE `macro_categorie_eventi`
 -- AUTO_INCREMENT for table `monitoraggio`
 --
 ALTER TABLE `monitoraggio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `real_time`
@@ -569,13 +476,13 @@ ALTER TABLE `tipologia_client`
 -- AUTO_INCREMENT for table `tipologie_licenze`
 --
 ALTER TABLE `tipologie_licenze`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `visualizzazione_eventi`
 --
 ALTER TABLE `visualizzazione_eventi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -615,3 +522,8 @@ ALTER TABLE `elenco_licenze`
 ALTER TABLE `elenco_operazioni_tipologie_licenze`
   ADD CONSTRAINT `FKlmdm9vojwtqko36rp5jxvp7mu` FOREIGN KEY (`classe`) REFERENCES `elenco_operazioni` (`id`),
   ADD CONSTRAINT `FKmfp6ymqxcmbwyqgu7xoo9v0ef` FOREIGN KEY (`licenza_riferimento`) REFERENCES `tipologie_licenze` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

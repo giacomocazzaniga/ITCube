@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "1320e309-c4f8-4689-86b4-85a1912b696f",
+		"name": "ITCube app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registrazione",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"francesco.done@itcubeconsulting.it\",\r\n    \"email_alert\" : \"alert@itcubeconsulting.it\",\r\n    \"password\" : \"5f4dcc3b5aa765d61d8327deb882cf99\",\r\n    \"ragione_sociale\" : \"ITCube Consulting\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/registrazione",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"registrazione"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"francesco.done@itcubeconsulting.it\",\r\n    \"password\" : \"5f4dcc3b5aa765d61d8327deb882cf99\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hello",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/hello",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"hello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Shallow Clients",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTYwNDk5MjcsImV4cCI6MTYxNjA1MjkyN30.wvAqjrG-gzQPqp19SlDPqrRzhcMT1-nwSS7vLMDFywC5pP1DWC8omizW6_AIf6exaExHLGZT_2yaR1rg7jISzw\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/shallowClients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"shallowClients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deep Client",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTYwNDk5MjcsImV4cCI6MTYxNjA1MjkyN30.wvAqjrG-gzQPqp19SlDPqrRzhcMT1-nwSS7vLMDFywC5pP1DWC8omizW6_AIf6exaExHLGZT_2yaR1rg7jISzw\",\r\n    \"id_company\": \"14\",\r\n    \"id_client\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/deepClient",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"deepClient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit company data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjE2MDU2NDIzLCJleHAiOjE2MTYwNTk0MjN9.ZB7LarnVRwHj2BHqSkngzErdKjB50NcSoBocKqKOk-Ys9_l6St9l66zOOsQbcT94RXMdL6Al1wIzxFPOusZe4A\",\r\n    \"id_company\": \"14\",\r\n    \"email\": \"francesco.done@itcubeconsulting.it\", \r\n    \"emailAlert\": \"alert@itcubeconsulting.it\", \r\n    \"ragioneSociale\": \"ITCuba\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/editCompanyData",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"editCompanyData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get licenze shallow",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/getLicenzeShallow",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"getLicenzeShallow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get licenze deep",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/getLicenzeDeep",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"getLicenzeDeep"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Eventi Slot",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/getLicenzeDeep",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"getLicenzeDeep"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Servizi All",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/getServiziAll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"getServiziAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Eventi Overview",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/getLicenzeDeep",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"getLicenzeDeep"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Servizi",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \"token\": \"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJJVEN1YmUiLCJzdWIiOiJJVEN1YmUgQ29uc3VsdGluZyIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE2MTU0Nzg4MjYsImV4cCI6MTYxNTQ3ODg1Nn0.10YVWHyX7oCpsUWpeC-KwhbX5-lCq5t1P-sB4YWK3NpQ5kHAjfYQZIrD8bore7uey1QFhtxpmLafhgCUrQ0fRA\",\r\n    \"id_company\": \"14\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/getLicenzeDeep",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"getLicenzeDeep"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Eventi",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"MyID\": \"1\",\r\n    \"MyApplicationLogs\": [\r\n        {\r\n            \"LogEventID\": \"100\", \r\n            \"LogDate\": \"2021-04-11 18:57:04.000000\", \r\n            \"LogCategory\": \"A\", \r\n            \"EntryType\": \"1\", \r\n            \"LogMessage\": \"Info test A\", \r\n            \"LogOrigin\": \"Source A\"\r\n        }\r\n    ],\r\n    \"MyHardwareLogs\": [\r\n        {\r\n            \"LogEventID\": \"100\", \r\n            \"LogDate\": \"2021-04-11 18:57:04.000000\", \r\n            \"LogCategory\": \"H\", \r\n            \"EntryType\": \"1\", \r\n            \"LogMessage\": \"Info test H\", \r\n            \"LogOrigin\": \"Source H\"\r\n        }\r\n    ],\r\n    \"MySystemLogs\": [\r\n        {\r\n            \"LogEventID\": \"100\", \r\n            \"LogDate\": \"2021-04-11 18:57:04.000000\", \r\n            \"LogCategory\": \"S\", \r\n            \"EntryType\": \"1\", \r\n            \"LogMessage\": \"Info test S\", \r\n            \"LogOrigin\": \"Source S\"\r\n        }\r\n    ],\r\n    \"MySecurityLogs\": [\r\n        {\r\n            \"LogEventID\": \"100\", \r\n            \"LogDate\": \"2021-04-11 18:57:04.000000\", \r\n            \"LogCategory\": \"C\", \r\n            \"EntryType\": \"1\", \r\n            \"LogMessage\": \"Info test C\", \r\n            \"LogOrigin\": \"Source C\"\r\n        }\r\n    ] \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/be/main/inserimentoEventi",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"be",
+						"main",
+						"inserimentoEventi"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
