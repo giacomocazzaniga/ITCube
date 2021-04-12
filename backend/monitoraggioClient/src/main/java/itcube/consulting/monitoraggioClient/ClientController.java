@@ -495,7 +495,7 @@ public class ClientController {
 				ElencoClients newClient=new ElencoClients();
 				newClient.setNome(nome);
 				newClient.setDescrizione(descrizione);
-				newClient.setSede("Milano");
+				newClient.setSede("Senza sede");
 				TipologiaClient tipo=new TipologiaClient();
 				tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
 				System.out.println(tipo);
