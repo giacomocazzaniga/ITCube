@@ -90,13 +90,13 @@ const LoginPage = (props) => {
         _getPlaces(ragione_sociale, token)
         .then(function (response) {
           //get places
-          console.log(response.data)
+          //console.log(response.data)
           let sedi = response.data.sedi;
           _getClientTypes(ragione_sociale, token)
           .then(function (response) {
             //get categories
             let categories = response.data.categories;
-            console.log(categories);
+            //console.log(categories);
             props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories);
           })
           .catch(function (error) {

@@ -196,10 +196,10 @@ public class ClientController {
 				deepClientResponse.setCodice_licenza(codiciLicenze);
 				deepClientResponse.setClasse_licenza(classiLicenze);
 				
-				deepClientResponse.setServizi_problemi(confWindowsServicesRepository.countTipoAlert(1));
-				deepClientResponse.setServizi_warning(confWindowsServicesRepository.countTipoAlert(2));
-				deepClientResponse.setServizi_attivi(confWindowsServicesRepository.countAttivo(true));
-				deepClientResponse.setServizi_esecuzione(confWindowsServicesRepository.countEsecuzione(true));
+				//deepClientResponse.setServizi_problemi(confWindowsServicesRepository.countTipoAlert(1));
+				//deepClientResponse.setServizi_warning(confWindowsServicesRepository.countTipoAlert(2));
+				//deepClientResponse.setServizi_attivi(confWindowsServicesRepository.countAttivo(true));
+				//deepClientResponse.setServizi_esecuzione(confWindowsServicesRepository.countEsecuzione(true));
 				
 				String newToken=Services.checkThreshold(id_company, token);
 				
