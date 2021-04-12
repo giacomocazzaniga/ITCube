@@ -104,7 +104,7 @@ public class ServicesAndEventsController {
 		try
 		{
 			id_client=Integer.parseInt((String)body.get("MyID"));
-			servizi=(List<ConfWindowsServices>)body.get("Services");
+			servizi=(List<ConfWindowsServices>)body.get("MyServices");
 			disco=(List<ConfTotalFreeDiscSpace>)body.get("MyDrives");
 			
 			if(servizi.size()!=0)

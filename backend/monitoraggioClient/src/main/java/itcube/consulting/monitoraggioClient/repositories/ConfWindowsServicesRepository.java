@@ -26,11 +26,8 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	List<ConfWindowsServices> getServiziClient(@Param("nome_servizio") String nome_servizio);
 	
 	@Query(value="select * from conf_windows_services \n"
-			+ "where conf_windows_services.id_client= 1 and conf_windows_services.date_and_time = any(\n"
-			+ "		select max(conf_windows_services.date_and_time)\n"
-			+ "        from conf_windows_services\n"
-			+ "        where conf_windows_services.id_client = 1\n"
-			+ "    );", nativeQuery=true)
+			+ "where conf_windows_services.id_client= :id_client "
+			+ "order by conf_windows_services.date_and_time desc", nativeQuery=true)
 	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client);
 	
 	@Query(value="select count(*) from conf_windows_services where stato= :stato and id_client= :id_client", nativeQuery=true)
