@@ -1,4 +1,4 @@
-const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio, url_get_eventi, url_get_eventi_overview } = require('./REST');
+const { url_login, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio, url_get_eventi, url_get_eventi_overview, url_lista_sedi, url_lista_gruppi, url_deep_client, url_shallow_clients } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -24,16 +24,18 @@ export const _performLogin = (email, password) => {
 }
 
 export const _getPlaces = (user, token) => {
-  return axios.post(url_lista_sediFake, {
+  console.log(user)
+  return axios.post(url_lista_sedi, {
     token: token,
-    ragione_sociale: user
+    id_company: user
   })
 }
 
 export const _getClientTypes = (user, token) => {
-  return axios.post(url_lista_gruppiFake, {
+  console.log(user)
+  return axios.post(url_lista_gruppi, {
     token: token,
-    ragione_sociale: user
+    id_company: user
   })
 }
 
@@ -45,8 +47,15 @@ export const _getLicenzeShallow = (id, token) => {
 }
 
 export const _getDeepClient = (id_client, id_company, token) => {
-  return axios.post(url_deep_clientFake, {
-    id_client: id_client,
+  return axios.post(url_deep_client, {
+    id_client: String(id_client),
+    id_company: id_company,
+    token: token
+  })
+}
+
+export const _getShallowClients = (id_company, token) => {
+  return axios.post(url_shallow_clients, {
     id_company: id_company,
     token: token
   })
@@ -64,21 +73,21 @@ export const _editCompanyData = (id_company, token, email, emailAlert, ragioneSo
 
 export const _getServiziMonitorati = (token, id_client) => {
   return axios.post(url_get_servizi_monitorati, {
-    id_client: id_client, 
+    id_client: String(id_client), 
     token: token
   })
 }
 
 export const _getServiziAll = (token, id_client) => {
   return axios.post(url_get_servizi_all, {
-    id_client: id_client, 
+    id_client: String(id_client), 
     token: token
   })
 }
 
 export const _getEventi = (token, id_client, sottocategoria="*", slot=defaultSlot, n=defaultUpperBound) => {
   return axios.post(url_get_eventi, {
-    id_client: id_client, 
+    id_client: String(id_client), 
     token: token,
     sottocategoria: sottocategoria,
     slot: String(slot),
@@ -88,21 +97,21 @@ export const _getEventi = (token, id_client, sottocategoria="*", slot=defaultSlo
 
 export const _getServiziOverview = (token, id_client) => {
   return axios.post(url_get_servizi_overview, {
-    id_client: id_client, 
+    id_client: String(id_client), 
     token: token
   })
 }
 
 export const _getEventiOverview = (token, id_client) => {
   return axios.post(url_get_eventi_overview, {
-    id_client: id_client, 
+    id_client: String(id_client), 
     token: token
   })
 }
 
 export const _modificaMonitoraggioServizio = (token, nome_servizio, id_client, monitora) => {
   return axios.post(url_modifica_monitoraggio_servizio, {
-    id_client: id_client, 
+    id_client: String(id_client), 
     token: token,
     nome_servizio: nome_servizio,
     monitora: monitora

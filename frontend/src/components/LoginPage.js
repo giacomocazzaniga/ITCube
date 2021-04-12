@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { login, placesList, categoriesList } from '../ActionCreator';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
-import {_getClientTypes, _getPlaces, _performLogin} from '../callableRESTs'; 
+import {_getClientTypes, _getPlaces, _getShallowClients, _performLogin} from '../callableRESTs'; 
 import { _MSGCODE } from '../Constants';
 import { fake_shallowClientList } from '../fakeData';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
@@ -85,19 +85,27 @@ const LoginPage = (props) => {
         let ragione_sociale = response.data.ragione_sociale;
         let id_company = response.data.id_company;
         let token = response.data.token;
-        let elencoClients = fake_shallowClientList;//fake_elencoClients;//response.data.elencoClients;
         let emailNotify = response.data.emailNotify;
-        _getPlaces(ragione_sociale, token)
+        _getShallowClients(id_company, token)
         .then(function (response) {
-          //get places
-          //console.log(response.data)
-          let sedi = response.data.sedi;
-          _getClientTypes(ragione_sociale, token)
+          console.log(response.data.shallowClients)
+          let elencoClients = response.data.shallowClients;
+          _getPlaces(id_company, token)
           .then(function (response) {
-            //get categories
-            let categories = response.data.categories;
-            //console.log(categories);
-            props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories);
+            //get places
+            //console.log(response.data)
+            let sedi = response.data.sedi;
+            _getClientTypes(id_company, token)
+            .then(function (response) {
+              //get categories
+              let categories = response.data.categories;
+              //console.log(categories);
+              props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories);
+            })
+            .catch(function (error) {
+              stopLoadingToast(loadingToast);
+              getErrorToast(String(error));
+            })
           })
           .catch(function (error) {
             stopLoadingToast(loadingToast);
@@ -107,7 +115,7 @@ const LoginPage = (props) => {
         .catch(function (error) {
           stopLoadingToast(loadingToast);
           getErrorToast(String(error));
-        });
+        })
       }
     })
     .catch(function (error) {

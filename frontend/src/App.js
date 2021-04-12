@@ -7,7 +7,7 @@ import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import DashboardHome from './components/DashboardHome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { searchClient } from './ActionCreator';
+import { categoriesList, searchClient } from './ActionCreator';
 import { _FILTERS, _LICENZE } from './Constants';
 import { ClientFilter } from './HierarchyManager';
 import { toaster } from './toastManager';
@@ -45,11 +45,19 @@ const mapStateToProps = state => {
 
 const { Item, Searchbar } = Sidebar;
 
-const getSidebarByType = (client_list, nome_company, searched_client, category) =>{
+const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
+  /**
+   * {"Client": 1,
+   * "Server": 2}
+   */
+  let category = [{"nome": "Client", "n_client": 0}, {"nome": "Server", "n_client": 0}]
+  category.map((cat) => {
+    if(cat.nome=="Client"){cat.n_client = categories_list["Client"]}
+    else if(cat.nome=="Server"){cat.n_client = categories_list["Server"]}
+  })
   let filterMap = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
   let filtered_client_list = filterMap[0];
   let map = filterMap[1];
-  console.log(map);
   let lastComponent = [];
   {filtered_client_list.map((filtered_clients) => {
     lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
@@ -75,7 +83,20 @@ const getSidebarByType = (client_list, nome_company, searched_client, category) 
   return lastComponent;
 }
 
-const getSidebarByLicense = (client_list, nome_company, searched_client, place) =>{
+const getSidebarByLicense = (client_list, nome_company, searched_client, licenses_list) =>{
+  /**
+   * {"1": 1,
+   * "2": 2,
+   * ...}
+   */
+  let place = [{"nome": "1", "n_client": 0}, {"nome": "2", "n_client": 0}, {"nome": "3", "n_client": 0}, {"nome": "4", "n_client": 0}, {"nome": "5", "n_client": 0}]
+  place.map((cat) => {
+    if(cat.nome=="1"){cat.n_client = licenses_list["1"]}
+    if(cat.nome=="2"){cat.n_client = licenses_list["2"]}
+    if(cat.nome=="3"){cat.n_client = licenses_list["3"]}
+    if(cat.nome=="4"){cat.n_client = licenses_list["4"]}
+    if(cat.nome=="5"){cat.n_client = licenses_list["5"]}
+  })
   let label = [];
   for(let i=0; i<place.length; i++){
     switch (place[i].nome) {
@@ -100,7 +121,6 @@ const getSidebarByLicense = (client_list, nome_company, searched_client, place) 
   let filterMap = ClientFilter(client_list, _FILTERS.CATEGORY);
   let filtered_client_list = filterMap[0];
   let map = filterMap[1];
-  console.log(map);
   let lastComponent = [];
   {filtered_client_list.map((filtered_clients) => {
     lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
