@@ -154,16 +154,17 @@ const Dashboard = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col md={4} xs={6}>
-          <ClientInfo client={state.clientData}/>
+          <ClientInfo client={state.clientData} id_client={props.id_client}/>
         </Col>
         {props.drives.map((drive) =>  
           <Col md={4} xs={6}>
             <Drive driveLabel={drive.driveLabel} occupiedSpace={drive.occupiedSpace} lastUpdate={drive.lastUpdate} totalSpace={drive.totalSpace}/>
           </Col>
         )}
-        <Col md={4} xs={6}>
+        {/*<Col md={4} xs={6}>
           <OperationsList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
-        </Col>
+
+        </Col>*/}
         <Col md={4} xs={6}>
           <WindowsServices selected={props.title} id_client={props.id_client} services={[props.n_monitorati, props.n_running, props.n_stop, props.n_totali]}/>
         </Col>
