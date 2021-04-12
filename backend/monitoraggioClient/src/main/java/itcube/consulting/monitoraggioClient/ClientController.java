@@ -135,6 +135,7 @@ public class ClientController {
 				
 				ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
 				List<ElencoClients> elencoClients = elencoClientsRepository.getElencoClients(company);
+				System.out.println(elencoClients.get(0).getElencoLicenze());
 				
 				shallowClientsResponse.setShallowClients(ShallowClient.getShallowClients(elencoClients));
 				
@@ -494,6 +495,7 @@ public class ClientController {
 				ElencoClients newClient=new ElencoClients();
 				newClient.setNome(nome);
 				newClient.setDescrizione(descrizione);
+				newClient.setSede("Milano");
 				TipologiaClient tipo=new TipologiaClient();
 				tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
 				System.out.println(tipo);
@@ -501,6 +503,8 @@ public class ClientController {
 				newClient.setMac_address(mac_address);
 				//id_company
 				Integer id_company=elencoLicenzeRepository.getIdCompanyFromLicenza(codice);
+				//TODO:getIdLicenzaFromLicenza
+//				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
 				
 				if(id_company!=null)
 				{
@@ -509,8 +513,10 @@ public class ClientController {
 					newClient.setElencoCompanies(company);
 					//licenza in uso
 					List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
-					elencoLicenze.add(elencoLicenzeRepository.getLicenza(codice));
+					ElencoLicenze licenza = elencoLicenzeRepository.getLicenza(codice);
+					elencoLicenze.add(licenza);
 					newClient.setElencoLicenze(elencoLicenze);
+					System.out.println(newClient.getElencoLicenze().get(0).getId());
 					//sede
 					
 					elencoClientsRepository.save(newClient);
@@ -544,6 +550,44 @@ public class ClientController {
 			response.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> modificaSedeClient(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_client;
+		Integer id_company;
+		String token;
+		String nuova_sede;
+		String vecchia_sede;
+		
+		try {
+			id_client = Integer.parseInt((String) body.get("id_client"));
+			token = (String)body.get("token");
+			nuova_sede = (String) body.get("nuova_sede");
+			vecchia_sede = (String) body.get("vecchia_sede");
+			id_company =Integer.parseInt((String) body.get("id_company"));
+			
+			if(id_client != -1)
+			{
+				elencoClientsRepository.modificaSingolaSedeClient(id_client, nuova_sede);
+			} else {
+				elencoClientsRepository.modificaAllVecchieSediClient(id_company, nuova_sede, vecchia_sede);
+			}
+			
+			generalResponse.setMessage("OK");
+			generalResponse.setMessageCode(0);
+			return ResponseEntity.ok(generalResponse);
+			
+		} catch (Exception e) {
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
 }

@@ -178,5 +178,4 @@ public class CompanyController {
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
-	
 }

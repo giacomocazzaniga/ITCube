@@ -2,14 +2,19 @@ package itcube.consulting.monitoraggioClient.repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 
+@Repository
 public interface ElencoClientsRepository extends CrudRepository<ElencoClients,Integer>{
 	
 	@Query(value="Select * from elenco_clients where id_company= :company", nativeQuery=true)
@@ -33,4 +38,16 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	
 	@Query(value="Select * from elenco_clients where id= :id_client", nativeQuery=true)
 	ElencoClients getClientFromId(@Param("id_client") int id_client);
+	
+	@Query(value="UPDATE elenco_clients SET sede = :nuova_sede WHERE id= :id_client", nativeQuery=true)
+	@Modifying
+	@Transactional
+	void modificaSingolaSedeClient(@Param("id_client") int id_client, @Param("nuova_sede") String nuova_sede);
+	
+	@Query(value="UPDATE elenco_clients SET sede = :nuova_sede WHERE sede = :vecchia_sede AND id_company= :id_company", nativeQuery=true)
+	@Modifying
+	@Transactional
+	void modificaAllVecchieSediClient(@Param("id_company") int id_company, @Param("nuova_sede") String nuova_sede, @Param("vecchia_sede") String vecchia_sede);
+	
+	
 }

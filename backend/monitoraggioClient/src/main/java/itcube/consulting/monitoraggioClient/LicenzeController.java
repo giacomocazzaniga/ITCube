@@ -230,7 +230,7 @@ public class LicenzeController {
 				tl=tipologieLicenzeRepository.getLicenze();
 				for(TipologieLicenze t: tl)
 				{
-					map.put((Integer)t.getClasse(), t.getNome_tipologia());
+					map.put(t.getClasse(), t.getNome_tipologia());
 				}
 				String newToken=Services.checkThreshold(id_company, token);
 				response.setTipi(map);
