@@ -41,11 +41,16 @@ const ClientInfo = (props) => {
   return (
     <Box title="Informazioni sul client" type="primary" collapsable>
       <Col md={12} xs={12}>
-        <h4><b>Nome: </b>{props.client.nome_client}</h4>
-        <h4><b>Tipologia: </b>{props.client.tipo_client}</h4>
-        <h4><b>MAC address: </b>{props.client.MAC_address}</h4>
-        <h4><b>Licenza: </b>{props.client.codice_licenza}</h4>
-        <h4><b>Tipologia Licenza: </b>{getLicense(props.client.classe_licenza)}</h4>
+        <h4><b>Nome: </b>{props.client.nome}</h4>
+        <h4><b>Tipologia: </b>{props.client.nome_tipologia}</h4>
+        <h4><b>MAC address: </b>{props.client.mac_address}</h4>
+        <h4><b>Licenze in uso: </b></h4>
+        <p>{props.client.codice_licenza.map((lic, i) => {
+          return props.client.classe_licenza.map((tipo, j) => {
+            return (i==j) ? <p>{i+1}) {getLicense(String(tipo))} {lic}</p> : <></>
+          })
+          //return <p>{i+1}) </p>
+        })}</p>
         {/*<h4><b>Gruppo di lavoro: </b>{props.client.category}</h4>*/}
         <h4><b>Sede di lavoro: </b>{props.client.sede}</h4>
       </Col>

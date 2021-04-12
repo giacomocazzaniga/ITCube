@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2021 at 09:24 AM
+-- Generation Time: Apr 12, 2021 at 01:50 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 7.3.26
 
@@ -89,17 +89,26 @@ CREATE TABLE `elenco_clients` (
   `sede` varchar(255) DEFAULT NULL,
   `id_company` int(11) DEFAULT NULL,
   `tipologia_client` int(11) DEFAULT NULL,
-  `descrizione` varchar(255) DEFAULT NULL
+  `descrizione` varchar(255) DEFAULT NULL,
+  `licenza_in_uso` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `elenco_clients`
 --
 
-INSERT INTO `elenco_clients` (`id`, `mac_address`, `nome`, `sede`, `id_company`, `tipologia_client`, `descrizione`) VALUES
-(1, '00:1B:44:11:3A:B7', 'DESKTOP-3874', 'Venezia', 1, 1, 'DESKTOP-3874'),
-(2, '00:1B:94:51:4N:B0', 'DESKTOP-2049', 'Venezia', 1, 1, 'DESKTOP-2049'),
-(3, '00:09:20:39:4M:J0', 'SERVER-2209', 'Venezia', 1, 2, 'SERVER-2209');
+INSERT INTO `elenco_clients` (`id`, `mac_address`, `nome`, `sede`, `id_company`, `tipologia_client`, `descrizione`, `licenza_in_uso`) VALUES
+(1, '00:1B:44:11:3A:B7', 'DESKTOP-3874', 'Roma', 1, 1, 'DESKTOP-3874', 1),
+(2, '00:1B:94:51:4N:B0', 'DESKTOP-2049', 'Torino', 1, 1, 'DESKTOP-2049', 1),
+(3, '00:09:20:39:4M:J0', 'SERVER-2209', 'Bologna', 1, 2, 'SERVER-2209', 1),
+(4, '00:1B:44:11:3A:B1', 'DESKTOP-000', 'Milano', 1, 1, 'DESKTOP-000', NULL),
+(5, '00:1C:33:11:1P:B1', 'DESKTOP-002', 'Milano', 1, 1, 'DESKTOP-002', NULL),
+(6, '00:1C:33:11:1P:A9', 'DESKTOP-003', 'Milano', 1, 1, 'DESKTOP-003', NULL),
+(7, '00:1C:44:11:1P:S1', 'DESKTOP-004', 'Milano', 1, 1, 'DESKTOP-004', NULL),
+(8, '00:4P:44:11:1P:S1', 'DESKTOP-005', 'Milano', 1, 2, 'DESKTOP-005', NULL),
+(9, '00:4P:44:31:AA:S1', 'DESKTOP-006', 'Milano', 1, 2, 'DESKTOP-006', NULL),
+(10, '00:4P:44:31:BB:S1', 'DESKTOP-007', 'Milano', 1, 2, 'DESKTOP-007', NULL),
+(11, '00:4P:44:31:CC:S1', 'DESKTOP-008', 'Milano', 1, 1, 'DESKTOP-008', NULL);
 
 -- --------------------------------------------------------
 
@@ -111,6 +120,21 @@ CREATE TABLE `elenco_clients_elenco_licenze` (
   `licenza_in_uso` int(11) NOT NULL,
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `elenco_clients_elenco_licenze`
+--
+
+INSERT INTO `elenco_clients_elenco_licenze` (`licenza_in_uso`, `id`) VALUES
+(1, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
+(10, 1),
+(11, 1);
 
 -- --------------------------------------------------------
 
@@ -208,7 +232,7 @@ CREATE TABLE `monitoraggio` (
 --
 
 INSERT INTO `monitoraggio` (`id`, `monitora`, `nome_servizio`, `id_client`) VALUES
-(1, b'1', 'Adobe Update Service', 1);
+(1, b'0', 'Adobe Update Service', 1);
 
 -- --------------------------------------------------------
 
@@ -290,8 +314,8 @@ CREATE TABLE `visualizzazione_eventi` (
 --
 
 INSERT INTO `visualizzazione_eventi` (`id`, `date_and_time`, `id_event`, `info`, `level`, `macro_categoria`, `sottocategoria`, `source`, `task_category`, `id_client`, `date_and_time_evento`) VALUES
-(1, '2021-04-09 18:57:04.000000', 100, 'Updating Adobe products', 1, 0, 'A', 'source', 'category', 1, '2021-04-09 18:57:04.000000'),
-(2, '2021-04-09 18:58:20.000000', 100, 'Updating Adobe products', 1, 1, 'A', 'source', 'category', 1, '2021-04-09 18:58:20.000000'),
+(1, '2021-04-12 18:57:04.000000', 100, 'Updating Adobe products', 1, 0, 'A', 'source', 'category', 1, '2021-04-09 18:57:04.000000'),
+(2, '2021-04-09 18:58:20.000000', 100, 'Updating Adobe products', 4, 1, 'A', 'source', 'category', 1, '2021-04-09 18:58:20.000000'),
 (4, '2021-04-11 10:16:48.000000', 100, 'Info test A', 1, 0, 'A', 'Source A', NULL, 1, '2021-04-11 18:57:00.000000'),
 (5, '2021-04-11 10:16:48.000000', 100, 'Info test H', 1, 0, 'H', 'Source H', NULL, 1, '2021-04-11 18:57:00.000000'),
 (6, '2021-04-11 10:16:48.000000', 100, 'Info test S', 1, 0, 'S', 'Source S', NULL, 1, '2021-04-11 18:57:00.000000'),
@@ -428,7 +452,7 @@ ALTER TABLE `conf_windows_services`
 -- AUTO_INCREMENT for table `elenco_clients`
 --
 ALTER TABLE `elenco_clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `elenco_companies`
