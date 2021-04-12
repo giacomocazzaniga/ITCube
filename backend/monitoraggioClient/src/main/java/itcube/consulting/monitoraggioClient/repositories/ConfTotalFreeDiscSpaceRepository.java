@@ -18,4 +18,8 @@ public interface ConfTotalFreeDiscSpaceRepository extends CrudRepository<ConfTot
 	@Transactional
 	@Query(value="update conf_total_free_disc_space set perc_free_disc_space=:perc_free_disc_space, total_free_disc_space= :totalFreeSpace, total_size=:totalSize where drive= :drive and id_client= :id_client", nativeQuery=true)
 	void updateDisk(@Param("drive") String drive, @Param("id_client") int id_client, @Param("totalSize") long totalSize, @Param("totalFreeSpace") long TotalFreeSpace, @Param("perc_free_disc_space") double perc_free_disc_space );
+	
+	@Query(value="Select * from conf_total_free_disc_space where id_client= :id_client", nativeQuery=true)
+	ConfTotalFreeDiscSpace getDrives(@Param("id_client") int id_client);
+	
 }

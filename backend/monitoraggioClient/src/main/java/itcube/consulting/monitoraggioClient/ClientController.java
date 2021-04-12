@@ -78,6 +78,7 @@ import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import itcube.consulting.monitoraggioClient.response.AgentResponse;
 import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
+import itcube.consulting.monitoraggioClient.response.ConfTotalFreeDiscSpaceResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -495,7 +496,7 @@ public class ClientController {
 				ElencoClients newClient=new ElencoClients();
 				newClient.setNome(nome);
 				newClient.setDescrizione(descrizione);
-				newClient.setSede("Milano");
+				newClient.setSede("Senza sede");
 				TipologiaClient tipo=new TipologiaClient();
 				tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
 				System.out.println(tipo);
@@ -588,6 +589,39 @@ public class ClientController {
 			generalResponse.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/getDrives",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<ConfTotalFreeDiscSpaceResponse> getDrives(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_client;
+		String token;
+		ConfTotalFreeDiscSpaceResponse response = new ConfTotalFreeDiscSpaceResponse(); 
+		
+		try {
+			id_client = Integer.parseInt((String) body.get("id_client"));
+			token = (String)body.get("token");
+			
+			ConfTotalFreeDiscSpace freeDiscSpace = confTotalFreeDiscSpaceRepository.getDrives(id_client);
+			
+			
+			response.setDriveLabel(freeDiscSpace.getDrive());
+			response.setLastUpdate(freeDiscSpace.getDate_and_time());
+			response.setOccupiedSpace(String.valueOf( freeDiscSpace.getTotal_free_disc_space()) );
+			response.setTotalSpace(String.valueOf(freeDiscSpace.getTotal_size()));
+			
+			response.setMessage("OK");
+			response.setMessageCode(0);
+			return ResponseEntity.ok(response);
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 }
