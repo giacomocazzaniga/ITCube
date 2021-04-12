@@ -20,7 +20,7 @@ export const url_get_servizi_overview = buildurl+"getServiziOverview";
 export const url_get_eventi_overview = buildurl+"getEventiOverview";
 export const url_get_eventi = buildurl+"getEventi";
 export const url_modifica_sede = buildurl+"modificaSedeClient";
-
+export const url_get_drives = buildurl+"getDrives";
 
 const portFake = "3001"; 
 const ipFake = "127.0.0.1";
