@@ -168,6 +168,8 @@ public final class Services {
 			CharControl = (int) ctrlch;
 			LicenseKey = LicenseKey.concat(MyKeys.substring(CharControl, CharControl + 1));
 		}
+		LicenseKey = LicenseKey.replaceAll("....", "$0-");
+		LicenseKey = LicenseKey.substring(0, LicenseKey.length() - 1);
 		return LicenseKey;
 	} 
 	

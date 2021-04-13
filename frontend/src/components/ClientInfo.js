@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { _LICENZE } from '../Constants';
+import PopUp from './PopUp';
+import { _modificaSedeClient } from '../callableRESTs';
+import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 
 /**
  * connect the actions to the component
@@ -13,9 +16,67 @@ const mapDispatchToProps = dispatch => ({});
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  id_company: state.id_company,
+  token: state.token
+});
 
 const ClientInfo = (props) => {
+
+  const [state, setState] = React.useState({
+    vecchiaSede: "",
+    nuovaSede: ""
+  })
+
+  const getChilds = (vecchiaSede) => {
+    let childList = [];
+    childList = [
+      <>
+        <div className="col-md-12 col-xs-12">
+          <form>
+            <div class="form-group">
+              <label htmlFor="VecchiaSede">Vecchia Sede</label>
+              <input type="text" value={vecchiaSede} class="form-control" id="VecchiaSede" placeholder={vecchiaSede} onChange={handleVecchiaSede} disabled/>
+            </div>
+            <div class="form-group">
+              <label htmlFor="NuovaSede">Nuova Sede</label>
+              <input type="text" value={state.nuovaSede} class="form-control" id="NuovaSede" onChange={handleNuovaSede}/>
+            </div>
+          </form>
+          <br />
+          <center><button class="btn btn-primary" onClick={() => clickService()}>Modifica</button></center>
+        </div>
+      </>
+    ]
+    return childList;
+  }
+
+  const clickService = () => {
+    const loadingToast = getLoadingToast("Modificando i dati...");
+    return _modificaSedeClient(props.token, props.id_client, props.id_company, state.nuovaSede, state.vecchiaSede)
+    .then(function (response) {
+        stopLoadingToast(loadingToast);
+        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+        //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
+    })
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    });
+  }
+
+  const handleVecchiaSede = (evt) => {
+    setState((previousState) => {
+      return { ...previousState, vecchiaSede: evt.target.value };  
+    });
+  }
+
+  const handleNuovaSede = (evt) => {
+    setState((previousState) => {
+      return { ...previousState, nuovaSede: evt.target.value };  
+    });
+  }
+
   const getLicense = (classe_licenza) => {
     let label = "";
     switch(classe_licenza){
@@ -52,7 +113,7 @@ const ClientInfo = (props) => {
           //return <p>{i+1}) </p>
         })}</p>
         {/*<h4><b>Gruppo di lavoro: </b>{props.client.category}</h4>*/}
-        <h4><b>Sede di lavoro: </b>{props.client.sede}</h4>
+        <h4><b>Sede di lavoro: </b>{props.client.sede} <PopUp title="Modifica sede" messageLink={"modifica"} linkClass={"clickable"} childs={getChilds(props.client.sede)} action={()=>(null)}/></h4>
       </Col>
     </Box>
   );

@@ -7,7 +7,7 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getDeepClient, _getEventiOverview, _getServiziOverview } from "../callableRESTs";
+import { _getDeepClient, _getDrives, _getEventiOverview, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
@@ -104,7 +104,8 @@ const Dashboard = (props) => {
     clientData: null,
     problemi_oggi: 0,
     warning_oggi: 0,
-    tot_per_sottocategoria: []
+    tot_per_sottocategoria: [],
+    drives: []
   })
 
   useEffect( () => {
@@ -127,6 +128,19 @@ const Dashboard = (props) => {
               tot_per_sottocategoria: response.data.tot_per_sottocategoria
             };
           });
+          _getDrives(props.token, props.id_client)
+          .then(function (response) {
+            console.log(response.data)
+            setState((previousState) => {
+              return { ...previousState, 
+                drives: [response.data] //UNA VOLTA TERMINATO IL SERVIZIO DRIVE CON LISTA, RIMUOVERE PARENTESI QUADRATE
+              };
+            });
+          })
+          .catch(function (error) {
+            stopLoadingToast(loadingToast);
+            getErrorToast(String(error));
+          })
         })
       })
       .catch(function (error) {
@@ -154,16 +168,19 @@ const Dashboard = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col md={4} xs={6}>
-          <ClientInfo client={state.clientData}/>
+          <ClientInfo client={state.clientData} id_client={props.id_client}/>
         </Col>
-        {props.drives.map((drive) =>  
+        {state.drives != [] 
+        ? state.drives.map((drive) =>  
           <Col md={4} xs={6}>
             <Drive driveLabel={drive.driveLabel} occupiedSpace={drive.occupiedSpace} lastUpdate={drive.lastUpdate} totalSpace={drive.totalSpace}/>
           </Col>
-        )}
-        <Col md={4} xs={6}>
+        )
+        : <></>}
+        {/*<Col md={4} xs={6}>
           <OperationsList selected={props.title} ops={[state.clientData.op_attive, state.clientData.op_esecuzione, state.clientData.op_problemi, state.clientData.op_warnings]}/>
-        </Col>
+
+        </Col>*/}
         <Col md={4} xs={6}>
           <WindowsServices selected={props.title} id_client={props.id_client} services={[props.n_monitorati, props.n_running, props.n_stop, props.n_totali]}/>
         </Col>
