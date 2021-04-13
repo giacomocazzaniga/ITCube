@@ -136,7 +136,6 @@ public class ClientController {
 				
 				ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
 				List<ElencoClients> elencoClients = elencoClientsRepository.getElencoClients(company);
-				System.out.println(elencoClients.get(0).getElencoLicenze());
 				
 				shallowClientsResponse.setShallowClients(ShallowClient.getShallowClients(elencoClients));
 				
@@ -538,7 +537,7 @@ public class ClientController {
 			else
 			{
 				//ping --> return
-				response.setMyID(null);
+				response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
 				response.setMessage("OK");
 				response.setMessageCode(0);
 				return ResponseEntity.ok(response);
