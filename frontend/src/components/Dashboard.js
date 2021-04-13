@@ -133,7 +133,7 @@ const Dashboard = (props) => {
             console.log(response.data)
             setState((previousState) => {
               return { ...previousState, 
-                drives: [response.data] //UNA VOLTA TERMINATO IL SERVIZIO DRIVE CON LISTA, RIMUOVERE PARENTESI QUADRATE
+                drives: response.data 
               };
             });
           })
