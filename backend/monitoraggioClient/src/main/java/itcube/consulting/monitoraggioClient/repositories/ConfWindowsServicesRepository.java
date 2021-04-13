@@ -25,10 +25,19 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	@Query(value="Select * from conf_windows_services where nome_servizio= :nome_servizio", nativeQuery=true)
 	List<ConfWindowsServices> getServiziClient(@Param("nome_servizio") String nome_servizio);
 	
-	@Query(value="select * from conf_windows_services \n"
-			+ "where conf_windows_services.id_client= :id_client "
-			+ "order by conf_windows_services.date_and_time desc", nativeQuery=true)
-	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client);
+	@Query(value="SELECT * \n"
+			+ "FROM (\n"
+			+ "    SELECT * FROM conf_windows_services\n"
+			+ "    where conf_windows_services.id_client= :id_client \n"
+			+ "	order by conf_windows_services.date_and_time desc\n"
+			+ ") AS sub\n"
+			+ "LIMIT :limite", nativeQuery=true)
+	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client, @Param("limite") int limite);
+	
+	@Query(value="SELECT count( DISTINCT nome_servizio)\n"
+			+ "    FROM conf_windows_services\n"
+			+ "    WHERE id_client= :id_client", nativeQuery=true)
+	int getNumServizi(@Param("id_client") int id_client);
 	
 	@Query(value="select count(*) from conf_windows_services where stato= :stato and id_client= :id_client", nativeQuery=true)
 	int getNumStato(@Param("id_client") int id_client, @Param("stato") int stato);

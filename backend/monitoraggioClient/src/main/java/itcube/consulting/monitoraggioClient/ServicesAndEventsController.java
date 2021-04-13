@@ -117,7 +117,7 @@ public class ServicesAndEventsController {
 				dischiNotNull=true;
 			else
 				dischiNotNull=false;
-				
+			
 			if(serviziNotNull)
 			{
 				
@@ -135,6 +135,7 @@ public class ServicesAndEventsController {
 				}
 				
 				monitoraggio=monitoraggioRepository.getServiziClient(id_client);
+
 				if(monitoraggio.size()!=0)
 				{
 					
@@ -146,7 +147,7 @@ public class ServicesAndEventsController {
 						temp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
 						temp.setMonitora(true);
 						
-						Integer idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
+						Integer idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
 						
 						if(idMonitoraggio==null)
 						{
@@ -247,7 +248,6 @@ public class ServicesAndEventsController {
 			MySystemLogs=(List<VisualizzazioneEventi>)body.get("MySystemLogs");
 			MySecurityLogs=(List<VisualizzazioneEventi>)body.get("MySecurityLogs");
 			
-			System.out.println(MyApplicationsLogs.get(0));
 			if(MyApplicationsLogs!=null)
 			{
 				for(int i=0; i < MyApplicationsLogs.size(); i++)
@@ -380,7 +380,8 @@ public class ServicesAndEventsController {
 			
 			if(validToken.isValid())
 			{
-				serviziMonitorati=confWindowsServicesRepository.getServizi(id_client);
+				int limite = confWindowsServicesRepository.getNumServizi(id_client);
+				serviziMonitorati=confWindowsServicesRepository.getServizi(id_client, limite);
 				
 				response.setConfWindowsServices(serviziMonitorati);
 				
@@ -694,17 +695,13 @@ public class ServicesAndEventsController {
 				
 //				monitoraggioRepository.updateMonitora(monitora, nome_servizio);
 				eventi = visualizzazioneEventiRepository.getEventi(id_client, sottocategoria);
-				System.out.println(eventi.size());
 				int Npartenza = n*(slot-1);
 				int Narrivo = (n*slot)-1;
-				System.out.println(Npartenza);
-				System.out.println(Narrivo);
 				if(Narrivo > eventi.size())
 					Narrivo = eventi.size();
 				
 				for(int i=Npartenza; i< Narrivo; i++) {
 					eventiSlot.add(eventi.get(i));
-					System.out.println("el N: " + i + " " + eventi);
 				}
 				
 				response.setEventi(eventiSlot);
