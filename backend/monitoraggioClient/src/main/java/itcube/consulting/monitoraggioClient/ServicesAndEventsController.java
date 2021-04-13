@@ -129,11 +129,10 @@ public class ServicesAndEventsController {
 					tmp.setDisplay_name((String) ((Map<String, Object>) servizi.get(i)).get("DisplayName"));
 					tmp.setStato(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status")));
 					tmp.setStart_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("StartType")));
-					tmp.setService_type(Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType")));
+					tmp.setService_type((String) ((Map<String, Object>) servizi.get(i)).get("ServiceType"));
 					tmp.setDate_and_time(timestamp);
 					confWindowsServicesRepository.save(tmp);
 				}
-				
 				monitoraggio=monitoraggioRepository.getServiziClient(id_client);
 
 				if(monitoraggio.size()!=0)
@@ -148,7 +147,7 @@ public class ServicesAndEventsController {
 						temp.setMonitora(true);
 						
 						Integer idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
-						
+
 						if(idMonitoraggio==null)
 						{
 							monitoraggioRepository.save(temp);
@@ -204,14 +203,13 @@ public class ServicesAndEventsController {
 					
 					double perc_free_disc_space=tmp.setPerc_free_disc_space(total_size_long,total_free_disc_space_long);
 					tmp.setDate_and_time(timestamp);
-					
+	
 					if(confTotalFreeDiscSpaceRepository.isPresent(drive, id_client)==null)
 					{
 						confTotalFreeDiscSpaceRepository.save(tmp);
 					}
 					else
 					{
-
 						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space);
 					}
 				}

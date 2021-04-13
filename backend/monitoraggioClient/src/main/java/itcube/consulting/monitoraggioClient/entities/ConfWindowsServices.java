@@ -36,7 +36,7 @@ public class ConfWindowsServices {
 	private String description;
 	private String display_name;
 	private int start_type;
-	private int service_type;
+	private String service_type;
 	private LocalDateTime date_and_time;
 	
 	public ConfWindowsServices() {
@@ -99,11 +99,11 @@ public class ConfWindowsServices {
 		this.start_type = start_type;
 	}
 
-	public int getService_type() {
+	public String getService_type() {
 		return service_type;
 	}
 
-	public void setService_type(int service_type) {
+	public void setService_type(String service_type) {
 		this.service_type = service_type;
 	}
 	
