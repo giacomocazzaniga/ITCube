@@ -24,8 +24,8 @@ public class ConfTotalFreeDiscSpace {
 	
 	private String drive;
 	private String descrizione;
-	private long total_free_disc_space;
-	private long total_size;
+	private String total_free_disc_space;
+	private String total_size;
 	private double perc_free_disc_space;
 	private LocalDateTime date_and_time;
 	
@@ -61,9 +61,9 @@ public class ConfTotalFreeDiscSpace {
 		return perc_free_disc_space;
 	}
 
-	public double setPerc_free_disc_space(double total_size, double total_free_disc_space) {
-		double tmp=total_free_disc_space/total_size;
-		this.perc_free_disc_space = tmp*100;
+	public double setPerc_free_disc_space(long total_size2, long total_free_disc_space2) {
+		float tmp= (float) total_free_disc_space2/ (float) total_size2;
+		this.perc_free_disc_space = (int) (tmp*100);
 		return this.perc_free_disc_space;
 	}
 
@@ -91,19 +91,19 @@ public class ConfTotalFreeDiscSpace {
 		this.descrizione = descrizione;
 	}
 
-	public long getTotal_free_disc_space() {
+	public String getTotal_free_disc_space() {
 		return total_free_disc_space;
 	}
 
-	public void setTotal_free_disc_space(long total_free_disc_space) {
+	public void setTotal_free_disc_space(String total_free_disc_space) {
 		this.total_free_disc_space = total_free_disc_space;
 	}
 
-	public long getTotal_size() {
+	public String getTotal_size() {
 		return total_size;
 	}
 
-	public void setTotal_size(long total_size) {
+	public void setTotal_size(String total_size) {
 		this.total_size = total_size;
 	}
 

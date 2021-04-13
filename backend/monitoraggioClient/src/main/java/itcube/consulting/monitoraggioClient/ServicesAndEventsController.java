@@ -173,6 +173,8 @@ public class ServicesAndEventsController {
 			
 			if(dischiNotNull)
 			{
+				Long total_size_long;
+				Long total_free_disc_space_long;
 				//VolumeName, VolumeLabel, TotalSize, TotalFreeSpace
 				for(int i=0; i < disco.size(); i++)
 				{
@@ -180,15 +182,27 @@ public class ServicesAndEventsController {
 					
 					String drive=(String) ((Map<String, Object>) disco.get(i)).get("VolumeName");
 					String descrizione=(String) ((Map<String, Object>) disco.get(i)).get("VolumeLabel");
-					long total_size=Integer.parseInt((String) ((Map<String, Object>) disco.get(i)).get("TotalSize"));
-					long total_free_disc_space=Integer.parseInt((String) ((Map<String, Object>) disco.get(i)).get("TotalFreeSpace"));
+					String total_size=(String) ((Map<String, Object>) disco.get(i)).get("TotalSize");
+					String total_free_disc_space=(String) ((Map<String, Object>) disco.get(i)).get("TotalFreeSpace");
 
 					tmp.setId_client(id_client);
 					tmp.setDrive(drive);
 					tmp.setDescrizione(descrizione);
 					tmp.setTotal_size(total_size);
 					tmp.setTotal_free_disc_space(total_free_disc_space);
-					double perc_free_disc_space=tmp.setPerc_free_disc_space(total_size,total_free_disc_space);
+					
+					try {
+						total_size_long = Long.parseLong( total_size );
+						total_free_disc_space_long = Long.parseLong( total_free_disc_space );
+					} catch (Exception e) {
+						generalResponse.setMessage(e.getMessage());
+						generalResponse.setMessageCode(-1);
+						System.out.println(e.getMessage());	
+						return ResponseEntity.badRequest().body(generalResponse);
+					}
+					
+					
+					double perc_free_disc_space=tmp.setPerc_free_disc_space(total_size_long,total_free_disc_space_long);
 					tmp.setDate_and_time(timestamp);
 					
 					if(confTotalFreeDiscSpaceRepository.isPresent(drive, id_client)==null)
@@ -430,8 +444,10 @@ public class ServicesAndEventsController {
 			{
 				//Stopped=1, StartPending=2, StopPending=3, Running=4, ContinuePending=5, PausePending=6, Paused=7
 				response.setN_totali((confWindowsServicesRepository.getTotServizi(id_client)));
-				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 4));
-				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 1));
+				int limite = confWindowsServicesRepository.getNumServizi(id_client);
+				System.out.println(limite);
+				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 4, limite));
+				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 1, limite));
 				response.setN_monitorati(monitoraggioRepository.getNServiziMonitorati(id_client));
 				
 				
