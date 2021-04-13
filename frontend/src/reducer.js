@@ -28,7 +28,8 @@ const initialState = {
   n_totali: 0,
   n_running: 0,
   n_stop: 0,
-  n_monitorati: 0
+  n_monitorati: 0,
+  lista_sedi: 0
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -39,7 +40,8 @@ export function rootReducer(state = initialState, action) {
       emailNotify: action.emailNotify,
       client_list: action.client_list,
       logged: true,
-      token: action.token
+      token: action.token,
+      lista_sedi: action.lista_sedi
     });
   }
   if (action.type === types.UPDATECOMPANYDATA) {

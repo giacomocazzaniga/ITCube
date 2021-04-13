@@ -1,13 +1,14 @@
 import * as types from './ActionTypes';
 
-export const login = (nome_company, id_company, email, emailNotify, client_list, token) => ({
+export const login = (nome_company, id_company, email, emailNotify, client_list, token, lista_sedi) => ({
   type: types.LOGIN,
   id_company: id_company,
   nome_company: nome_company,
   email: email,
   emailNotify: emailNotify,
   client_list: client_list,
-  token: token
+  token: token, 
+  lista_sedi: lista_sedi
 })
 export const updateCompanyData = (nome_company, email, emailNotify, token) => ({
   type: types.UPDATECOMPANYDATA,

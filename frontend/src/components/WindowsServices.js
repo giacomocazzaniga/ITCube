@@ -50,10 +50,12 @@ const WindowsServices = (props) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getServiziAll(props.token, props.id_client)
     .then(function (response) {
+      console.log(response.data.confWindowsServices)
       let tmp_list = response.data.confWindowsServices
       _getServiziMonitorati(props.token, props.id_client)
       .then(function (response) {
         stopLoadingToast(loadingToast);
+        console.log(response.data.monitoraggi)
         let tmp_list2 = merge_object_arrays(tmp_list, response.data.monitoraggi, 'nome_servizio')
         let list = servicesListMaker(tmp_list2);
         props.ServicesList(list)

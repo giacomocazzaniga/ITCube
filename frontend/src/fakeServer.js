@@ -166,6 +166,17 @@ app.post('/deepClient', function (req, res) {
   res.send(result);
 });
 
+app.post('/getNSedi', function (req, res) {
+  console.log("/getNSedi")
+  result = {
+    "nsedi" : "3",
+    "token" : "",
+    "message": "",
+    "messageCode": "0"
+  };
+  res.send(result);
+});
+
 app.post('/listaservizi', function (req, res) {
   console.log("/listaservizi")
   result = {

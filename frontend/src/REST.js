@@ -21,6 +21,7 @@ export const url_get_eventi_overview = buildurl+"getEventiOverview";
 export const url_get_eventi = buildurl+"getEventi";
 export const url_modifica_sede = buildurl+"modificaSedeClient";
 export const url_get_drives = buildurl+"getDrives";
+export const url_get_n_sedi = buildurl+"getNSedi";
 
 const portFake = "3001"; 
 const ipFake = "127.0.0.1";
@@ -42,3 +43,4 @@ export const url_get_servizi_allFake2 = buildurlFake+"getServiziAll2";
 export const url_get_servizi_overviewFake = buildurlFake+"getServiziOverview";
 export const url_get_eventi_overviewFake = buildurlFake+"getEventiOverview";
 export const url_get_eventiFake = buildurlFake+"getEventi";
+export const url_get_n_sediFake = buildurlFake+"getNSedi";
