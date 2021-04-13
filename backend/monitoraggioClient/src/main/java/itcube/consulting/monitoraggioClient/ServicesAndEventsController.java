@@ -376,6 +376,7 @@ public class ServicesAndEventsController {
 			id_company=elencoClientsRepository.getIdCompany(id_client);
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
+			System.out.println(validToken.getToken());
 			
 			if(validToken.isValid())
 			{

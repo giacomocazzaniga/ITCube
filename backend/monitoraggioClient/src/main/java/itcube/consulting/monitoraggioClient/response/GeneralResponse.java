@@ -1,5 +1,7 @@
 package itcube.consulting.monitoraggioClient.response;
 
+import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
+
 public class GeneralResponse {
 	private String message;
 	private int messageCode;
@@ -34,7 +36,7 @@ public class GeneralResponse {
 		return token;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setToken(String newToken) {
+		this.token = newToken;
 	}
 }

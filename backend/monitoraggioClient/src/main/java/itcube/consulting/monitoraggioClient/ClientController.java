@@ -72,6 +72,7 @@ import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.GetClientTypesResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
+import itcube.consulting.monitoraggioClient.response.ConfTotalFreeDiscSpaceResponse.ConfTotalFreeDiscSpaceDTO;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
@@ -572,14 +573,25 @@ public class ClientController {
 			nuova_sede = (String) body.get("nuova_sede");
 			vecchia_sede = (String) body.get("vecchia_sede");
 			id_company =Integer.parseInt((String) body.get("id_company"));
+			validToken = Services.checkToken(id_company, token);
 			
-			if(id_client != -1)
+			
+			if(validToken.isValid()) {
+				if(id_client != -1)
+				{
+					elencoClientsRepository.modificaSingolaSedeClient(id_client, nuova_sede);
+				} else {
+					elencoClientsRepository.modificaAllVecchieSediClient(id_company, nuova_sede, vecchia_sede);
+				}
+			} 
+			else
 			{
-				elencoClientsRepository.modificaSingolaSedeClient(id_client, nuova_sede);
-			} else {
-				elencoClientsRepository.modificaAllVecchieSediClient(id_company, nuova_sede, vecchia_sede);
+				generalResponse.setMessage("Autenticazione fallita ");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(generalResponse);
 			}
-			
+
+			generalResponse.setToken(validToken.getToken());
 			generalResponse.setMessage("OK");
 			generalResponse.setMessageCode(0);
 			return ResponseEntity.ok(generalResponse);
@@ -598,21 +610,38 @@ public class ClientController {
 	{
 		ValidToken validToken=new ValidToken();
 		Integer id_client;
+		Integer id_company;
 		String token;
 		ConfTotalFreeDiscSpaceResponse response = new ConfTotalFreeDiscSpaceResponse(); 
 		
 		try {
 			id_client = Integer.parseInt((String) body.get("id_client"));
 			token = (String)body.get("token");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			validToken = Services.checkToken(id_company, token);
 			
-			ConfTotalFreeDiscSpace freeDiscSpace = confTotalFreeDiscSpaceRepository.getDrives(id_client);
+			if(validToken.isValid()) {
+				List<ConfTotalFreeDiscSpace> freeDiscSpaceList = confTotalFreeDiscSpaceRepository.getDrives(id_client);
+				List<ConfTotalFreeDiscSpaceDTO> freeDiscSpaceDTOList = new ArrayList<ConfTotalFreeDiscSpaceDTO>();
+				
+				for(ConfTotalFreeDiscSpace freeDiscSpace : freeDiscSpaceList) {
+					ConfTotalFreeDiscSpaceDTO freeDiscSpaceDTO = new ConfTotalFreeDiscSpaceDTO();
+					freeDiscSpaceDTO.setDriveLabel(freeDiscSpace.getDrive());
+					freeDiscSpaceDTO.setLastUpdate(freeDiscSpace.getDate_and_time());
+					freeDiscSpaceDTO.setOccupiedSpace( String.valueOf( freeDiscSpace.getTotal_free_disc_space() ) );
+					freeDiscSpaceDTO.setTotalSpace( String.valueOf( freeDiscSpace.getTotal_size() ) );
+					freeDiscSpaceDTOList.add(freeDiscSpaceDTO);
+				}
+				
+				response.setDrives(freeDiscSpaceDTOList);
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(response);
+			}
 			
-			
-			response.setDriveLabel(freeDiscSpace.getDrive());
-			response.setLastUpdate(freeDiscSpace.getDate_and_time());
-			response.setOccupiedSpace(String.valueOf( freeDiscSpace.getTotal_free_disc_space()) );
-			response.setTotalSpace(String.valueOf(freeDiscSpace.getTotal_size()));
-			
+			response.setToken(validToken.getToken());
 			response.setMessage("OK");
 			response.setMessageCode(0);
 			return ResponseEntity.ok(response);
