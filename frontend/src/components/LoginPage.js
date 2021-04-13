@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { login, placesList, categoriesList } from '../ActionCreator';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
-import {_getClientTypes, _getPlaces, _getShallowClients, _performLogin} from '../callableRESTs'; 
+import {_getClientTypes, _getNSedi, _getPlaces, _getShallowClients, _performLogin} from '../callableRESTs'; 
 import { _MSGCODE } from '../Constants';
 import { fake_shallowClientList } from '../fakeData';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
@@ -17,10 +17,10 @@ const mapDispatchToProps =  dispatch => ({
     Login: (nome_company, email, emailNotify, client_list, token) => {
       dispatch(login(nome_company, email, emailNotify, client_list, token))
     },
-    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list) => {
+    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list, lista_sedi) => {
       dispatch(categoriesList(categories_list))
       dispatch(placesList(places_list))
-      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token))
+      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token, lista_sedi))
     }
   }
 );
@@ -99,8 +99,16 @@ const LoginPage = (props) => {
             .then(function (response) {
               //get categories
               let categories = response.data.categories;
-              //console.log(categories);
-              props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories);
+              _getNSedi(token, id_company)
+              .then(function (response) {
+                //get n sedi
+                let n_sedi = response.data.nsedi;
+                props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi);
+              })
+              .catch(function (error) {
+                stopLoadingToast(loadingToast);
+                getErrorToast(String(error));
+              })
             })
             .catch(function (error) {
               stopLoadingToast(loadingToast);

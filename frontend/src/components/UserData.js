@@ -30,7 +30,8 @@ const mapStateToProps = state => ({
     logged: state.logged,
     id_company: state.id_company,
     emailNotify: state.emailNotify,
-    email: state.email
+    email: state.email,
+    lista_sedi: state.lista_sedi
   }
 );
 
@@ -144,7 +145,7 @@ const UserData = (props) => {
         <h4><b>Indirizzo email: </b>{props.email}</h4>
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
         <h4><b>Ragione sociale: </b>{props.ragioneSociale}</h4>
-        <h4><b>Sedi registrate: </b>{props.sedi.length}</h4>
+        <h4><b>Sedi registrate: </b>{props.lista_sedi}</h4>
         <h4><b>Chiave di registrazione: </b>{props.chiave.codice}</h4>
       </Col>
     </Box>
