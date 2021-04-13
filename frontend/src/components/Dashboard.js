@@ -130,10 +130,9 @@ const Dashboard = (props) => {
           });
           _getDrives(props.token, props.id_client)
           .then(function (response) {
-            console.log(response.data)
             setState((previousState) => {
               return { ...previousState, 
-                drives: [response.data] //UNA VOLTA TERMINATO IL SERVIZIO DRIVE CON LISTA, RIMUOVERE PARENTESI QUADRATE
+                drives: response.data.drives
               };
             });
           })
