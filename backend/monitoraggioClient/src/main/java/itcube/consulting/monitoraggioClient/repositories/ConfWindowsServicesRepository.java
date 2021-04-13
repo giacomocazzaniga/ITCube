@@ -29,8 +29,8 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 			+ "FROM (\n"
 			+ "    SELECT * FROM conf_windows_services\n"
 			+ "    where conf_windows_services.id_client= :id_client \n"
-			+ "	order by CONVERT(conf_windows_services.date_and_time, CHAR) desc\n"
-			+ ") AS sub\n"
+			+ "	order by conf_windows_services.date_and_time desc\n"
+			+ ") AS sub order by sub.date_and_time desc\n "
 			+ "LIMIT :limite", nativeQuery=true)
 	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client, @Param("limite") int limite);
 	
@@ -43,8 +43,8 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 			+ "FROM (\n"
 			+ "    SELECT * FROM conf_windows_services\n"
 			+ "    where conf_windows_services.id_client= :id_client \n"
-			+ "	order by CONVERT(conf_windows_services.date_and_time, CHAR) desc\n"
-			+ ") AS sub\n"
+			+ "	order by conf_windows_services.date_and_time desc\n"
+			+ ") AS sub order by sub.date_and_time \n"
 			+ "LIMIT :limite) AS sub2\n"
 			+ " where sub2.stato= :stato", nativeQuery=true)
 	int getNumStato(@Param("id_client") int id_client, @Param("stato") int stato, @Param("limite") int limite);
