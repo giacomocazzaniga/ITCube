@@ -21,5 +21,12 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 	@Query(value="Select * from elenco_companies where elenco_companies.id= :id_company", nativeQuery=true)
 	ElencoCompanies getInfoCompany(@Param("id_company") int id);
 	
+	@Query(value="select count(*) from(\r\n"
+			+ "Select distinct cli.sede\r\n"
+			+ " from elenco_companies comp join elenco_clients cli on cli.id_company = comp.id\r\n"
+			+ " where comp.id= :id_company and cli.sede <> \"Senza sede\""
+			+ " group by cli.sede) as SUB", nativeQuery=true)
+	Integer getNSedi(@Param("id_company") int id_company);
+	
 	
 }

@@ -69,6 +69,7 @@ import itcube.consulting.monitoraggioClient.repositories.TipologieClientReposito
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
 import itcube.consulting.monitoraggioClient.response.GetClientTypesResponse;
+import itcube.consulting.monitoraggioClient.response.GetNSediResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
@@ -176,6 +177,48 @@ public class CompanyController {
 			generalResponse.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	
+	@PostMapping(path="/getNSedi",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GetNSediResponse> getNSedi(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		Integer NSedi;
+		GetNSediResponse response = new GetNSediResponse();
+		
+		try {
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {
+				
+				NSedi = elencoCompaniesRepository.getNSedi(id_company);
+				
+				response.setNSedi(NSedi);
+				
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				response.setToken(validToken.getToken());
+				return ResponseEntity.ok(response);
+				
+			} else {
+				response.setMessage("Autenticazione fallita");
+				response.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(response);
+			}
+
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 }
