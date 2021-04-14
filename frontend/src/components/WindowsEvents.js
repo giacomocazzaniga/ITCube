@@ -104,20 +104,33 @@ const WindowsEvents = (props) => {
   }
 
   const pagination_foo = (currentSlot, posSlot, add, n_sottocategoria) => {
+    let controller = "";
+    switch (posSlot){
+      case 0: controller = "A"
+        break;
+      case 1: controller = "C"
+        break;
+      case 2: controller = "H"
+        break;
+      case 3: controller = "S"
+        break;
+    }
     if(add==false){
       if(currentSlot[posSlot]>1){
         currentSlot[posSlot]--; 
         setState((previousState) => {
           return { ...previousState, currentSlot: currentSlot };
         });
+        console.log(currentSlot);
         getEventsList(currentSlot)
       }
     }else{
-      if(currentSlot[posSlot]<Math.ceil(n_sottocategoria/defaultUpperBound)){
+      if(currentSlot[posSlot]<Math.ceil(n_sottocategoria[controller]/defaultUpperBound)){
         currentSlot[posSlot]++; 
         setState((previousState) => {
           return { ...previousState, currentSlot: currentSlot };
         });
+        console.log(currentSlot);
         getEventsList(currentSlot)
       }
     }
@@ -150,8 +163,6 @@ const WindowsEvents = (props) => {
         n_sottocategoria = props.tot_per_sottocategoria.S
       }
       categoriesHeaderWasPrinted[j] = true
-      console.log(n_sottocategoria)
-      console.log(categoriesHeaderWasPrinted)
       switch(j){
         case 0:
           sottocategoria = "Application";
@@ -175,7 +186,13 @@ const WindowsEvents = (props) => {
           <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {sottocategoria} ({n_sottocategoria})</h4></div>}>
             <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={3} md={3}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col>{/*<Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col>*/}<Col xs={4} md={4}><strong><h5>DESCRIZIONE</h5></strong></Col>
             {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
-            <Col className="col-xs-12 col-md-12 reactPaginate"><a class="clickable" onClick={()=>pagination_foo(state.currentSlot, j, false, props.tot_per_sottocategoria[j].numero)}>← Precedente</a> {state.currentSlot[j]}/{Math.ceil(n_sottocategoria/defaultUpperBound)} <a class="clickable" onClick={()=>pagination_foo(state.currentSlot, j, true, props.tot_per_sottocategoria[j].numero)}>Successivo →</a></Col>
+            <Col className="col-xs-12 col-md-12 reactPaginate"><br/>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary" onClick={()=>pagination_foo(state.currentSlot, j, false, props.tot_per_sottocategoria, j)}>← Precedente</button>
+                <button type="button" class="btn btn-secondary">{state.currentSlot[j]}/{Math.ceil(n_sottocategoria/defaultUpperBound)}</button>
+                <button type="button" class="btn btn-secondary" onClick={()=>pagination_foo(state.currentSlot, j, true, props.tot_per_sottocategoria, j)}>Successivo →</button>
+              </div>
+            </Col>
           </Collapsible>
         </div>
       ]
