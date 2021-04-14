@@ -504,8 +504,7 @@ public class ClientController {
 				newClient.setMac_address(mac_address);
 				//id_company
 				Integer id_company=elencoLicenzeRepository.getIdCompanyFromLicenza(codice);
-				//TODO:getIdLicenzaFromLicenza
-//				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
+				
 				
 				if(id_company!=null)
 				{
@@ -563,14 +562,14 @@ public class ClientController {
 		Integer id_client;
 		Integer id_company;
 		String token;
-		String nuova_sede;
-		String vecchia_sede;
+		int id_nuova_sede;
+		int id_vecchia_sede;
 		
 		try {
 			id_client = Integer.parseInt((String) body.get("id_client"));
 			token = (String)body.get("token");
-			nuova_sede = (String) body.get("nuova_sede");
-			vecchia_sede = (String) body.get("vecchia_sede");
+			id_nuova_sede = Integer.parseInt( (String) body.get("nuova_sede") );
+			id_vecchia_sede = Integer.parseInt( (String) body.get("vecchia_sede") );
 			id_company =Integer.parseInt((String) body.get("id_company"));
 			validToken = Services.checkToken(id_company, token);
 			
@@ -578,9 +577,9 @@ public class ClientController {
 			if(validToken.isValid()) {
 				if(id_client != -1)
 				{
-					elencoClientsRepository.modificaSingolaSedeClient(id_client, nuova_sede);
+					elencoClientsRepository.modificaSingolaSedeClient(id_client, id_nuova_sede);
 				} else {
-					elencoClientsRepository.modificaAllVecchieSediClient(id_company, nuova_sede, vecchia_sede);
+					elencoClientsRepository.modificaAllVecchieSediClient(id_company, id_nuova_sede, id_vecchia_sede);
 				}
 			} 
 			else

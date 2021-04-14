@@ -66,11 +66,11 @@ public class ShallowClient {
 		return shallowClients;
 	}
 	
-	public ShallowClient (Integer id_client, String nome_client, String tipo_client, String sede, List<Integer> classe_licenza) {
+	public ShallowClient (Integer id_client, String nome_client, String tipo_client, String string, List<Integer> classe_licenza) {
 		this.id_client = id_client;
-		this.nome_client = nome_client;
+		this.nome_client = nome_client;	
 		this.tipo_client = tipo_client;
-		this.sede = sede;
+		this.sede = string;
 		this.classe_licenza = classe_licenza;
 	}
 	

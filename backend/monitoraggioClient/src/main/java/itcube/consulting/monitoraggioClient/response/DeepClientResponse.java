@@ -39,8 +39,8 @@ public class DeepClientResponse extends GeneralResponse{
 	public String getSede() {
 		return sede;
 	}
-	public void setSede(String sede) {
-		this.sede = sede;
+	public void setSede(String string) {
+		this.sede = string;
 	}
 	
 	public List<String> getCodice_licenza() {

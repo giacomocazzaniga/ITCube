@@ -22,7 +22,7 @@ public interface VisualizzazioneEventiRepository extends CrudRepository<Visualiz
 	@Query(value="select distinct sottocategoria from visualizzazione_eventi where id_client= :id_client",nativeQuery=true)
 	public List<String> getSottocategorie(@Param("id_client") int id_client);
 	
-	@Query(value="SELECT * FROM agentwindows.visualizzazione_eventi WHERE sottocategoria = :sottocategoria AND id_client = :id_client",nativeQuery=true)
+	@Query(value="SELECT * FROM agentwindows.visualizzazione_eventi WHERE sottocategoria = :sottocategoria AND id_client = :id_client ORDER BY date_and_time desc",nativeQuery=true)
 	public List<VisualizzazioneEventi> getEventi(@Param("id_client") int id_client, @Param("sottocategoria") String sottocategoria);
 	
 }
