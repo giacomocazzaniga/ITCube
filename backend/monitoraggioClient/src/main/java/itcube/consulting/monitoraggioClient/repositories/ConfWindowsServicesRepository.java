@@ -25,23 +25,26 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	@Query(value="Select * from conf_windows_services where nome_servizio= :nome_servizio", nativeQuery=true)
 	List<ConfWindowsServices> getServiziClient(@Param("nome_servizio") String nome_servizio);
 	
-	@Query(value="SELECT distinct nome_servizio, max(date_and_time), stato, id, description, service_type, display_name, start_type, id_client "
-			+ "from conf_windows_services\r\n"
-			+ "where conf_windows_services.id_client= :id_client group by nome_servizio", nativeQuery=true)
-	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client);
+	@Query(value="Select *\n"
+			+ "from conf_windows_services\n"
+			+ "WHERE id_client= :id_client\n"
+			+ "ORDER by date_and_time desc\n"
+			+ "limit :limite", nativeQuery=true)
+	List<ConfWindowsServices> getServizi(@Param("id_client") int id_client, @Param("limite") int limite);
 	
 	@Query(value="SELECT count( DISTINCT nome_servizio)\n"
 			+ "    FROM conf_windows_services\n"
 			+ "    WHERE id_client= :id_client", nativeQuery=true)
 	int getNumServizi(@Param("id_client") int id_client);
 	
-	@Query(value="SELECT count(*) FROM (\r\n"
-			+ "		select distinct nome_servizio, max(date_and_time), stato, id, description, service_type, display_name, start_type, id_client "
-			+ "     from conf_windows_services\r\n"
-			+ "		where conf_windows_services.id_client= :id_client group by nome_servizio\r\n"
-			+ "        ) sub\r\n"
-			+ "        WHERE sub.stato = :stato", nativeQuery=true)
-	int getNumStato(@Param("id_client") int id_client, @Param("stato") int stato);
+	@Query(value="select count(*) from (\n"
+			+ "    Select *\n"
+			+ "    from conf_windows_services \n"
+			+ "    WHERE id_client= :id_client\n"
+			+ "    ORDER by date_and_time desc\n"
+			+ "    limit :limite\n"
+			+ ") SUB where SUB.stato = :stato", nativeQuery=true)
+	int getNumStato(@Param("id_client") int id_client, @Param("stato") int stato, @Param("limite") int limite);
 	
 	@Query(value="select count(DISTINCT nome_servizio) from conf_windows_services where id_client= :id_client", nativeQuery=true)
 	int getTotServizi(@Param("id_client") int id_client);

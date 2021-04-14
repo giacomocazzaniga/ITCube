@@ -7,6 +7,7 @@ import { servicesList, serviziOverview } from "../ActionCreator";
 import { defaultUpperBound, _getServiziAll, _getServiziMonitorati, _getServiziOverview, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 import ReactPaginate from "react-paginate";
+import { Backend2FrontendDateConverter } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -72,7 +73,7 @@ const WindowsServices = (props) => {
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col><Col xs={1} md={1}><strong><h5>MONITORA</h5></strong></Col><Col xs={5} md={5}><strong><h5>NOME SERVIZIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>STATO</h5></strong></Col><Col xs={2} md={2}><strong><h5>TIPO DI AVVIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>TIPO DI SERVIZIO</h5></strong></Col></>];
+    let returnList = [<><Col xs={12} md={12}>Ultimo aggiornamento: {Backend2FrontendDateConverter(services[0].date_and_time)}<hr/></Col><Col xs={1} md={1}><strong><h5>MONITORA</h5></strong></Col><Col xs={5} md={5}><strong><h5>NOME SERVIZIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>STATO</h5></strong></Col><Col xs={2} md={2}><strong><h5>TIPO DI AVVIO</h5></strong></Col><Col xs={2} md={2}><strong><h5>TIPO DI SERVIZIO</h5></strong></Col></>];
     let ServiceControllerStatus = ["", "Stop", "Start (pending)", "Stop (pending)", "Running", "Continue (pending)", "In pausa (pending)", "In pausa"]
     let ServiceStartMode = ["Boot", "System", "Automatico", "Manuale", "Disabilitato"] 
     let ServiceType = []
@@ -90,7 +91,14 @@ const WindowsServices = (props) => {
         returnList = getCard(returnList, service.nome_servizio, service.stato, i+1, ServiceControllerStatus, ServiceStartMode, ServiceType, service.start_type, service.service_type, null);
       }
     })
-    returnList = [returnList, <Col className="col-xs-12 col-md-12 reactPaginate"><ReactPaginate previousLabel={"← Precedente"} nextLabel={"Successivo →"} containerClassName={"pagination"} pageCount={Math.ceil(props.services[3]/defaultUpperBound)}/></Col>]
+    let buttons = <Col className="col-xs-12 col-md-12"><br/>
+        <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-secondary">← Precedente</button>
+        <button type="button" class="btn btn-secondary">{Math.ceil(props.services[3]/defaultUpperBound)}</button>
+        <button type="button" class="btn btn-secondary">Successivo →</button>
+      </div>
+    </Col>
+    //returnList = [returnList, buttons]
     return returnList
   }
   

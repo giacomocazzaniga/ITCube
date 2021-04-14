@@ -24,7 +24,7 @@ const Drive = (props) => {
   let occupiedSpace = (totalGB-freeGB).toFixed(2);
   const percentage = ((occupiedSpace*100)/totalGB).toFixed(0);
   return(
-    <Box title={"Drive "+props.driveLabel+": "+parseInt(100-percentage)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+props.lastUpdate}>
+    <Box title={"Drive "+props.driveLabel+" "+parseInt(100-percentage)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+props.lastUpdate}>
       <Col md={4} xs={12}>
         {percentage >= 90 
         ? <center><CircularProgressbar value={percentage} text={`${percentage}%`} styles={{path: {stroke: '#dd4b39'}, text: {fill: '#dd4b39'}}}/></center>

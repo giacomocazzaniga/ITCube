@@ -9,6 +9,7 @@ import { eventsList } from "../ActionCreator";
 import { defaultUpperBound, _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
 import { Pagination } from "react-bootstrap";
+import { Backend2FrontendDateConverter } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -123,7 +124,7 @@ const WindowsEvents = (props) => {
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<><Col className="popminwidth col-md-12 col-xs-12">Ultimo aggiornamento: {services[0].date_and_time}<hr/></Col></>];
+    let returnList = [<><Col className="popminwidth col-md-12 col-xs-12">Ultimo aggiornamento: {Backend2FrontendDateConverter(services[0].date_and_time)}<hr/></Col></>];
     let status = ["", "Error", "Warning", "", "Information", "", "", "", "SuccessAudit", "", "", "", "", "", "", "", "FailureAudit"]
     //order by category
     services.sort(function (a, b) {
@@ -172,7 +173,7 @@ const WindowsEvents = (props) => {
       returnList = [returnList, 
         <div class="winServices">
           <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {sottocategoria} ({n_sottocategoria})</h4></div>}>
-            <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={2} md={2}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col><Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col><Col xs={3} md={3}><strong><h5>DESCRIZIONE</h5></strong></Col>
+            <Col xs={2} md={2}><strong><h5>LEVEL</h5></strong></Col><Col xs={3} md={3}><strong><h5>DATA E ORA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SOURCE</h5></strong></Col><Col xs={1} md={1}><strong><h5>ID</h5></strong></Col>{/*<Col xs={2} md={2}><strong><h5>TASK CATEGORY</h5></strong></Col>*/}<Col xs={4} md={4}><strong><h5>DESCRIZIONE</h5></strong></Col>
             {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
             <Col className="col-xs-12 col-md-12 reactPaginate"><a class="clickable" onClick={()=>pagination_foo(state.currentSlot, j, false, props.tot_per_sottocategoria[j].numero)}>← Precedente</a> {state.currentSlot[j]}/{Math.ceil(n_sottocategoria/defaultUpperBound)} <a class="clickable" onClick={()=>pagination_foo(state.currentSlot, j, true, props.tot_per_sottocategoria[j].numero)}>Successivo →</a></Col>
           </Collapsible>
@@ -190,20 +191,20 @@ const WindowsEvents = (props) => {
       ? 
         <>
           <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="oddColor col-md-2 col-xs-2"><p>{date}</p></Col>
+          <Col className="oddColor col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
           <Col className="oddColor col-md-2 col-xs-2"><p>{source}</p></Col>
           <Col className="oddColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
-          <Col className="oddColor col-md-2 col-xs-2"><p>{task_category}</p></Col>
-          <Col className="oddColor col-md-3 col-xs-3"><p>{info}</p></Col>
+          {/*<Col className="oddColor col-md-2 col-xs-2"><p>{task_category}</p></Col>*/}
+          <Col className="oddColor col-md-4 col-xs-4"><p>{info}</p></Col>
         </>
       :
         <>
           <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="evenColor col-md-2 col-xs-2"><p>{date}</p></Col>
+          <Col className="evenColor col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
           <Col className="evenColor col-md-2 col-xs-2"><p>{source}</p></Col>
           <Col className="evenColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
-          <Col className="evenColor col-md-2 col-xs-2"><p>{task_category}</p></Col>
-          <Col className="evenColor col-md-3 col-xs-3"><p>{info}</p></Col>
+          {/*<Col className="evenColor col-md-2 col-xs-2"><p>{task_category}</p></Col>*/}
+          <Col className="evenColor col-md-4 col-xs-4"><p>{info}</p></Col>
         </>
     else return <></>
   }
