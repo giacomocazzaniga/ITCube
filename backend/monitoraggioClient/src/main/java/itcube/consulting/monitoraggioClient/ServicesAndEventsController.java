@@ -392,7 +392,8 @@ public class ServicesAndEventsController {
 			
 			if(validToken.isValid())
 			{
-				serviziMonitorati=confWindowsServicesRepository.getServizi(id_client);
+				int limite = confWindowsServicesRepository.getTotServizi(id_client);
+				serviziMonitorati=confWindowsServicesRepository.getServizi(id_client, limite);
 				
 				response.setConfWindowsServices(serviziMonitorati);
 				
@@ -441,8 +442,9 @@ public class ServicesAndEventsController {
 			{
 				//Stopped=1, StartPending=2, StopPending=3, Running=4, ContinuePending=5, PausePending=6, Paused=7
 				response.setN_totali((confWindowsServicesRepository.getTotServizi(id_client)));
-				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 4));
-				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 1));
+				int limite = confWindowsServicesRepository.getTotServizi(id_client);
+				response.setN_running(confWindowsServicesRepository.getNumStato(id_client, 4, limite));
+				response.setN_stopped(confWindowsServicesRepository.getNumStato(id_client, 1, limite));
 				response.setN_monitorati(monitoraggioRepository.getNServiziMonitorati(id_client));
 				
 				
