@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2021 at 01:50 PM
+-- Generation Time: Apr 15, 2021 at 01:08 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 7.3.26
 
@@ -51,6 +51,17 @@ CREATE TABLE `conf_total_free_disc_space` (
   `total_size` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `conf_total_free_disc_space`
+--
+
+INSERT INTO `conf_total_free_disc_space` (`id`, `date_and_time`, `descrizione`, `drive`, `id_client`, `perc_free_disc_space`, `total_free_disc_space`, `total_size`) VALUES
+(1, '2021-04-12 14:13:27.000000', 'C', 'C', 1, 10, 1000, 10000),
+(3, '2021-04-13 09:17:43.000000', 'C', 'C', 13, 1, 19000000000, 30000000000),
+(4, '2021-04-13 12:10:59.000000', 'D', 'D', 1, 50, 5000, 10000),
+(5, '2021-04-13 12:12:20.000000', 'C', 'C', 2, 10, 1000, 10000),
+(6, '2021-04-13 12:12:20.000000', 'D', 'D', 2, 50, 5000, 10000);
+
 -- --------------------------------------------------------
 
 --
@@ -62,7 +73,7 @@ CREATE TABLE `conf_windows_services` (
   `date_and_time` datetime(6) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `display_name` varchar(255) DEFAULT NULL,
-  `service_type` int(11) NOT NULL,
+  `service_type` varchar(11) NOT NULL,
   `start_type` int(11) NOT NULL,
   `stato` int(11) NOT NULL,
   `id_client` int(11) DEFAULT NULL,
@@ -74,7 +85,16 @@ CREATE TABLE `conf_windows_services` (
 --
 
 INSERT INTO `conf_windows_services` (`id`, `date_and_time`, `description`, `display_name`, `service_type`, `start_type`, `stato`, `id_client`, `nome_servizio`) VALUES
-(1, '2021-04-09 18:56:07.000000', 'Adobe Update Service', 'Adobe Update Service', 1, 1, 4, 1, 'Adobe Update Service');
+(1, '2021-04-09 18:56:07.000000', 'Adobe Update Service', 'Adobe Update Service', '1', 1, 4, 1, 'Adobe Update Service'),
+(2, '2021-04-12 14:13:27.000000', NULL, 'ActiveX Installer (AxInstSV)2', '1', 1, 1, 1, 'ActiveX Installer (AxInstSV)2'),
+(3, '2021-04-12 14:13:27.000000', NULL, 'Adobe Genuine Software Integrity Service2', '1', 1, 1, 1, 'Adobe Genuine Software Integrity Service2'),
+(4, '2021-04-12 14:13:27.000000', NULL, 'AdobeUpdateService2', '1', 1, 1, 1, 'AdobeUpdateService2'),
+(9, '2021-04-13 10:04:33.000000', NULL, 'AdobeUpdateService', '1', 1, 4, 14, 'AdobeUpdateService'),
+(10, '2021-04-13 10:04:58.000000', NULL, 'AdobeUpdateService', '1', 1, 1, 14, 'AdobeUpdateService'),
+(11, '2021-04-13 12:10:59.000000', NULL, 'AdobeUpdateService', '1', 1, 4, 1, 'AdobeUpdateService'),
+(12, '2021-04-13 12:11:33.000000', NULL, 'AdobeUpdateService', '1', 1, 1, 1, 'AdobeUpdateService'),
+(13, '2021-04-13 12:12:20.000000', NULL, 'AdobeUpdateService', '1', 1, 1, 2, 'AdobeUpdateService'),
+(14, '2021-04-13 12:12:46.000000', NULL, 'AdobeUpdateService', '1', 1, 4, 1, 'AdobeUpdateService');
 
 -- --------------------------------------------------------
 
@@ -98,7 +118,7 @@ CREATE TABLE `elenco_clients` (
 --
 
 INSERT INTO `elenco_clients` (`id`, `mac_address`, `nome`, `sede`, `id_company`, `tipologia_client`, `descrizione`, `licenza_in_uso`) VALUES
-(1, '00:1B:44:11:3A:B7', 'DESKTOP-3874', 'Roma', 1, 1, 'DESKTOP-3874', 1),
+(1, '00:1B:44:11:3A:B7', 'DESKTOP-3874', 'Vicenza', 1, 1, 'DESKTOP-3874', 1),
 (2, '00:1B:94:51:4N:B0', 'DESKTOP-2049', 'Torino', 1, 1, 'DESKTOP-2049', 1),
 (3, '00:09:20:39:4M:J0', 'SERVER-2209', 'Bologna', 1, 2, 'SERVER-2209', 1),
 (4, '00:1B:44:11:3A:B1', 'DESKTOP-000', 'Milano', 1, 1, 'DESKTOP-000', NULL),
@@ -108,7 +128,10 @@ INSERT INTO `elenco_clients` (`id`, `mac_address`, `nome`, `sede`, `id_company`,
 (8, '00:4P:44:11:1P:S1', 'DESKTOP-005', 'Milano', 1, 2, 'DESKTOP-005', NULL),
 (9, '00:4P:44:31:AA:S1', 'DESKTOP-006', 'Milano', 1, 2, 'DESKTOP-006', NULL),
 (10, '00:4P:44:31:BB:S1', 'DESKTOP-007', 'Milano', 1, 2, 'DESKTOP-007', NULL),
-(11, '00:4P:44:31:CC:S1', 'DESKTOP-008', 'Milano', 1, 1, 'DESKTOP-008', NULL);
+(11, '00:4P:44:31:CC:S1', 'DESKTOP-008', 'Milano', 1, 1, 'DESKTOP-008', NULL),
+(12, '00:4P:44:31:SC:S1', 'DESKTOP-009', 'Napoli', 1, 1, 'DESKTOP-009', NULL),
+(13, '99:1B:98:11:3A:B7', 'DESKTOP-010', 'Senza sede', 1, 1, 'DESKTOP-010', NULL),
+(14, '99:1B:98:11:3A:B7', 'DESKTOP-001', 'Vicenza', 2, 1, 'DESKTOP-001', NULL);
 
 -- --------------------------------------------------------
 
@@ -134,7 +157,11 @@ INSERT INTO `elenco_clients_elenco_licenze` (`licenza_in_uso`, `id`) VALUES
 (8, 1),
 (9, 1),
 (10, 1),
-(11, 1);
+(11, 1),
+(1, 2),
+(12, 1),
+(13, 1),
+(14, 3);
 
 -- --------------------------------------------------------
 
@@ -155,7 +182,8 @@ CREATE TABLE `elenco_companies` (
 --
 
 INSERT INTO `elenco_companies` (`id`, `email`, `email_alert`, `password`, `ragione_sociale`) VALUES
-(1, 'email@itcubeconsulting.it', 'alert@itcubeconsulting.it', '5f4dcc3b5aa765d61d8327deb882cf99', 'ITCUBE');
+(1, 'email@itcubeconsulting.it', 'alert@itcubeconsulting.it', '5f4dcc3b5aa765d61d8327deb882cf99', 'ITCUBE'),
+(2, 'email2@itcubeconsulting.it', 'asdjkb@wivub.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prova 1');
 
 -- --------------------------------------------------------
 
@@ -176,7 +204,9 @@ CREATE TABLE `elenco_licenze` (
 --
 
 INSERT INTO `elenco_licenze` (`id`, `codice`, `scadenza`, `acquistato_da`, `id_tipo`) VALUES
-(1, 'T896-ZJ7Q-E5KP-NKQN', '2021-04-09 19:02:39.000000', 1, 1);
+(1, 'T896-ZJ7Q-E5KP-NKQN', '2021-04-09 19:02:39.000000', 1, 1),
+(2, '45V8-HD4M-KL23-33NB', '2022-01-20 14:37:35.000000', 1, 3),
+(3, '9BR9-FGDK-91RS-DFU5', '2021-04-13 09:59:27.000000', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -232,7 +262,13 @@ CREATE TABLE `monitoraggio` (
 --
 
 INSERT INTO `monitoraggio` (`id`, `monitora`, `nome_servizio`, `id_client`) VALUES
-(1, b'0', 'Adobe Update Service', 1);
+(1, b'0', 'Adobe Update Service', 1),
+(2, b'0', 'ActiveX Installer (AxInstSV)2', 1),
+(3, b'1', 'Adobe Genuine Software Integrity Service2', 1),
+(4, b'1', 'AdobeUpdateService2', 1),
+(7, b'0', 'AdobeUpdateService', 14),
+(8, b'0', 'AdobeUpdateService', 1),
+(9, b'1', 'AdobeUpdateService', 2);
 
 -- --------------------------------------------------------
 
@@ -319,7 +355,29 @@ INSERT INTO `visualizzazione_eventi` (`id`, `date_and_time`, `id_event`, `info`,
 (4, '2021-04-11 10:16:48.000000', 100, 'Info test A', 1, 0, 'A', 'Source A', NULL, 1, '2021-04-11 18:57:00.000000'),
 (5, '2021-04-11 10:16:48.000000', 100, 'Info test H', 1, 0, 'H', 'Source H', NULL, 1, '2021-04-11 18:57:00.000000'),
 (6, '2021-04-11 10:16:48.000000', 100, 'Info test S', 1, 0, 'S', 'Source S', NULL, 1, '2021-04-11 18:57:00.000000'),
-(7, '2021-04-11 10:16:48.000000', 100, 'Info test C', 1, 0, 'C', 'Source C', NULL, 1, '2021-04-11 18:57:00.000000');
+(7, '2021-04-11 10:16:48.000000', 100, 'Info test C', 1, 0, 'C', 'Source C', NULL, 1, '2021-04-11 18:57:00.000000'),
+(8, '2021-04-13 12:14:25.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(9, '2021-04-13 12:14:26.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(10, '2021-04-13 12:14:27.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(11, '2021-04-13 12:14:28.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(12, '2021-04-13 12:14:28.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(13, '2021-04-13 12:14:29.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(14, '2021-04-13 12:14:30.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(15, '2021-04-13 12:14:30.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(16, '2021-04-13 12:14:31.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(17, '2021-04-13 12:14:31.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(18, '2021-04-13 12:14:31.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(19, '2021-04-13 12:14:32.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(20, '2021-04-13 12:14:32.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(21, '2021-04-13 12:14:33.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(22, '2021-04-13 12:14:33.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(23, '2021-04-13 12:14:34.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(24, '2021-04-13 12:14:34.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(25, '2021-04-13 12:14:35.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(26, '2021-04-13 12:14:35.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(27, '2021-04-13 12:14:36.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(28, '2021-04-13 12:14:36.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000'),
+(29, '2021-04-13 12:14:37.000000', 100, NULL, 1, 0, 'C', NULL, NULL, 1, '2021-04-11 20:57:00.000000');
 
 --
 -- Indexes for dumped tables
@@ -440,31 +498,31 @@ ALTER TABLE `config`
 -- AUTO_INCREMENT for table `conf_total_free_disc_space`
 --
 ALTER TABLE `conf_total_free_disc_space`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `conf_windows_services`
 --
 ALTER TABLE `conf_windows_services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `elenco_clients`
 --
 ALTER TABLE `elenco_clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `elenco_companies`
 --
 ALTER TABLE `elenco_companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `elenco_licenze`
 --
 ALTER TABLE `elenco_licenze`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `elenco_operazioni`
@@ -482,7 +540,7 @@ ALTER TABLE `macro_categorie_eventi`
 -- AUTO_INCREMENT for table `monitoraggio`
 --
 ALTER TABLE `monitoraggio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `real_time`
@@ -506,7 +564,7 @@ ALTER TABLE `tipologie_licenze`
 -- AUTO_INCREMENT for table `visualizzazione_eventi`
 --
 ALTER TABLE `visualizzazione_eventi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Constraints for dumped tables
