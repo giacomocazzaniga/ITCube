@@ -54,6 +54,7 @@ public class ElencoClients {
 	
 	private String sede;
 
+
 	public ElencoClients() {
 		
 	}
@@ -146,6 +147,7 @@ public class ElencoClients {
 	public void setSede(String sede) {
 		this.sede = sede;
 	}
+
 
 	public String getDescrizione() {
 		return descrizione;

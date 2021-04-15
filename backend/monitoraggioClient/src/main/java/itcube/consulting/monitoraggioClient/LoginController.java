@@ -157,6 +157,7 @@ public class LoginController {
 					codice=Services.getLicenseKey();
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
+				company.setChiave_di_registrazione(codice);
 				elencoLicenze=new ElencoLicenze();
 				elencoLicenze.setCodice(codice);
 				elencoLicenze.setElencoClients(null);
@@ -190,12 +191,13 @@ public class LoginController {
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> Login(@RequestBody Map<String,Object> body){
 		ResponseLogin responseLogin=new ResponseLogin();
-		GeneralResponse generalResponse=new GeneralResponse();;
+		GeneralResponse generalResponse=new GeneralResponse();
 		String email;
 		String password;
 		int numCompany;
 		ElencoCompanies company;
 		String token;
+		String chiave_di_registrazione;
 		List<ElencoClients> elencoClients;
 		
 		try {
@@ -217,6 +219,7 @@ public class LoginController {
 				company=elencoCompaniesRepository.getInfoCompany(email);
 				elencoClients=elencoClientsRepository.getElencoClients(company);
 				
+				
 				String _tokenCompany=Services.tokenCompany(company.getId());
 				if(_tokenCompany==null)
 					token = Services.getJWTToken(company.getRagione_sociale());
@@ -225,6 +228,7 @@ public class LoginController {
 				
 				Services.putToken(company.getId(),token);
 				
+				responseLogin.setChiave_di_registrazione(company.getChiave_di_registrazione());
 				responseLogin.setMessage("Login avvenuto con successo");
 				responseLogin.setMessageCode(0);
 				responseLogin.setRagione_sociale(company.getRagione_sociale());

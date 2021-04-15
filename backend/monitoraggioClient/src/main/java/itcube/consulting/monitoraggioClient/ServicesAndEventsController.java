@@ -709,7 +709,7 @@ public class ServicesAndEventsController {
 //				monitoraggioRepository.updateMonitora(monitora, nome_servizio);
 				eventi = visualizzazioneEventiRepository.getEventi(id_client, sottocategoria);
 				int Npartenza = n*(slot-1);
-				int Narrivo = (n*slot)-1;
+				int Narrivo = (n*slot);
 				if(Narrivo > eventi.size())
 					Narrivo = eventi.size();
 				

@@ -23,7 +23,7 @@ public interface ElencoLicenzeRepository extends CrudRepository<ElencoLicenze,In
 	@Query(value="Select * from elenco_licenze el where el.codice= :codice", nativeQuery=true)
 	ElencoLicenze getLicenza(@Param ("codice") String codice);
 	
-	@Query(value="Select ec.id from elenco_licenze el join elenco_companies ec on el.acquistato_da=ec.id where el.codice= :codice", nativeQuery=true)
+	@Query(value="Select id from elenco_companies where chiave_di_registrazione= :codice", nativeQuery=true)
 	Integer getIdCompanyFromLicenza(@Param ("codice") String codice);
 	
 	@Query(value="select id from elenco_licenze where codice = :codice", nativeQuery=true)
