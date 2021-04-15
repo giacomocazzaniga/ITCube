@@ -128,7 +128,7 @@ public class ClientController {
 		
 		try
 		{
-			id_company=(Integer)body.get("id_company");
+			id_company=Integer.parseInt((String)body.get("id_company"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -177,7 +177,7 @@ public class ClientController {
 		
 		try 
 		{
-			id_company=(Integer)body.get("id_company");
+			id_company=Integer.parseInt((String)body.get("id_company"));
 			id_client=Integer.parseInt((String)body.get("id_client"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
