@@ -8,6 +8,7 @@ public class ResponseLogin extends GeneralResponse{
 	private String ragione_sociale;
 	private int id_company;
 	private String emailNotify;
+	private String chiave_di_registrazione;
 	
 	public ResponseLogin() {
 
@@ -35,5 +36,13 @@ public class ResponseLogin extends GeneralResponse{
 
 	public void setEmailNotify(String emailNotify) {
 		this.emailNotify = emailNotify;
+	}
+
+	public String getChiave_di_registrazione() {
+		return chiave_di_registrazione;
+	}
+
+	public void setChiave_di_registrazione(String chiave_di_registrazione) {
+		this.chiave_di_registrazione = chiave_di_registrazione;
 	}
 }

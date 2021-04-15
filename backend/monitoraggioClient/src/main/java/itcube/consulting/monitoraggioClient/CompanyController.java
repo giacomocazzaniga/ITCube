@@ -75,6 +75,7 @@ import itcube.consulting.monitoraggioClient.response.GetNSediResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
+import itcube.consulting.monitoraggioClient.response.NomiSediResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
@@ -361,6 +362,46 @@ public class CompanyController {
 					generalResponse.setMessageCode(-3);
 					return ResponseEntity.badRequest().body(generalResponse);
 				}
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/getNomiSedi",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getNomiSedi(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		NomiSediResponse response=new NomiSediResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		List<String> nomi=new ArrayList<>();
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				nomi=sediRepository.getNomiSedi(id_company);
+				
+				response.setSedi(nomi);
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				response.setToken(validToken.getToken());
+				return ResponseEntity.ok(response);
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);

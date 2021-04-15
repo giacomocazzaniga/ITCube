@@ -46,10 +46,12 @@ public class ElencoClients {
 	private String mac_address;
 	
 	//Chiave esterna licenza_in_uso 
+	
+	//al contrario le chiavi 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "elenco_clients_elenco_licenze",
-     joinColumns = { @JoinColumn(name = "id",nullable = false, updatable = false)},
-     inverseJoinColumns = { @JoinColumn(name = "licenza_in_uso",nullable = false, updatable = false)})
+     joinColumns = { @JoinColumn(name = "licenza_in_uso",nullable = false, updatable = false)},
+     inverseJoinColumns = { @JoinColumn(name = "id",nullable = false, updatable = false)})
 	private List<ElencoLicenze> elencoLicenze;
 	
 	private String sede;

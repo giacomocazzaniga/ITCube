@@ -126,7 +126,8 @@ public class LoginController {
 		ElencoCompanies company;
 		ElencoLicenze elencoLicenze;
 		String codice;
-
+		String chiave_di_registrazione;
+		
 		try {
 			email=body.get("email").toString();
 			password=body.get("password").toString();
@@ -149,6 +150,10 @@ public class LoginController {
 				company.setEmail_alert(email_alert);
 				company.setRagione_sociale(ragione_sociale);
 				
+				chiave_di_registrazione=Services.getLicenseKey();
+				
+				company.setChiave_di_registrazione(chiave_di_registrazione);
+				
 				elencoCompaniesRepository.save(company);
 				
 				//salva la licenza
@@ -156,6 +161,7 @@ public class LoginController {
 				{
 					codice=Services.getLicenseKey();
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
+				
 				
 				elencoLicenze=new ElencoLicenze();
 				elencoLicenze.setCodice(codice);
@@ -231,6 +237,7 @@ public class LoginController {
 				responseLogin.setId_company(company.getId());
 				responseLogin.setEmailNotify(company.getEmail_alert());
 				responseLogin.setToken(token);
+				responseLogin.setChiave_di_registrazione(company.getChiave_di_registrazione());
 				
 				System.out.println(Services.getCurrentDate()+" /login SUCCESS "+email);
 				

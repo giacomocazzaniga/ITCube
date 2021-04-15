@@ -28,5 +28,6 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 			+ " group by cli.sede) as SUB", nativeQuery=true)
 	Integer getNSedi(@Param("id_company") int id_company);
 	
-	
+	@Query(value="Select id from elenco_companies where chiave_di_registrazione= :chiave_di_registrazione",nativeQuery=true)
+	Integer getIdCompanyFromChiave(@Param("chiave_di_registrazione") String chiave);
 }

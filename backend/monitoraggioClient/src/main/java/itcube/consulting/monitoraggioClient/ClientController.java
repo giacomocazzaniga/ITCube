@@ -484,7 +484,7 @@ public class ClientController {
 		{
 			//MyID, LicenseKey, MachineName, MachineLabel, Type, MACAddress): MyID, Message, MessageCode
 			Integer id_client=Integer.parseInt((String)body.get("MyID"));
-			String codice=(String)body.get("LicenseKey");
+			String chiave=(String)body.get("LicenseKey");
 			String nome=(String)body.get("MachineName");
 			String descrizione=(String)body.get("MachineLabel");
 			int tipologiaClient=Integer.parseInt((String)body.get("Type"));
@@ -503,7 +503,7 @@ public class ClientController {
 				newClient.setTipologiaClient(tipo);
 				newClient.setMac_address(mac_address);
 				//id_company
-				Integer id_company=elencoLicenzeRepository.getIdCompanyFromLicenza(codice);
+				Integer id_company=elencoCompaniesRepository.getIdCompanyFromChiave(chiave);
 				//TODO:getIdLicenzaFromLicenza
 //				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
 				
@@ -514,7 +514,8 @@ public class ClientController {
 					newClient.setElencoCompanies(company);
 					//licenza in uso
 					List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
-					ElencoLicenze licenza = elencoLicenzeRepository.getLicenza(codice);
+					
+					ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
 					elencoLicenze.add(licenza);
 					newClient.setElencoLicenze(elencoLicenze);
 					System.out.println(newClient.getElencoLicenze().get(0).getId());
@@ -530,7 +531,7 @@ public class ClientController {
 				else
 				{
 					response.setMyID(null);
-					response.setMessage("Licenza non registrata");
+					response.setMessage("Company non registrata");
 					response.setMessageCode(-1);
 					return ResponseEntity.badRequest().body(response);
 				}
