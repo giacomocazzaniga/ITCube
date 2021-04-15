@@ -52,6 +52,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.Sedi;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
@@ -65,6 +66,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
+import itcube.consulting.monitoraggioClient.repositories.SediRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
@@ -113,6 +115,9 @@ public class CompanyController {
 	
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
+	
+	@Autowired
+	private SediRepository sediRepository;
 	
 	@PostMapping(path="/editCompanyData",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -219,6 +224,154 @@ public class CompanyController {
 			response.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> modificaSedeClient(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		Integer id_client;
+		String token;
+		String nuovaSede;
+		String vecchiaSede;
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				vecchiaSede=(String) body.get("vecchiaSede");
+				nuovaSede= (String) body.get("nuovaSede");
+				id_client=Integer.parseInt( (String) body.get("id_client") );
+				
+				if(id_client==-1)
+				{
+					elencoClientsRepository.modificaAllVecchieSediClient(id_company,nuovaSede, vecchiaSede);
+				}
+				else
+				{
+					elencoClientsRepository.modificaSingolaSedeClient(id_client, nuovaSede);
+				}
+				
+				generalResponse.setMessage("OK");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(validToken.getToken());
+				return ResponseEntity.ok(generalResponse);
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/inserimentoSede",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> inserimentoSede(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		String nome;
+		Sedi sede=new Sedi();
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				nome=(String) body.get("nome");
+				
+				sede.setId_company(id_company);
+				sede.setNome(nome);
+				
+				sediRepository.save(sede);
+				
+				generalResponse.setMessage("OK");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(validToken.getToken());
+				return ResponseEntity.ok(generalResponse);
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/cancellazioneSede",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> cancellazioneSede(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		String nome;
+		List<Integer> clients=new ArrayList<>();
+		Sedi sede=new Sedi();
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				nome=(String) body.get("nome");
+				
+				clients=elencoClientsRepository.getClientsInSede(nome, id_company);
+				sede=sediRepository.isPresent(nome, id_company);
+				
+				if(clients.size()==0 && sede!=null)
+				{
+					sediRepository.delete(sede);
+					
+					generalResponse.setMessage("OK");
+					generalResponse.setMessageCode(0);
+					generalResponse.setToken(validToken.getToken());
+					return ResponseEntity.ok(generalResponse);
+				}
+				else
+				{
+					generalResponse.setMessage("Impossibile completare l'operazione");
+					generalResponse.setMessageCode(-3);
+					return ResponseEntity.badRequest().body(generalResponse);
+				}
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
 }

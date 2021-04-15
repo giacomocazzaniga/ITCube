@@ -554,7 +554,7 @@ public class ClientController {
 		}
 	}
 	
-	@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	/*@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> modificaSedeClient(@RequestBody Map<String,Object> body)
 	{
@@ -601,7 +601,7 @@ public class ClientController {
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
-	}
+	}*/
 	
 	@PostMapping(path="/getDrives",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin

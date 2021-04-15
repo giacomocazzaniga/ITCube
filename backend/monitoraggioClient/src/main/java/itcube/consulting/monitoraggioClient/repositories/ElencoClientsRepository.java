@@ -49,5 +49,6 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	@Transactional
 	void modificaAllVecchieSediClient(@Param("id_company") int id_company, @Param("nuova_sede") String nuova_sede, @Param("vecchia_sede") String vecchia_sede);
 	
-	
+	@Query(value="Select id from elenco_clients where sede= :sede and id_company= :id_company", nativeQuery=true)
+	List<Integer> getClientsInSede(@Param("sede") String sede,@Param("id_company") int id_company );
 }
