@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -78,6 +79,11 @@ import itcube.consulting.monitoraggioClient.services.Services;
 import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
 @RestController
 @RequestMapping(path="/be/main")
@@ -168,7 +174,7 @@ public class LoginController {
 				elencoLicenze.setElencoClients(null);
 				elencoLicenze.setTipologieLicenze(tipologieLicenzeRepository.getLicenza("1"));
 				elencoLicenze.setElencoCompanies(company);
-				elencoLicenze.setScadenza(Services.getScadenza());
+				elencoLicenze.setScadenza(Services.getScadenza(6));
 				
 				elencoLicenzeRepository.save(elencoLicenze);
 				
@@ -255,6 +261,9 @@ public class LoginController {
 	@PostMapping(path="/hello",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public String helloWorld(@RequestBody Map<String,Object> body) {
+	
+		
+		
 		if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
 		{
 			String newToken=Services.checkThreshold((Integer)body.get("id_company"),(String)body.get("token"));

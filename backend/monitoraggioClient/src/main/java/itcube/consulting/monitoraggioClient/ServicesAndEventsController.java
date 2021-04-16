@@ -210,7 +210,7 @@ public class ServicesAndEventsController {
 					}
 					else
 					{
-						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space);
+						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space, timestamp);
 					}
 				}
 			}

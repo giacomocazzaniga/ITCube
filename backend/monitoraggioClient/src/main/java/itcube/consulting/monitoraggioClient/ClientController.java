@@ -195,6 +195,7 @@ public class ClientController {
 					codiciLicenze.add(i.getCodice());
 					classiLicenze.add(elencoLicenzeRepository.getClasseLicenza(i.getTipologieLicenze().getId()));
 				}
+				deepClientResponse.setDescrizione(deepClient.getDescrizione());
 				deepClientResponse.setCodice_licenza(codiciLicenze);
 				deepClientResponse.setClasse_licenza(classiLicenze);
 				
@@ -492,48 +493,55 @@ public class ClientController {
 			
 			if(id_client==0)
 			{
-				//salva nel db
-				ElencoClients newClient=new ElencoClients();
-				newClient.setNome(nome);
-				newClient.setDescrizione(descrizione);
-				newClient.setSede("Senza sede");
-				TipologiaClient tipo=new TipologiaClient();
-				tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
-				System.out.println(tipo);
-				newClient.setTipologiaClient(tipo);
-				newClient.setMac_address(mac_address);
-				//id_company
-				Integer id_company=elencoCompaniesRepository.getIdCompanyFromChiave(chiave);
-				//TODO:getIdLicenzaFromLicenza
-//				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
-				
-				if(id_company!=null)
-				{
-					ElencoCompanies company=new ElencoCompanies();
-					company=elencoCompaniesRepository.getInfoCompany(id_company);
-					newClient.setElencoCompanies(company);
-					//licenza in uso
-					List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
+				if(elencoClientsRepository.getIdFromInfo(nome, mac_address) == null) {
+					//salva nel db
+					ElencoClients newClient=new ElencoClients();
+					newClient.setNome(nome);
+					newClient.setDescrizione(descrizione);
+					newClient.setSede("Senza sede");
+					TipologiaClient tipo=new TipologiaClient();
+					tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
+					System.out.println(tipo);
+					newClient.setTipologiaClient(tipo);
+					newClient.setMac_address(mac_address);
+					//id_company
+					Integer id_company=elencoCompaniesRepository.getIdCompanyFromChiave(chiave);
+					//TODO:getIdLicenzaFromLicenza
+	//				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
 					
-					ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
-					elencoLicenze.add(licenza);
-					newClient.setElencoLicenze(elencoLicenze);
-					System.out.println(newClient.getElencoLicenze().get(0).getId());
-					//sede
-					
-					elencoClientsRepository.save(newClient);
-					
+					if(id_company!=null)
+					{
+						ElencoCompanies company=new ElencoCompanies();
+						company=elencoCompaniesRepository.getInfoCompany(id_company);
+						newClient.setElencoCompanies(company);
+						//licenza in uso
+						List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
+						
+						ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
+						elencoLicenze.add(licenza);
+						newClient.setElencoLicenze(elencoLicenze);
+						System.out.println(newClient.getElencoLicenze().get(0).getId());
+						//sede
+						
+						elencoClientsRepository.save(newClient);
+						
+						response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
+						response.setMessage("OK");
+						response.setMessageCode(0);
+						return ResponseEntity.ok(response);
+					}
+					else
+					{
+						response.setMyID(null);
+						response.setMessage("Company non registrata");
+						response.setMessageCode(-1);
+						return ResponseEntity.badRequest().body(response);
+					}
+				} else {
 					response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
 					response.setMessage("OK");
 					response.setMessageCode(0);
 					return ResponseEntity.ok(response);
-				}
-				else
-				{
-					response.setMyID(null);
-					response.setMessage("Company non registrata");
-					response.setMessageCode(-1);
-					return ResponseEntity.badRequest().body(response);
 				}
 			}
 			else

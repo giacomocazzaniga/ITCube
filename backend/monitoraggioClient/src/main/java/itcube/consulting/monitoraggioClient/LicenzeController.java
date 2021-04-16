@@ -289,7 +289,7 @@ public class LicenzeController {
 				
 				licenza.setCodice(codice);
 				licenza.setElencoCompanies(company);
-				licenza.setScadenza(Services.getScadenza());
+				licenza.setScadenza(Services.getScadenza(6));
 				
 				tipo=tipologieLicenzeRepository.getLicenza(classe_licenza.toString());
 				

@@ -11,11 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -24,6 +36,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 
 public final class Services {
+	
+	@Autowired
+    private HttpServletRequest request;
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
 	private static int milliSecLenghtToken=10000000;
@@ -195,8 +210,74 @@ public final class Services {
 		return Date.from(d.atZone(ZoneId.systemDefault()).toInstant());
 	}
 	
-	public static Date getScadenza()
+	public static Date getScadenza(int mesi)
 	{
-		return new Date(System.currentTimeMillis()+500000);
+		Date current = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(current);
+        cal.set(Calendar.MONTH, (cal.get(Calendar.MONTH)+mesi));
+        current = cal.getTime();
+		return current;
+	}
+	
+	public int sendEmail (String oggetto, String corpo, String destinatario) {
+//		SMTP = smtp.gmail.com 
+//		Port = 587
+		
+		final String username = "itsentinelalert@gmail.com";
+        final String password = "itcubealert";
+
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+        
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("itsentinelalert@gmail.com"));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(destinatario)
+            );
+            message.setSubject(oggetto);
+            message.setText(corpo);
+
+            Transport.send(message);
+
+            System.out.println("Done");
+            return 0;
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return -1;
+        }
+	}
+	
+	public Map<String, String> getInfoFromHeader () {
+		String token = request.getHeader("token");
+	 	String id_client = request.getHeader("id_client");
+	 	
+	 	
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("token", token);
+        map.put("id_client", id_client);
+//
+//        Enumeration headerNames = request.getHeaderNames();
+//        while (headerNames.hasMoreElements()) {
+//            String key = (String) headerNames.nextElement();
+//            String value = request.getHeader(key);
+//            map.put(key, value);
+//        }
+//
+        return map;
 	}
 }
