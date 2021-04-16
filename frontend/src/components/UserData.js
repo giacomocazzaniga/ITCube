@@ -146,7 +146,7 @@ const UserData = (props) => {
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
         <h4><b>Ragione sociale: </b>{props.ragioneSociale}</h4>
         <h4><b>Sedi registrate: </b>{props.lista_sedi}</h4>
-        <h4><b>Chiave di registrazione: </b>{props.chiave.codice}</h4>
+        <h4><b>Chiave di registrazione: </b>{props.chiave}</h4>
       </Col>
     </Box>
   );

@@ -1,6 +1,6 @@
 import * as types from './ActionTypes';
 
-export const login = (nome_company, id_company, email, emailNotify, client_list, token, lista_sedi) => ({
+export const login = (nome_company, id_company, email, emailNotify, client_list, token, lista_sedi, chiave_di_registrazione) => ({
   type: types.LOGIN,
   id_company: id_company,
   nome_company: nome_company,
@@ -8,7 +8,8 @@ export const login = (nome_company, id_company, email, emailNotify, client_list,
   emailNotify: emailNotify,
   client_list: client_list,
   token: token, 
-  lista_sedi: lista_sedi
+  lista_sedi: lista_sedi,
+  chiave_di_registrazione: chiave_di_registrazione
 })
 export const updateCompanyData = (nome_company, email, emailNotify, token) => ({
   type: types.UPDATECOMPANYDATA,
