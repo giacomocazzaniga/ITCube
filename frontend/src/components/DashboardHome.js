@@ -30,6 +30,7 @@ const mapStateToProps = state => ({
     token: state.token,
     logged: state.logged,
     id_company: state.id_company,
+    chiave_di_registrazione: state.chiave_di_registrazione,
     clientOverview: {
       problems: 2,
       warnings: 2,
@@ -116,10 +117,7 @@ const DashboardHome = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col xs={12} md={6}>
-          {(state.licenses.length>=1)
-          ? <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi} chiave={(state.licenses.filter(function(item){return item.tipologia.toUpperCase() == "SISTEMA OPERATIVO";}))[0]}/>
-          : <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi} chiave={{codice:""}}/>
-          }
+          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi} chiave={props.chiave_di_registrazione}/>
         </Col>
         
         {/*<Col md={3} xs={6}>

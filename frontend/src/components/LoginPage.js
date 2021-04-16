@@ -17,10 +17,10 @@ const mapDispatchToProps =  dispatch => ({
     Login: (nome_company, email, emailNotify, client_list, token) => {
       dispatch(login(nome_company, email, emailNotify, client_list, token))
     },
-    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list, lista_sedi) => {
+    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list, lista_sedi, chiaveRegistrazione) => {
       dispatch(categoriesList(categories_list))
       dispatch(placesList(places_list))
-      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token, lista_sedi))
+      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token, lista_sedi, chiaveRegistrazione))
     }
   }
 );
@@ -86,6 +86,7 @@ const LoginPage = (props) => {
         let id_company = response.data.id_company;
         let token = response.data.token;
         let emailNotify = response.data.emailNotify;
+        let chiaveRegistrazione = response.data.chiave_di_registrazione;
         _getShallowClients(id_company, token)
         .then(function (response) {
           console.log(response.data.shallowClients)
@@ -103,7 +104,7 @@ const LoginPage = (props) => {
               .then(function (response) {
                 //get n sedi
                 let n_sedi = response.data.nsedi;
-                props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi);
+                props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi, chiaveRegistrazione);
               })
               .catch(function (error) {
                 stopLoadingToast(loadingToast);

@@ -10,6 +10,7 @@ const initialState = {
   id_company : null,
   email : null,
   emailNotify : null,
+  chiave_di_registrazione : null,
   client_list : [],
   logged: false,
   token : null,
@@ -41,7 +42,8 @@ export function rootReducer(state = initialState, action) {
       client_list: action.client_list,
       logged: true,
       token: action.token,
-      lista_sedi: action.lista_sedi
+      lista_sedi: action.lista_sedi,
+      chiave_di_registrazione: action.chiave_di_registrazione
     });
   }
   if (action.type === types.UPDATECOMPANYDATA) {
@@ -113,7 +115,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
+  blacklist: ['nome_company', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);
