@@ -7,7 +7,7 @@ import History from './History';
 import LicensesList from './LicensesList';
 import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
-import { _getLicenzeShallow } from '../callableRESTs';
+import { _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 
 document.body.classList.add('fixed');
@@ -74,23 +74,33 @@ const mapStateToProps = state => ({
           color: "#dd4b39"
         }
       ]
-    },
-    sedi: ["Milano", "Venezia", "Torino"]
+    }
   }
 );
 
 const DashboardHome = (props) => {
   const [state, setState] = React.useState({
-    licenses: []
+    licenses: [],
+    sedi: []
   })
   useEffect(() => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
-      stopLoadingToast(loadingToast);
-      setState(() => {
-        return { licenses: response.data.licenzeShallow };  
+      setState((previousState) => {
+        return { ...previousState, licenses: response.data.licenzeShallow };  
       });
+      _getNomiSedi(props.token, props.id_company)
+      .then(function (response) {
+        stopLoadingToast(loadingToast);
+        setState((previousState) => {
+          return { ...previousState, sedi: response.data.sedi };
+        });
+      })
+      .catch(function (error) {
+        stopLoadingToast(loadingToast);
+        getErrorToast(String(error));
+      })
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -117,7 +127,7 @@ const DashboardHome = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col xs={12} md={6}>
-          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={props.sedi} chiave={props.chiave_di_registrazione}/>
+          <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} sedi={state.sedi} chiave={props.chiave_di_registrazione}/>
         </Col>
         
         {/*<Col md={3} xs={6}>
