@@ -169,41 +169,29 @@ const App = (props) => {
      * {"Client": 1,
      * "Server": 2}
      */
-    let category = [{"nome": "Client", "n_client": 0}, {"nome": "Server", "n_client": 0}]
-    category.map((cat) => {
-      if(cat.nome=="Client"){cat.n_client = categories_list["Client"]}
-      else if(cat.nome=="Server"){cat.n_client = categories_list["Server"]}
-    })
+    let categories = ["Client","Server"];
+    let categoriesIcons = ["fa-desktop","fa-server"]
     let lastComponent = [];
     if(props.lista_id_sedi != undefined){ 
       props.lista_id_sedi.map((sede) => {
-      lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
-        {(client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Client")}).length > 0) 
-          ? <Item icon="fa-users" text={"Client ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Client")}).length+")"}>
+      (client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
+      ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
+        {categories.map((category,i) => {
+          return (client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length > 0 && client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
+          ? <Item icon="fa-users" text={category+ " ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length+")"}>
           {props.client_list.map((client) => {
-            return (client.sede == sede && client.tipo_client==="Client")
+            return (client.sede == sede && client.tipo_client===category)
             ? (searched_client=="")
-              ? <Item icon={"fa-desktop"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
-              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={"fa-desktop"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+              ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
             : <></>
             })
           }
           </Item>
-          : <></>}
-          {(client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Server")}).length > 0) 
-          ? <Item icon="fa-users" text={"Server ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Server")}).length+")"}>
-          {props.client_list.map((client) => {
-            return (client.sede == sede && client.tipo_client==="Server")
-            ? (searched_client=="")
-              ? <Item icon={"fa-server"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
-              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={"fa-server"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
-            : <></>
-            })
-          }
-          </Item>
-          : <></>
-        }
+        : <></>  
+        })}
       </Item>]
+      : lastComponent = lastComponent;
     })
   }
     return lastComponent;
