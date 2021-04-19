@@ -31,7 +31,8 @@ const initialState = {
   n_stop: 0,
   n_monitorati: 0,
   lista_sedi: 0,
-  lista_nomi_sedi: []
+  lista_nomi_sedi: ["Senza sede"],
+  lista_id_sedi: [null]
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -44,7 +45,9 @@ export function rootReducer(state = initialState, action) {
       logged: true,
       token: action.token,
       lista_sedi: action.lista_sedi,
-      chiave_di_registrazione: action.chiave_di_registrazione
+      chiave_di_registrazione: action.chiave_di_registrazione,
+      lista_nomi_sedi: [...action.listaNomiSedi, "Senza sede"],
+      lista_id_sedi: [...action.listaIdSedi, null]
     });
   }
   if (action.type === types.UPDATECOMPANYDATA) {
@@ -111,8 +114,18 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.LISTANOMISEDI) {
     return Object.assign({}, state, {
-      lista_nomi_sedi: action.listaNomi,
-      token: action.token
+      lista_nomi_sedi: [...action.listaNomi, "Senza sede"],
+      token: action.token,
+      lista_id_sedi: action.listaId
+    });
+  }
+  if(action.type === types.UPDATESIDEBAR) {
+    return Object.assign({}, state, {
+      client_list: action.clientList,
+      token: action.token,
+      lista_sedi: action.lista_sedi,
+      lista_nomi_sedi: [...action.listaNomi, "Senza sede"],
+      lista_id_sedi: [...action.listaSedi, null]
     });
   }
   //returning the state
@@ -122,7 +135,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
+  blacklist: ['nome_company', 'lista_id_sedi', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);

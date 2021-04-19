@@ -13,7 +13,7 @@ public interface SediRepository extends CrudRepository<Sedi, Integer>{
 	@Query(value="Select * from sedi where nome= :nome and id_company= :id_company",nativeQuery=true)
 	Sedi isPresent(@Param("nome") String nome,@Param("id_company") int id_company);
 
-	@Query(value="Select distinct nome from sedi where id_company= :id_company",nativeQuery=true)
+	@Query(value="Select distinct id, nome from sedi where id_company= :id_company",nativeQuery=true)
 	List<String> getNomiSedi(@Param("id_company") int id_company);
 	
 	@Query(value="Select id from sedi where id_company= :id_company and nome = :nome_sede",nativeQuery=true)

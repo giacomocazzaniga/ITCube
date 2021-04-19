@@ -16,8 +16,8 @@ const mapDispatchToProps = dispatch => ({
     UpdateCompanyData: (nome_company, email, emailNotify, token) => {
       dispatch(updateCompanyData(nome_company, email, emailNotify, token))
     },
-    UpdateListaSedi: (listaSedi, token) => {
-      dispatch(listaNomiSedi(listaSedi, token))
+    UpdateListaSedi: (listaSedi, token, listaId) => {
+      dispatch(listaNomiSedi(listaSedi, token, listaId))
     }
   }
 );
@@ -75,11 +75,23 @@ const UserData = (props) => {
     const loadingToast = getLoadingToast("Aggiungendo una nuova sede...");
     return _inserimentoSede( props.token, props.id_company, nome)
     .then(function (response) {
-        stopLoadingToast(loadingToast);
-        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
-        //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
-        props.UpdateListaSedi([ ...props.listaNomiSedi, nome], token);
-        getSuccessToast("Sede aggiunta correttamente.");
+        _getNomiSedi(props.token, props.id_company)
+        .then(function (response) {
+          stopLoadingToast(loadingToast);
+          let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+          let listaNomi = [];
+          let listaSedi = [];
+          response.data.sedi.map((sede) => {
+            listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+            listaSedi.push(sede.substring(0,sede.indexOf(",")));
+            
+          })
+          props.UpdateListaSedi(listaNomi, token, listaSedi);
+          getSuccessToast("Sede aggiunta correttamente.");
+        })
+        .catch(function (error) {
+          getErrorToast(String(error));
+        });
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -92,12 +104,22 @@ const UserData = (props) => {
     const loadingToast = getLoadingToast("Rimuovendo la sede...");
     return _cancellazioneSede( props.token, props.id_company, nome)
     .then(function (response) {
+      _getNomiSedi(props.token, props.id_company)
+      .then(function (response) {
         stopLoadingToast(loadingToast);
         let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
-        //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
-        let newList = props.listaNomiSedi.pop(nome);
-        props.UpdateListaSedi(newList, token);
+        let listaNomi = [];
+        let listaSedi = [];
+        response.data.sedi.map((sede) => {
+          listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+          listaSedi.push(sede.substring(0,sede.indexOf(",")));
+        })
+        props.UpdateListaSedi(listaNomi, token, listaSedi);
         getSuccessToast("Sede rimossa correttamente.");
+      })
+      .catch(function (error) {
+        getErrorToast(String(error));
+      });
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -181,7 +203,14 @@ const UserData = (props) => {
       _getNomiSedi(props.token, props.id_company)
       .then(function (response) {
         let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
-        props.UpdateListaSedi(response.data.sedi, token)
+        let listaNomi = [];
+        let listaSedi = [];
+        response.data.sedi.map((sede) => {
+          listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+          listaSedi.push(sede.substring(0,sede.indexOf(",")));
+          
+        })
+        props.UpdateListaSedi(listaNomi, token, listaSedi);
       })
       .catch(function (error) {
         getErrorToast(String(error));

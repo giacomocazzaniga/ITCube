@@ -11,6 +11,7 @@ import { categoriesList, searchClient } from './ActionCreator';
 import { _FILTERS, _LICENZE } from './Constants';
 import { ClientFilter } from './HierarchyManager';
 import { toaster } from './toastManager';
+import { idToNomeSede } from './Tools';
 
 /**
  * connect the actions to the component
@@ -39,13 +40,15 @@ const mapStateToProps = state => {
     places_list: state.places_list,
     category_vs_place: state.category_vs_place,
     token: state.token,
-    id_company: state.id_company
+    id_company: state.id_company,
+    lista_nomi_sedi: state.lista_nomi_sedi,
+    lista_id_sedi: state.lista_id_sedi
   }
 }
 
 const { Item, Searchbar } = Sidebar;
 
-const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
+const getSidebarByType2 = (client_list, nome_company, searched_client, categories_list) =>{
   /**
    * {"Client": 1,
    * "Server": 2}
@@ -82,6 +85,8 @@ const getSidebarByType = (client_list, nome_company, searched_client, categories
   })}
   return lastComponent;
 }
+
+
 
 const getSidebarByLicense = (client_list, nome_company, searched_client, licenses_list) =>{
   /**
@@ -158,6 +163,35 @@ const App = (props) => {
   const handleChange = event => {
     props.Search(event.target.value);
   }
+
+  const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
+    /**
+     * {"Client": 1,
+     * "Server": 2}
+     */
+    let category = [{"nome": "Client", "n_client": 0}, {"nome": "Server", "n_client": 0}]
+    category.map((cat) => {
+      if(cat.nome=="Client"){cat.n_client = categories_list["Client"]}
+      else if(cat.nome=="Server"){cat.n_client = categories_list["Server"]}
+    })
+    let lastComponent = [];
+    if(props.lista_id_sedi != undefined){ props.lista_id_sedi.map((sede) => {
+      lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
+        {props.client_list.map((client) => {
+          return (client.sede == sede)
+          ? (client.tipo_client==="Client")
+            ? <Item icon={"fa-desktop"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+            : <Item icon={"fa-server"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> 
+          : <></>
+        })
+
+        }
+      </Item>]
+    })
+  }
+    return lastComponent;
+  }
+
   return (
     
       <div>

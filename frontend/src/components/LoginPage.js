@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { login, placesList, categoriesList } from '../ActionCreator';
 import Dashboard from './Dashboard';
 import DashboardHome from './DashboardHome';
-import {_getClientTypes, _getNSedi, _getPlaces, _getShallowClients, _performLogin} from '../callableRESTs'; 
+import {_getClientTypes, _getNomiSedi, _getNSedi, _getPlaces, _getShallowClients, _performLogin} from '../callableRESTs'; 
 import { _MSGCODE } from '../Constants';
 import { fake_shallowClientList } from '../fakeData';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
@@ -17,10 +17,10 @@ const mapDispatchToProps =  dispatch => ({
     Login: (nome_company, email, emailNotify, client_list, token) => {
       dispatch(login(nome_company, email, emailNotify, client_list, token))
     },
-    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list, lista_sedi, chiaveRegistrazione) => {
+    LoginWithPlacesCategories: (nome_company, id_company, email, emailNotify, client_list, token, places_list, categories_list, lista_sedi, chiaveRegistrazione, listaNomiSedi, listaIdSedi) => {
       dispatch(categoriesList(categories_list))
       dispatch(placesList(places_list))
-      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token, lista_sedi, chiaveRegistrazione))
+      dispatch(login(nome_company, id_company, email, emailNotify, client_list, token, lista_sedi, chiaveRegistrazione, listaNomiSedi, listaIdSedi))
     }
   }
 );
@@ -104,7 +104,21 @@ const LoginPage = (props) => {
               .then(function (response) {
                 //get n sedi
                 let n_sedi = response.data.nsedi;
-                props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi, chiaveRegistrazione);
+                  _getNomiSedi(token, id_company)
+                  .then(function (response) {
+                    let listaNomi = [];
+                      let listaSedi = [];
+                      response.data.sedi.map((sede) => {
+                        listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+                        listaSedi.push(sede.substring(0,sede.indexOf(",")));
+                      })
+                      props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi, chiaveRegistrazione, listaNomi, listaSedi);
+
+                  })
+                  .catch(function (error) {
+                    getErrorToast(String(error));
+                  });
+
               })
               .catch(function (error) {
                 stopLoadingToast(loadingToast);
