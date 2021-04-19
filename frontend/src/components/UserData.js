@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Col, Box } from 'adminlte-2-react';
 import Dropdown from 'react-dropdown';
 import PopUp from './PopUp';
-import { _editCompanyData } from '../callableRESTs';
-import { updateCompanyData } from '../ActionCreator';
-import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
+import { _cancellazioneSede, _editCompanyData, _getNomiSedi, _inserimentoSede } from '../callableRESTs';
+import { listaNomiSedi, updateCompanyData } from '../ActionCreator';
+import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
+import { dispatch } from 'react-hot-toast';
 
 /**
  * connect the actions to the component
@@ -13,8 +14,10 @@ import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManage
  */
 const mapDispatchToProps = dispatch => ({
     UpdateCompanyData: (nome_company, email, emailNotify, token) => {
-      console.log([nome_company, email, emailNotify, token]);
       dispatch(updateCompanyData(nome_company, email, emailNotify, token))
+    },
+    UpdateListaSedi: (listaSedi, token) => {
+      dispatch(listaNomiSedi(listaSedi, token))
     }
   }
 );
@@ -31,7 +34,8 @@ const mapStateToProps = state => ({
     id_company: state.id_company,
     emailNotify: state.emailNotify,
     email: state.email,
-    lista_sedi: state.lista_sedi
+    lista_sedi: state.lista_sedi,
+    listaNomiSedi: state.lista_nomi_sedi
   }
 );
 
@@ -43,7 +47,9 @@ const UserData = (props) => {
   const [state, setState] = React.useState({
     emailLogin: "",
     emailLogin2: "",
-    pswLogin: ""
+    pswLogin: "",
+    nuovaSede: "",
+    sedeDaCancellare: ""
   })
 
   const clickService = () => {
@@ -56,12 +62,70 @@ const UserData = (props) => {
         stopLoadingToast(loadingToast);
         let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
         props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
+        getSuccessToast("Dati modificati correttamente.");
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
     });
   }
+
+  const clickServiceAggiungi = () => {
+    let nome = state.nuovaSede;
+    const loadingToast = getLoadingToast("Aggiungendo una nuova sede...");
+    return _inserimentoSede( props.token, props.id_company, nome)
+    .then(function (response) {
+        stopLoadingToast(loadingToast);
+        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+        //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
+        props.UpdateListaSedi([ ...props.listaNomiSedi, nome], token);
+        getSuccessToast("Sede aggiunta correttamente.");
+    })
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    });
+  }
+  
+  const clickServiceCancella = () => {
+    let nome = state.sedeDaCancellare;
+    const loadingToast = getLoadingToast("Rimuovendo la sede...");
+    return _cancellazioneSede( props.token, props.id_company, nome)
+    .then(function (response) {
+        stopLoadingToast(loadingToast);
+        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+        //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
+        let newList = props.listaNomiSedi.pop(nome);
+        props.UpdateListaSedi(newList, token);
+        getSuccessToast("Sede rimossa correttamente.");
+    })
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    });
+  }
+
+  // const clickServiceCancella = () => {
+  //   let nome = state.sedeDaCancellare;
+  //   const loadingToast = getLoadingToast("Eliminando una sede...");
+  //   return _cancellazioneSede( props.token, props.id_company, nome)
+  //   .then(function (response) {
+  //       stopLoadingToast(loadingToast);
+  //       let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+  //       //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);
+  //       let newList = state.listaSedi.pop(state.sedeDaCancellare);
+  //       setState((previousState) => {
+  //         return { ...previousState, listaSedi: newList };  
+  //       });
+  //       getSuccessToast("Sede eliminata correttamente.");
+  //   })
+  //   .catch(function (error) {
+  //     stopLoadingToast(loadingToast);
+  //     getErrorToast(String(error));
+  //   });
+  // }
+
+
 
   /**
    * handle email login and map it to local state emailLogin
@@ -78,10 +142,10 @@ const UserData = (props) => {
    * @param {*} evt 
    */
     const handleEmailLogin2 = (evt) => {
-    setState((previousState) => {
-      return { ...previousState, emailLogin2: evt.target.value };  
-    });
-  }
+      setState((previousState) => {
+        return { ...previousState, emailLogin2: evt.target.value };  
+      });
+    }
 
   /**
    * handle password login and map it to local state pswLogin
@@ -92,6 +156,37 @@ const UserData = (props) => {
       return { ...previousState, pswLogin: evt.target.value };
     });
   }
+
+  /**
+ * handle password login and map it to local state pswLogin
+ * @param {*} evt 
+ */
+    const handleNuovaSede = (evt) => {
+    setState((previousState) => {
+      return { ...previousState, nuovaSede: evt.target.value };
+    });
+  }
+
+    /**
+ * handle password login and map it to local state pswLogin
+ * @param {*} evt 
+ */
+    const handleRimuoviSede = (evt) => {
+      setState((previousState) => {
+        return { ...previousState, sedeDaCancellare: evt.value };
+      });
+    }
+
+    useEffect(() => {
+      _getNomiSedi(props.token, props.id_company)
+      .then(function (response) {
+        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+        props.UpdateListaSedi(response.data.sedi, token)
+      })
+      .catch(function (error) {
+        getErrorToast(String(error));
+      });
+    },[])
   
   const getChilds = () => {
     let childList = [];
@@ -120,25 +215,24 @@ const UserData = (props) => {
               <label>Lista delle sedi</label>
             </div>
             <div className="form-group col-md-8 col-xs-8">
-              <Dropdown options={props.sedi} placeholder="Seleziona una sede" />
+              <Dropdown onChange={handleRimuoviSede} options={props.listaNomiSedi} placeholder="Seleziona una sede" />           
             </div>
             <div className="col-md-4 col-xs-4">
-              <button className="btn btn-primary" onClick={() => clickService()} disabled>Rimuovi</button>
+            <button className="btn btn-primary" onClick={() => clickServiceCancella()}>Rimuovi</button>
             </div>
           </form>
           <form>
             <div class="form-group">
               <label htmlFor="AddPlace">Aggiungi una nuova sede</label>
-              <input type="text" className="form-control" id="AddPlace" aria-describedby="AddPlace"/>
+              <input type="text" className="form-control" id="AddPlace" aria-describedby="AddPlace"  onChange={handleNuovaSede}/>
             </div>
           </form>
-          <center><button className="btn btn-primary" onClick={() => clickService()}>Aggiungi</button></center>
+          <center><button className="btn btn-primary" onClick={() => clickServiceAggiungi()}>Aggiungi</button></center>
         </div>
       </>
     ]
     return childList;
   }
-  console.log(props.chiave)
   return (
     <Box title="Dati aziendali" type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Modifica dati aziendali" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Col md={12} xs={12}>

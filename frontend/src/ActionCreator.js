@@ -62,3 +62,9 @@ export const serviziOverview = (n_totali, n_running, n_stop, n_monitorati) => ({
   n_stop: n_stop,
   n_monitorati: n_monitorati
 })
+
+export const listaNomiSedi = (listaNomi, token) => ({
+  type: types.LISTANOMISEDI,
+  listaNomi: listaNomi,
+  token: token
+})

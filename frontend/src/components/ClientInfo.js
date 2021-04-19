@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { _LICENZE } from '../Constants';
 import PopUp from './PopUp';
-import { _modificaSedeClient } from '../callableRESTs';
+import { _getNomiSedi, _modificaSedeClient } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
+import Dropdown from 'react-dropdown';
 
 /**
  * connect the actions to the component
@@ -25,8 +26,21 @@ const ClientInfo = (props) => {
 
   const [state, setState] = React.useState({
     vecchiaSede: "",
-    nuovaSede: ""
+    nuovaSede: "",
+    sedi: []
   })
+
+  useEffect(() => {
+    _getNomiSedi(props.token, props.id_company)
+    .then(function (response) {
+      setState((previousState) => {
+        return { ...previousState, sedi: response.data.sedi };
+      });
+    })
+    .catch(function (error) {
+      getErrorToast(String(error));
+    });
+  },[])
 
   const getChilds = (vecchiaSede) => {
     let childList = [];
@@ -40,7 +54,7 @@ const ClientInfo = (props) => {
             </div>
             <div class="form-group">
               <label htmlFor="NuovaSede">Nuova Sede</label>
-              <input type="text" value={state.nuovaSede} class="form-control" id="NuovaSede" onChange={handleNuovaSede}/>
+              <Dropdown onChange={handleNuovaSede} options={state.sedi} placeholder="Seleziona una sede" />
             </div>
           </form>
           <br />
@@ -52,6 +66,8 @@ const ClientInfo = (props) => {
   }
 
   const clickService = () => {
+    console.log(state.nuovaSede)
+    console.log(state.vecchiaSede)
     const loadingToast = getLoadingToast("Modificando i dati...");
     return _modificaSedeClient(props.token, props.id_client, props.id_company, state.nuovaSede, state.vecchiaSede)
     .then(function (response) {
@@ -73,7 +89,7 @@ const ClientInfo = (props) => {
 
   const handleNuovaSede = (evt) => {
     setState((previousState) => {
-      return { ...previousState, nuovaSede: evt.target.value };  
+      return { ...previousState, nuovaSede: evt.value };  
     });
   }
 

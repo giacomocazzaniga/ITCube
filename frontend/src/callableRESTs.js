@@ -49,14 +49,14 @@ export const _getLicenzeShallow = (id, token) => {
 export const _getDeepClient = (id_client, id_company, token) => {
   return axios.post(url_deep_client, {
     id_client: String(id_client),
-    id_company: id_company, //String(id_company),
+    id_company: String(id_company),
     token: token
   })
 }
 
 export const _getShallowClients = (id_company, token) => {
   return axios.post(url_shallow_clients, {
-    id_company: id_company, //String(id_company),
+    id_company: String(id_company),
     token: token
   })
 }
@@ -131,8 +131,8 @@ export const _modificaSedeClient = (token, id_client, id_company, nuovaSede, vec
     id_client: String(id_client), 
     token: token,
     id_company: String(id_company), 
-    nuova_sede: nuovaSede,
-    vecchia_sede: vecchiaSede
+    nuovaSede: nuovaSede,
+    vecchiaSede: vecchiaSede
   })
 }
 

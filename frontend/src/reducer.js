@@ -30,7 +30,8 @@ const initialState = {
   n_running: 0,
   n_stop: 0,
   n_monitorati: 0,
-  lista_sedi: 0
+  lista_sedi: 0,
+  lista_nomi_sedi: []
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -108,6 +109,12 @@ export function rootReducer(state = initialState, action) {
       n_monitorati: action.n_monitorati
     });
   }
+  if (action.type === types.LISTANOMISEDI) {
+    return Object.assign({}, state, {
+      lista_nomi_sedi: action.listaNomi,
+      token: action.token
+    });
+  }
   //returning the state
   return state;
 }
@@ -115,7 +122,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
+  blacklist: ['nome_company', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);

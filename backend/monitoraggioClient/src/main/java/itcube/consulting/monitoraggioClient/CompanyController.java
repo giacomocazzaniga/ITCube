@@ -250,15 +250,22 @@ public class CompanyController {
 			{
 				vecchiaSede=(String) body.get("vecchiaSede");
 				nuovaSede= (String) body.get("nuovaSede");
-				id_client=Integer.parseInt( (String) body.get("id_client") );
+				String id_vecchia_sede = "";
+				if(!vecchiaSede.equals("")) {
+					id_vecchia_sede = Integer.toString(sediRepository.nomeToId(id_company, vecchiaSede));
+				}
 				
+				id_client=Integer.parseInt( (String) body.get("id_client") );
+			
+				String id_nuova_sede =  Integer.toString(sediRepository.nomeToId(id_company, nuovaSede)) ;
+
 				if(id_client==-1)
 				{
-					elencoClientsRepository.modificaAllVecchieSediClient(id_company,nuovaSede, vecchiaSede);
+					elencoClientsRepository.modificaAllVecchieSediClient(id_company,id_nuova_sede, id_vecchia_sede);
 				}
 				else
 				{
-					elencoClientsRepository.modificaSingolaSedeClient(id_client, nuovaSede);
+					elencoClientsRepository.modificaSingolaSedeClient(id_client, id_nuova_sede);
 				}
 				
 				generalResponse.setMessage("OK");

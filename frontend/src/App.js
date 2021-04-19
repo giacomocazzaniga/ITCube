@@ -167,7 +167,7 @@ const App = (props) => {
             <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
             {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
           </AdminLTE>
-        : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
+        : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
             <div path="/accedi" title="Accedi"><LoginPage /></div>
             <div path="/registrati" title="Registrati"><SignUpPage /></div>
           </AdminLTE>
