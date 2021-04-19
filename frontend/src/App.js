@@ -175,16 +175,33 @@ const App = (props) => {
       else if(cat.nome=="Server"){cat.n_client = categories_list["Server"]}
     })
     let lastComponent = [];
-    if(props.lista_id_sedi != undefined){ props.lista_id_sedi.map((sede) => {
+    if(props.lista_id_sedi != undefined){ 
+      props.lista_id_sedi.map((sede) => {
       lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
-        {props.client_list.map((client) => {
-          return (client.sede == sede)
-          ? (client.tipo_client==="Client")
-            ? <Item icon={"fa-desktop"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
-            : <Item icon={"fa-server"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> 
+        {(client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Client")}).length > 0) 
+          ? <Item icon="fa-users" text={"Client ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Client")}).length+")"}>
+          {props.client_list.map((client) => {
+            return (client.sede == sede && client.tipo_client==="Client")
+            ? (searched_client=="")
+              ? <Item icon={"fa-desktop"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={"fa-desktop"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+            : <></>
+            })
+          }
+          </Item>
+          : <></>}
+          {(client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Server")}).length > 0) 
+          ? <Item icon="fa-users" text={"Server ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client=="Server")}).length+")"}>
+          {props.client_list.map((client) => {
+            return (client.sede == sede && client.tipo_client==="Server")
+            ? (searched_client=="")
+              ? <Item icon={"fa-server"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={"fa-server"} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+            : <></>
+            })
+          }
+          </Item>
           : <></>
-        })
-
         }
       </Item>]
     })
