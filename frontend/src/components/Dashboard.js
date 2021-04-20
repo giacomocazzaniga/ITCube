@@ -179,10 +179,10 @@ const Dashboard = (props) => {
   <Content title={props.title} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
-        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
+        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.client_template.overview.problemi} warnings={props.client_template.overview.warnings} running={props.client_template.overview.ok} />
         <Col md={8} xs={12}>
           <Communications />
-          <History apex={props.apex}/>
+          <History apex={props.client_template.history}/>
         </Col>
         <Col md={4} xs={6}>
           <ClientInfo client={props.client_template.info} id_client={props.id_client}/>
