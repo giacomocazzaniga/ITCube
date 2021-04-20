@@ -12,7 +12,7 @@ import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { serviziOverview } from "../ActionCreator";
+import { resetClientTemplate, serviziOverview, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
 
 document.body.classList.add('fixed');
 
@@ -23,6 +23,15 @@ document.body.classList.add('fixed');
 const mapDispatchToProps = dispatch => ({
   SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
     dispatch(serviziOverview(n_totali, n_running, n_stop, n_monitorati))
+  },
+  SetClientTemplateWindowsServices: (n_monitorati, n_esecuzione, n_stop, n_totali) => {
+    dispatch(updateCTWindowsServices(n_monitorati, n_esecuzione, n_stop, n_totali ))
+  },
+  SetClientTemplateWindowsEvents: (n_problemi, n_warnings) => {
+    dispatch(updateCTWindowsEvents(n_problemi, n_warnings))
+  },
+  ResetClientTemplate: () => {
+    dispatch(resetClientTemplate())
   }
 });
 
@@ -31,6 +40,7 @@ const mapDispatchToProps = dispatch => ({
  * @param {*} state 
  */
 const mapStateToProps = state => ({
+    client_template: state.client_template,
     client_list: state.client_list,
     nome_company: state.nome_company,
     token: state.token,
@@ -109,6 +119,7 @@ const Dashboard = (props) => {
   })
 
   useEffect( () => {
+    props.ResetClientTemplate()
     //on component mount
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
@@ -118,9 +129,12 @@ const Dashboard = (props) => {
       });
       _getServiziOverview(props.token, props.id_client)
       .then(function (response) {
+        //n_monitorati, n_esecuzione, n_stop
         props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+        props.SetClientTemplateWindowsServices(response.data.n_monitorati, response.data.n_running, response.data.n_stopped, response.data.n_totali)
         _getEventiOverview(props.token, props.id_client)
         .then(function (response) {
+          props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
           setState((previousState) => {
             return { ...previousState, 
               problemi_oggi: response.data.problemi_oggi,
@@ -181,10 +195,10 @@ const Dashboard = (props) => {
 
         </Col>*/}
         <Col md={4} xs={6}>
-          <WindowsServices selected={props.title} id_client={props.id_client} services={[props.n_monitorati, props.n_running, props.n_stop, props.n_totali]}/>
+          <WindowsServices selected={props.title} id_client={props.id_client} services={[props.client_template.windows_services.n_monitorati, props.client_template.windows_services.n_esecuzione, props.client_template.windows_services.n_stop, props.client_template.windows_services.n_totali]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>
+          <WindowsEvents selected={props.title} id_client={props.id_client} events={[props.client_template.windows_events.n_problemi, props.client_template.windows_events.n_warnings]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>
         </Col>
       </ModalProvider>
     </Row>

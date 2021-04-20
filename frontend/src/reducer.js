@@ -32,7 +32,87 @@ const initialState = {
   n_monitorati: 0,
   lista_sedi: 0,
   lista_nomi_sedi: ["Senza sede"],
-  lista_id_sedi: [null]
+  lista_id_sedi: [null],
+  client_template: {
+    windows_services: {
+      n_monitorati: 0,
+      n_esecuzione: 0,
+      n_stop: 0,
+      n_totali: 0
+    },
+    windows_events: {
+      n_problemi: 0,
+      n_warnings: 0
+    },
+    info: {
+      nome: "",
+      tipologia: "",
+      MAC_address: "",
+      licenze: [],
+      sede: "" 
+    },
+    alert: [
+      {
+        categoria: "",
+        titolo: "",
+        data: "",
+        messaggio: ""
+      }
+    ],
+    history: {
+      lastUpdate: "",  //Dinamico
+      options: {
+        chart: {
+          id: "basic-bar"
+        },
+        xaxis: {
+          categories: []  //Dinamico
+        },
+        stroke: {
+          curve: 'smooth',
+        },
+        fill: {
+          type: "gradient",
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.7,
+            opacityTo: 0.9,
+            stops: [0, 90, 100]
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+      },
+      colors: ["#dd4b39", "#f39c12"],
+      series: [
+        {
+          name: "Warnings",
+          data: [],   //Dinamico
+          color: "#f39c12"
+        },
+        {
+          name: "Problemi",
+          data: [],  //Dinamico
+          color: "#dd4b39"
+        }
+      ]
+    },
+    overview: {
+      problemi: 0,
+      warnings: 0,
+      ok: 0
+    },
+    drives: [
+      {
+        perc_free: 0,
+        total_size_GB: 0,
+        occupied_GB: 0,
+        free_GB: 0,
+        ultimo_aggiornamento: ""
+      }
+    ]
+  }
 };
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
@@ -128,6 +208,31 @@ export function rootReducer(state = initialState, action) {
       lista_id_sedi: [...action.listaSedi, null]
     });
   }
+  if(action.type === types.CLIENTTEMPLATEWINDOWSEVENTS) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        windows_events: action.windows_events
+      }
+    });
+  }
+  if(action.type === types.CLIENTTEMPLATEWINDOWSSERVICES) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        windows_services: action.windows_services
+      }
+    });
+  }
+  if(action.type === types.CLIENTTEMPLATERESET) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: initialState.client_template
+    });
+  }
+
   //returning the state
   return state;
 }
@@ -135,7 +240,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'lista_id_sedi', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
+  blacklist: ['nome_company', 'client_template', 'lista_id_sedi', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
 };
 
 export default persistReducer(persistConfig, rootReducer);

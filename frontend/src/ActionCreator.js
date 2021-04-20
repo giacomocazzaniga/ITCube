@@ -80,3 +80,26 @@ export const updateSidebar = (elencoClients,sedi, token, listaNomi, listaSedi) =
   listaNomi: listaNomi,
   listaSedi: listaSedi
 })
+
+export const updateCTWindowsEvents = (n_problemi, n_warnings) => ({
+  type: types.CLIENTTEMPLATEWINDOWSEVENTS,
+  windows_events: {
+    n_problemi: n_problemi,
+    n_warnings: n_warnings
+  }
+})
+
+export const updateCTWindowsServices = (n_monitorati, n_esecuzione, n_stop, n_totali) => ({
+  type: types.CLIENTTEMPLATEWINDOWSSERVICES,
+  windows_services: {
+    n_monitorati: n_monitorati,
+    n_esecuzione: n_esecuzione,
+    n_stop: n_stop,
+    n_totali: n_totali
+  }
+  
+})
+
+export const resetClientTemplate = () => ({
+  type: types.CLIENTTEMPLATERESET
+})
