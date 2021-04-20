@@ -3,8 +3,8 @@ import toast, { Toaster } from 'react-hot-toast';
 let options = {
   className: '',
   style: {
-    "margin-top": "5px",
-    "margin-right": "5px"
+    "marginTop": "5px",
+    "marginRight": "5px"
   },
 }
 

@@ -159,7 +159,7 @@ const LoginPage = (props) => {
                 <label htmlFor="LoginEmail1">Indirizzo email</label>
                 <input type="email" value={state.emailLogin} className="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder="Email" onChange={handleEmailLogin}/>
               </div>
-              <div class="form-group">
+              <div className="form-group">
                 <label htmlFor="LoginPassword1">Password</label>
                 <input type="password" value={state.pswLogin} className="form-control" id="LoginPassword1" placeholder="Password" onChange={handlePswLogin} />
               </div>

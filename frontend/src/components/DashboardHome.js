@@ -131,7 +131,7 @@ const DashboardHome = (props) => {
         </Col>
         
         {/*<Col md={3} xs={6}>
-          <center class="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
+          <center className="add"><FontAwesomeIcon icon={["fas", "plus-circle"]} /></center>
         </Col>*/}
       </ModalProvider>
     </Row>

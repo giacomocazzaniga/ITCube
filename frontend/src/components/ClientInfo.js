@@ -176,12 +176,12 @@ const ClientInfo = (props) => {
         <h4><b>Tipologia: </b>{props.client.nome_tipologia}</h4>
         <h4><b>MAC address: </b>{props.client.mac_address}</h4>
         <h4><b>Licenze in uso: </b></h4>
-        <p>{props.client.codice_licenza.map((lic, i) => {
+        {props.client.codice_licenza.map((lic, i) => {
           return props.client.classe_licenza.map((tipo, j) => {
             return (i==j) ? <p>{i+1}) {getLicense(String(tipo))} {lic}</p> : <></>
           })
           //return <p>{i+1}) </p>
-        })}</p>
+        })}
         {/*<h4><b>Gruppo di lavoro: </b>{props.client.category}</h4>*/}
         <h4><b>Sede di lavoro: </b>{idToNomeSede(props.client.sede, props.lista_nomi_sedi, props.lista_id_sedi)} <PopUp title="Modifica sede" messageLink={"modifica"} linkClass={"clickable"} childs={getChilds(props.client.sede)} action={()=>(null)}/></h4>
       </Col>

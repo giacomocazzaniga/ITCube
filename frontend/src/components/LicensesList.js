@@ -98,15 +98,15 @@ const LicensesList = (props) => {
       <Col xs={4} md={6}><strong><h4>CATEGORIA</h4></strong></Col>
       {props.list.map((license, i) => {
         return (isOdd(i)) 
-        ? <><Col xs={8} md={6} class="oddColor col-md-6 col-xs-8">{license.codice}</Col><Col class="oddColor col-md-6 col-xs-4" xs={4} md={6}>{license.tipologia}</Col></>
-        : <><Col xs={8} md={6} class="evenColor col-md-6 col-xs-8">{license.codice}</Col><Col class="evenColor col-md-6 col-xs-4" xs={4} md={6}>{license.tipologia}</Col></>
+        ? <><Col xs={8} md={6} className="oddColor col-md-6 col-xs-8">{license.codice}</Col><Col className="oddColor col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
+        : <><Col xs={8} md={6} className="evenColor col-md-6 col-xs-8">{license.codice}</Col><Col className="evenColor col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
       })
       }
       <Col xs={12} md={12}><p></p></Col>
       <Col xs={8} md={6}>
         {state.selectedValue==0
-          ? <button class="btn btn-primary" onClick={() => clickService()} disabled>Acquista licenza</button>
-          : <button class="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
+          ? <button className="btn btn-primary" onClick={() => clickService()} disabled>Acquista licenza</button>
+          : <button className="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
         }
       </Col>
       <Col xs={4} md={6}>
@@ -128,7 +128,7 @@ const LicensesList = (props) => {
   
 
   return (
-    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
+    <Box title={props.title} type="primary" collapsable footer={<span href="#" className="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Multiselect
         placeholder="Filtra per tipologia"
         emptyRecordMsg="Nessun filtro disponibile"

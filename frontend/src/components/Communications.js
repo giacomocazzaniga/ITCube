@@ -29,22 +29,22 @@ const Communications = (props) => {
 
   return (
     <Box title="Comunicazioni" type="primary" collapsable>
-      <div class="card card-danger direct-chat direct-chat-danger">
-        <div class="card-body">
-          <div class="direct-chat-messages">
-            {props.client_template.alert.map((alert) => {
+      <div className="card card-danger direct-chat direct-chat-danger">
+        <div className="card-body">
+          <div className="direct-chat-messages">
+            {props.client_template.alert.map((alert, i) => {
               return(
-                <div class="direct-chat-msg">
-                  <div class="direct-chat-infos clearfix">
-                    <span class="direct-chat-name float-left">[{alert.titolo}] - </span>
-                    <span class="direct-chat-timestamp float-right">{Backend2FrontendDateConverter(alert.data)}</span>
+                <div className="direct-chat-msg" key={i}>
+                  <div className="direct-chat-infos clearfix">
+                    <span className="direct-chat-name float-left">[{alert.titolo}] - </span>
+                    <span className="direct-chat-timestamp float-right">{Backend2FrontendDateConverter(alert.data)}</span>
                   </div>
-                  <span class="direct-chat-img">
+                  <span className="direct-chat-img">
                     {(alert.categoria == "ERROR") ? state.error_icon 
                     : (alert.categoria == "WARNING") ? state.warning_icon 
                     : state.success_icon} 
                   </span>
-                  <div class="direct-chat-text">
+                  <div className="direct-chat-text">
                     {alert.messaggio}
                   </div>
                 </div>

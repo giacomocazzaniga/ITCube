@@ -49,16 +49,16 @@ const PopUp = (props) => {
   }
   return (
     <>
-      {props.messageLink==null ? <a onClick={launchAction()} class={props.linkClass}>Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>
-      : <a onClick={launchAction()} class={props.linkClass}>{props.messageLink}</a>
+      {props.messageLink==null ? <a onClick={launchAction()} className={props.linkClass}>Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>
+      : <a onClick={launchAction()} className={props.linkClass}>{props.messageLink}</a>
       }
       <Modal
         id="any-unique-identifier"
         isOpen={isModalOpen}
         transition={ModalTransition.SCALE}
       >
-        <div class="modalWrapper">
-          <Box title={props.title} style={{"marginBottom": "0px !important"}} type="primary" footer={<a onClick={closeModal} class="clickable">Chiudi</a>}>
+        <div className="modalWrapper">
+          <Box title={props.title} style={{"marginBottom": "0px !important"}} type="primary" footer={<a onClick={closeModal} className="clickable">Chiudi</a>}>
             <Col className="col-md-12 col-xs-12">
               <Accordion>
                 {props.childs.length==0 ? <p>Nessun dato trovato.</p> : props.childs.map((child, i) => (<div key={i}>{child}</div>))}

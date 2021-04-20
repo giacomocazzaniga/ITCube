@@ -223,20 +223,20 @@ const UserData = (props) => {
       <>
         <div className="col-md-6 col-xs-12">
           <form>
-            <div class="form-group">
+            <div className="form-group">
               <label htmlFor="LoginEmail1">Indirizzo email</label>
-              <input type="email" value={state.emailLogin} class="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder={props.email} onChange={handleEmailLogin}/>
+              <input type="email" value={state.emailLogin} className="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder={props.email} onChange={handleEmailLogin}/>
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label htmlFor="LoginEmail2">Indirizzo email per le comunicazioni</label>
-              <input type="email" value={state.emailLogin2} class="form-control" id="LoginEmail2" aria-describedby="emailHelp" placeholder={props.emailNotify} onChange={handleEmailLogin2}/>
+              <input type="email" value={state.emailLogin2} className="form-control" id="LoginEmail2" aria-describedby="emailHelp" placeholder={props.emailNotify} onChange={handleEmailLogin2}/>
             </div>
-            <div class="form-group">
+            <div className="form-group">
               <label htmlFor="LoginPassword1">Ragione Sociale</label>
-              <input value={state.pswLogin} class="form-control" id="LoginPassword1" placeholder={props.ragioneSociale} onChange={handlePswLogin} />
+              <input value={state.pswLogin} className="form-control" id="LoginPassword1" placeholder={props.ragioneSociale} onChange={handlePswLogin} />
             </div>
           </form>
-          <center><button class="btn btn-primary" onClick={() => clickService()}>Modifica</button></center>
+          <center><button className="btn btn-primary" onClick={() => clickService()}>Modifica</button></center>
         </div>
         <div className="col-md-6 col-xs-12">
           <form>
@@ -251,7 +251,7 @@ const UserData = (props) => {
             </div>
           </form>
           <form>
-            <div class="form-group">
+            <div className="form-group">
               <label htmlFor="AddPlace">Aggiungi una nuova sede</label>
               <input type="text" className="form-control" id="AddPlace" aria-describedby="AddPlace"  onChange={handleNuovaSede}/>
             </div>
@@ -263,7 +263,7 @@ const UserData = (props) => {
     return childList;
   }
   return (
-    <Box title="Dati aziendali" type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Modifica dati aziendali" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
+    <Box title="Dati aziendali" type="primary" collapsable footer={<span href="#" className="small-box-footer"><PopUp title="Modifica dati aziendali" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Col md={12} xs={12}>
         <h4><b>Indirizzo email: </b>{props.email}</h4>
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
