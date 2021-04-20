@@ -100,6 +100,12 @@ export const updateCTWindowsServices = (n_monitorati, n_esecuzione, n_stop, n_to
   
 })
 
+export const updateCTInfo = (info) => ({
+  type: types.CLIENTTEMPLATEINFO,
+  info: info
+  
+})
+
 export const resetClientTemplate = () => ({
   type: types.CLIENTTEMPLATERESET
 })

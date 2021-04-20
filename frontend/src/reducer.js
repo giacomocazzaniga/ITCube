@@ -44,13 +44,7 @@ const initialState = {
       n_problemi: 0,
       n_warnings: 0
     },
-    info: {
-      nome: "",
-      tipologia: "",
-      MAC_address: "",
-      licenze: [],
-      sede: "" 
-    },
+    info: { },
     alert: [
       {
         categoria: "",
@@ -223,6 +217,15 @@ export function rootReducer(state = initialState, action) {
       client_template: {
         ...state.client_template,
         windows_services: action.windows_services
+      }
+    });
+  }
+  if(action.type === types.CLIENTTEMPLATEINFO) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        info: action.info
       }
     });
   }

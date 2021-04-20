@@ -12,7 +12,7 @@ import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { resetClientTemplate, serviziOverview, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { resetClientTemplate, serviziOverview, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
 
 document.body.classList.add('fixed');
 
@@ -29,6 +29,9 @@ const mapDispatchToProps = dispatch => ({
   },
   SetClientTemplateWindowsEvents: (n_problemi, n_warnings) => {
     dispatch(updateCTWindowsEvents(n_problemi, n_warnings))
+  },
+  SetClientTemplateInfo: (info) => {
+    dispatch(updateCTInfo(info))
   },
   ResetClientTemplate: () => {
     dispatch(resetClientTemplate())
@@ -124,6 +127,7 @@ const Dashboard = (props) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
+      props.SetClientTemplateInfo(response.data)
       setState((previousState) => {
         return { ...previousState, clientData: response.data };
       });
@@ -181,7 +185,7 @@ const Dashboard = (props) => {
           <History apex={props.apex}/>
         </Col>
         <Col md={4} xs={6}>
-          <ClientInfo client={state.clientData} id_client={props.id_client}/>
+          <ClientInfo client={props.client_template.info} id_client={props.id_client}/>
         </Col>
         {state.drives != [] 
         ? state.drives.map((drive) =>  
