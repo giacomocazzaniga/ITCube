@@ -350,6 +350,12 @@ public class CompanyController {
 			if(validToken.isValid())
 			{
 				nome=(String) body.get("nome");
+				if(nome.equals("Senza sede")) {
+					generalResponse.setMessage("Impossibile eliminare 'Senza sede'");
+					generalResponse.setMessageCode(1);
+					generalResponse.setToken(validToken.getToken());
+					return ResponseEntity.ok(generalResponse);
+				}
 				
 				clients=elencoClientsRepository.getClientsInSede(nome, id_company);
 				sede=sediRepository.isPresent(nome, id_company);
