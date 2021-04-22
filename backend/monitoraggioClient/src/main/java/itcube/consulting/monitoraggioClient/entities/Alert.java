@@ -19,9 +19,23 @@ public class Alert {
 	private int id_company;
 	private String tipo;
 	private String corpo_messaggio;
+//	private String nome_disco;
+//	private float perc_free_disc;
 	
 	
 	
+//	public String getNome_disco() {
+//		return nome_disco;
+//	}
+//	public void setNome_disco(String nome_disco) {
+//		this.nome_disco = nome_disco;
+//	}
+//	public float getPerc_free_disc() {
+//		return perc_free_disc;
+//	}
+//	public void setPerc_free_disc(float perc_free_disc) {
+//		this.perc_free_disc = perc_free_disc;
+//	}
 	public Alert() {
 	}
 	public int getId() {
