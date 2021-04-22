@@ -7,12 +7,13 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getDeepClient, _getDrives, _getEventiOverview, _getServiziOverview } from "../callableRESTs";
+import { _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { resetClientTemplate, serviziOverview, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { resetClientTemplate, serviziOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { defaultUpdateInterval } from "../Constants";
 
 document.body.classList.add('fixed');
 
@@ -35,6 +36,9 @@ const mapDispatchToProps = dispatch => ({
   },
   ResetClientTemplate: () => {
     dispatch(resetClientTemplate())
+  },
+  SetClientTemplateAlert: (alert) => {
+    dispatch(updateCTAlert(alert))
   }
 });
 
@@ -121,8 +125,7 @@ const Dashboard = (props) => {
     drives: []
   })
 
-  useEffect( () => {
-    props.ResetClientTemplate()
+  const updateData = () => {
     //on component mount
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
@@ -153,7 +156,16 @@ const Dashboard = (props) => {
                 drives: response.data.drives
               };
             });
-          })
+            _getLatestAlerts(props.token,props.id_client)
+              .then(function (response) {
+                //props alert
+                props.SetClientTemplateAlert(response.data.alerts)
+              })
+              .catch(function (error) {
+                stopLoadingToast(loadingToast);
+                getErrorToast(String(error));
+              })
+            })
           .catch(function (error) {
             stopLoadingToast(loadingToast);
             getErrorToast(String(error));
@@ -169,9 +181,18 @@ const Dashboard = (props) => {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
     });
+  }
+
+  useEffect( () => {
+    props.ResetClientTemplate()
+    updateData();
+    let idInterval = setInterval(function(){ 
+      updateData();
+    }, defaultUpdateInterval);
     return () => {
       //on component unmount
-  }
+      clearInterval(idInterval);
+    }
  }, []);
   return (
   state.clientData != null 

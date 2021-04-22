@@ -222,6 +222,15 @@ export function rootReducer(state = initialState, action) {
       }
     });
   }
+  if(action.type === types.CLIENTTEMPLATEALERT) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        alert: action.alert
+      }
+    });
+  }
   if(action.type === types.CLIENTTEMPLATERESET) {
     return Object.assign({}, state, {
       ...state,

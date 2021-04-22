@@ -106,6 +106,11 @@ export const updateCTInfo = (info) => ({
   
 })
 
+export const updateCTAlert = (alert) => ({
+  type: types.CLIENTTEMPLATEALERT,
+  alert: alert
+})
+
 export const resetClientTemplate = () => ({
   type: types.CLIENTTEMPLATERESET
 })

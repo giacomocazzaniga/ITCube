@@ -9,6 +9,7 @@ import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
 import { _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
+import { defaultUpdateInterval } from '../Constants';
 
 document.body.classList.add('fixed');
 
@@ -83,7 +84,8 @@ const DashboardHome = (props) => {
     licenses: [],
     sedi: []
   })
-  useEffect(() => {
+
+  const updateData = () => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
@@ -106,6 +108,19 @@ const DashboardHome = (props) => {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
     })
+  }
+
+  useEffect(() => {
+    updateData();
+    let idInterval = setInterval(function(){ 
+      updateData();
+    }, defaultUpdateInterval);
+
+    //component unmount
+    return () => {
+      clearInterval(idInterval);
+    }
+
   }, [])
 
   return (<Content title={props.title} browserTitle={props.title}>

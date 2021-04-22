@@ -1,7 +1,7 @@
 import { _LICENZE } from "./Constants";
 
 export const Backend2FrontendDateConverter = (bcknd_date) => {
-  let frtnd_date = bcknd_date.replace("T", " ");
+  let frtnd_date = bcknd_date.replace("T", " ").substring(0,bcknd_date.indexOf("."));
   return frtnd_date;
 }
 

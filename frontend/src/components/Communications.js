@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Box } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Backend2FrontendDateConverter } from '../Tools';
+import { _ALERTCATEGORY } from '../Constants';
 
 
 /**
@@ -36,17 +37,17 @@ const Communications = (props) => {
               return(
                 <div className="direct-chat-msg" key={i}>
                   <div className="direct-chat-infos clearfix">
-                    <span className="direct-chat-name float-left">[{alert.titolo}] - </span>
-                    <span className="direct-chat-timestamp float-right">{Backend2FrontendDateConverter(alert.data)}</span>
+                    <span className="direct-chat-name float-left">[{_ALERTCATEGORY[alert.categoria]}] - </span>
+                    <span className="direct-chat-timestamp float-right">{Backend2FrontendDateConverter(alert.date_and_time_alert)}</span>
                   </div>
                   <span className="direct-chat-img">
-                    {(alert.categoria == "ERROR") ? state.error_icon 
-                    : (alert.categoria == "WARNING") ? state.warning_icon 
-                    : (alert.categoria == "OK") ? state.success_icon
+                    {(alert.tipo == "ERROR") ? state.error_icon 
+                    : (alert.tipo == "WARNING") ? state.warning_icon 
+                    : (alert.tipo == "OK") ? state.success_icon
                     : <></>} 
                   </span>
                   <div className="direct-chat-text">
-                    {alert.messaggio}
+                    {alert.corpo_messaggio}
                   </div>
                 </div>
               )

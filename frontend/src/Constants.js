@@ -31,3 +31,12 @@ export const _MSGCODE = {
     NO_ERR : "0",
     ERR : "1"
 }
+
+export const _ALERTCATEGORY = [
+    "","DRIVE","SERVIZI WINDOWS", "EVENTI WINDOWS"
+]
+
+export const defaultUpperBound = 20;
+export const defaultSlot = 1;
+export const defaultSettimaneAlert = 1;
+export const defaultUpdateInterval = 10000;
