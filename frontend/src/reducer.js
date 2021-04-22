@@ -31,8 +31,8 @@ const initialState = {
   n_stop: 0,
   n_monitorati: 0,
   lista_sedi: 0,
-  lista_nomi_sedi: ["Senza sede"],
-  lista_id_sedi: [null],
+  lista_nomi_sedi: [],
+  lista_id_sedi: [],
   client_template: {
     windows_services: {
       n_monitorati: 0,
@@ -45,14 +45,7 @@ const initialState = {
       n_warnings: 0
     },
     info: { },
-    alert: [
-      {
-        categoria: "",
-        titolo: "",
-        data: "",
-        messaggio: ""
-      }
-    ],
+    alert: [],
     history: {
       lastUpdate: "",  //Dinamico
       options: {
@@ -120,8 +113,8 @@ export function rootReducer(state = initialState, action) {
       token: action.token,
       lista_sedi: action.lista_sedi,
       chiave_di_registrazione: action.chiave_di_registrazione,
-      lista_nomi_sedi: [...action.listaNomiSedi, "Senza sede"],
-      lista_id_sedi: [...action.listaIdSedi, null]
+      lista_nomi_sedi: action.listaNomiSedi,
+      lista_id_sedi: action.listaIdSedi
     });
   }
   if (action.type === types.UPDATECOMPANYDATA) {
@@ -188,7 +181,7 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.LISTANOMISEDI) {
     return Object.assign({}, state, {
-      lista_nomi_sedi: [...action.listaNomi, "Senza sede"],
+      lista_nomi_sedi: action.listaNomi,
       token: action.token,
       lista_id_sedi: action.listaId
     });
@@ -198,8 +191,8 @@ export function rootReducer(state = initialState, action) {
       client_list: action.clientList,
       token: action.token,
       lista_sedi: action.lista_sedi,
-      lista_nomi_sedi: [...action.listaNomi, "Senza sede"],
-      lista_id_sedi: [...action.listaSedi, null]
+      lista_nomi_sedi: action.listaNomi,
+      lista_id_sedi: action.listaSedi
     });
   }
   if(action.type === types.CLIENTTEMPLATEWINDOWSEVENTS) {

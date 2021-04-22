@@ -7,6 +7,7 @@ import { _cancellazioneSede, _editCompanyData, _getNomiSedi, _inserimentoSede } 
 import { listaNomiSedi, updateCompanyData } from '../ActionCreator';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
 import { dispatch } from 'react-hot-toast';
+import { _MSGCODE } from '../Constants';
 
 /**
  * connect the actions to the component
@@ -99,27 +100,33 @@ const UserData = (props) => {
     });
   }
   
-  const clickServiceCancella = () => {
+  const clickServiceCancella = (evt) => {
+    evt.preventDefault()
     let nome = state.sedeDaCancellare;
     const loadingToast = getLoadingToast("Rimuovendo la sede...");
     return _cancellazioneSede( props.token, props.id_company, nome)
     .then(function (response) {
-      _getNomiSedi(props.token, props.id_company)
-      .then(function (response) {
+      if(response.data.messageCode == _MSGCODE.ERR){
         stopLoadingToast(loadingToast);
-        let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
-        let listaNomi = [];
-        let listaSedi = [];
-        response.data.sedi.map((sede) => {
-          listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
-          listaSedi.push(sede.substring(0,sede.indexOf(",")));
+        getErrorToast(String(response.data.message))
+      } else {
+        _getNomiSedi(props.token, props.id_company)
+        .then(function (response) {
+          stopLoadingToast(loadingToast);
+          let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+          let listaNomi = [];
+          let listaSedi = [];
+          response.data.sedi.map((sede) => {
+            listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+            listaSedi.push(sede.substring(0,sede.indexOf(",")));
+          })
+          props.UpdateListaSedi(listaNomi, token, listaSedi);
+          getSuccessToast("Sede rimossa correttamente.");
         })
-        props.UpdateListaSedi(listaNomi, token, listaSedi);
-        getSuccessToast("Sede rimossa correttamente.");
-      })
-      .catch(function (error) {
-        getErrorToast(String(error));
-      });
+        .catch(function (error) {
+          getErrorToast(String(error));
+        });
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -247,7 +254,7 @@ const UserData = (props) => {
               <Dropdown onChange={handleRimuoviSede} options={props.listaNomiSedi} placeholder="Seleziona una sede" />           
             </div>
             <div className="col-md-4 col-xs-4">
-            <button className="btn btn-primary" onClick={() => clickServiceCancella()}>Rimuovi</button>
+            <button className="btn btn-primary" onClick={(evt) => clickServiceCancella(evt)}>Rimuovi</button>
             </div>
           </form>
           <form>

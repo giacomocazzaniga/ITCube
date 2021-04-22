@@ -42,7 +42,8 @@ const Communications = (props) => {
                   <span className="direct-chat-img">
                     {(alert.categoria == "ERROR") ? state.error_icon 
                     : (alert.categoria == "WARNING") ? state.warning_icon 
-                    : state.success_icon} 
+                    : (alert.categoria == "OK") ? state.success_icon
+                    : <></>} 
                   </span>
                   <div className="direct-chat-text">
                     {alert.messaggio}
