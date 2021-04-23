@@ -25,5 +25,6 @@ public interface ElencoAlertRepository extends CrudRepository<Alert,Integer> {
 			+ "ORDER BY date_and_time_alert desc", nativeQuery=true)
 	List<Alert> getLatestAlerts(@Param("id_client") int id_client, @Param("n_settimane") int n_settimane);
 	
-	
+	@Query(value="Select id from alert where categoria=2 and id_client= :id_client and corpo_messaggio LIKE concat('%', :nome_servizio ,'%')", nativeQuery=true)
+	Integer getServiziAlert(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
 }

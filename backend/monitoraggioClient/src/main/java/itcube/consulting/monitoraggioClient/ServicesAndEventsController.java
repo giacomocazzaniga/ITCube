@@ -96,9 +96,7 @@ public class ServicesAndEventsController {
 	public ResponseEntity<AgentResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
 	{
 		AgentResponse generalResponse=new AgentResponse();
-		ValidToken validToken=new ValidToken();
 		int id_client;
-		String token;
 		List<ConfWindowsServices> servizi=new ArrayList<ConfWindowsServices>();
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
@@ -106,6 +104,10 @@ public class ServicesAndEventsController {
 		List<ConfTotalFreeDiscSpace> disco=new ArrayList<ConfTotalFreeDiscSpace>();
 		boolean serviziNotNull;
 		boolean dischiNotNull;
+		String nome_servizio=null;
+		Alert newAlert=new Alert();
+		String alert=null;
+		
 		try
 		{
 			id_client=Integer.parseInt((String)body.get("MyID"));
@@ -117,7 +119,6 @@ public class ServicesAndEventsController {
 			else
 				serviziNotNull=false;
 			
-			
 			if(disco.size()!=0)
 				dischiNotNull=true;
 			else
@@ -125,7 +126,6 @@ public class ServicesAndEventsController {
 			
 			if(serviziNotNull)
 			{
-				
 				for(int i=0; i < servizi.size(); i++)
 				{
 					ConfWindowsServices tmp = new ConfWindowsServices();
@@ -161,7 +161,6 @@ public class ServicesAndEventsController {
 				}
 				else
 				{
-					
 					for(int i=0; i < servizi.size(); i++)
 					{
 						Monitoraggio temp=new Monitoraggio();
@@ -172,7 +171,24 @@ public class ServicesAndEventsController {
 						monitoraggioRepository.save(temp);
 					}
 				}
-			
+				
+				for(int i=0; i < servizi.size(); i++)
+				{
+					nome_servizio=(String) ((Map<String, Object>) servizi.get(i)).get("ServiceName");
+					if(monitoraggioRepository.getMonitoratoStopped(id_client, nome_servizio)!=null && elencoAlertRepository.getServiziAlert(id_client, nome_servizio)==null)
+					{
+						alert="ERROR";
+						newAlert.setDate_and_time_alert(timestamp);
+						newAlert.setDate_and_time_mail(timestamp);
+						newAlert.setId_client(id_client);
+						newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+						newAlert.setCategoria(2);
+						newAlert.setTipo(alert);
+						newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" presenta un errore");
+						
+						elencoAlertRepository.save(newAlert);
+					}
+				}
 			}
 			
 			if(dischiNotNull)
