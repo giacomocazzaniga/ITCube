@@ -272,7 +272,7 @@ public class LicenzeController {
 		
 		try
 		{
-			id_company=(Integer)body.get("id_company");
+			id_company=Integer.parseInt((String) body.get("id_company"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			classe_licenza= Integer.parseInt((String)(body.get("classe_licenza")));

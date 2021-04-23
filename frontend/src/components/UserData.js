@@ -29,13 +29,13 @@ const mapDispatchToProps = dispatch => ({
  */
 const mapStateToProps = state => ({
     client_list: state.client_list,
-    nome_company: state.nome_company,
+    nome_company: state.company_template.company_data.ragione_sociale,
     token: state.token,
     logged: state.logged,
     id_company: state.id_company,
-    emailNotify: state.emailNotify,
-    email: state.email,
-    lista_sedi: state.lista_sedi,
+    emailNotify: state.company_template.company_data.emailNotify,
+    email: state.company_template.company_data.email,
+    lista_sedi: state.company_template.company_data.n_sedi,
     listaNomiSedi: state.lista_nomi_sedi
   }
 );
@@ -275,7 +275,7 @@ const UserData = (props) => {
         <h4><b>Indirizzo email: </b>{props.email}</h4>
         <h4><b>Indirizzo email per le comunicazioni: </b>{props.emailNotify}</h4>
         <h4><b>Ragione sociale: </b>{props.ragioneSociale}</h4>
-        <h4><b>Sedi registrate: </b>{props.lista_sedi}</h4>
+        <h4><b>Sedi registrate: </b>{props.lista_sedi - 1}</h4>
         <h4><b>Chiave di registrazione: </b>{props.chiave}</h4>
       </Col>
     </Box>

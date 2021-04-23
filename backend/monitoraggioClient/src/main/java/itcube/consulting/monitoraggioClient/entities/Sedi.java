@@ -17,6 +17,11 @@ public class Sedi {
 	public Sedi() {
 	}
 	
+	public Sedi(String nome, int id_company) {
+		this.nome = nome;
+		this.id_company = id_company;
+	}
+	
 	public int getId() {
 		return id;
 	}

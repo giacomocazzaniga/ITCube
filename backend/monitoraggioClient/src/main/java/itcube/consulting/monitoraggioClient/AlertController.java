@@ -36,9 +36,60 @@ public class AlertController {
 	@Autowired
 	ElencoAlertRepository elencoAlertRepository;
 	
+	public static int inserimentoAlertDischi(int id_client, double perc_free_space, String driveLabel, ElencoClientsRepository elencoClientsRepository, ElencoAlertRepository elencoAlertRepository)
+	{
+		int id_company;
+		String disc_state = null;
+		String tmp_drive_label = new String(driveLabel);
+		
+        if(tmp_drive_label.contains("\\")){
+            tmp_drive_label= tmp_drive_label.replace("\\", "");
+        }
+		
+		try
+		{
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			
+			if(perc_free_space < 10)
+				disc_state = "ERROR";
+			if(perc_free_space >= 10 && perc_free_space <= 20)
+				disc_state = "WARNING";
+			if(perc_free_space > 20)
+				disc_state = "OK";
+				
+			
+			Alert recentAlert = elencoAlertRepository.getRecentAlert(id_client, tmp_drive_label);
+			
+			if(recentAlert == null || !recentAlert.getTipo().equals(disc_state)) {
+				Alert newAlert = new Alert();
+				
+//					newAlert.setNome_disco(driveLabel);
+//					newAlert.setPerc_free_disc(perc_free_space);
+				newAlert.setCorpo_messaggio("Il disco " + driveLabel + " ha lo spazio disponibile pari al " + perc_free_space + "%");
+				newAlert.setDate_and_time_alert(java.time.LocalDateTime.now());
+				newAlert.setDate_and_time_mail(java.time.LocalDateTime.now());
+				newAlert.setId_client(id_client);
+				newAlert.setId_company(id_company);
+				newAlert.setTipo(disc_state);
+				newAlert.setCategoria(1);
+				
+				elencoAlertRepository.save(newAlert);
+				
+			}
+
+			return 0;
+			
+		}
+		catch (Exception e)
+		{
+			return -1;
+		}
+	}
+	
+	
 	@PostMapping(path="/inserimentoAlertDischi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
-	public ResponseEntity<GeneralResponse> inserimentoAlertDischi (@RequestBody Map<String,Object> body) {
+	public ResponseEntity<GeneralResponse> inserimentoAlertDischi1 (@RequestBody Map<String,Object> body) {
 		GeneralResponse generalResponse=new GeneralResponse();
 		ValidToken validToken=new ValidToken();
 		int id_client;

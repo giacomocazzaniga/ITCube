@@ -52,6 +52,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.Sedi;
 import itcube.consulting.monitoraggioClient.entities.TipologiaClient;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
@@ -66,6 +67,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
+import itcube.consulting.monitoraggioClient.repositories.SediRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
@@ -116,6 +118,9 @@ public class ClientController {
 	
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
+	
+	@Autowired
+	private SediRepository sediRepository;
 	
 	@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -498,16 +503,22 @@ public class ClientController {
 					ElencoClients newClient=new ElencoClients();
 					newClient.setNome(nome);
 					newClient.setDescrizione(descrizione);
-					newClient.setSede(null);
+					
 					TipologiaClient tipo=new TipologiaClient();
 					tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
 					System.out.println(tipo);
 					newClient.setTipologiaClient(tipo);
 					newClient.setMac_address(mac_address);
 					//id_company
-					Integer id_company=elencoCompaniesRepository.getIdCompanyFromChiave(chiave);
-					//TODO:getIdLicenzaFromLicenza
-	//				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
+					Integer id_company = elencoCompaniesRepository.getIdCompanyFromChiave(chiave);
+					Integer idSenzaSede = elencoCompaniesRepository.getSenzaSedeOfCompany(id_company);
+					
+					if(idSenzaSede != null) {
+						newClient.setSede(idSenzaSede.toString());
+					} else {
+						Sedi newSede = sediRepository.save(new Sedi("Senza sede", id_company));
+						newClient.setSede( ((Integer) newSede.getId()).toString() );
+					}
 					
 					if(id_company!=null)
 					{

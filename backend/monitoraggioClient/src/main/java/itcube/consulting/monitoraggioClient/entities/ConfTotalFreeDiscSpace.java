@@ -63,7 +63,7 @@ public class ConfTotalFreeDiscSpace {
 
 	public double setPerc_free_disc_space(long total_size2, long total_free_disc_space2) {
 		float tmp= (float) total_free_disc_space2/ (float) total_size2;
-		this.perc_free_disc_space = (int) (tmp*100);
+		this.perc_free_disc_space = Math.round((tmp*100)); 
 		return this.perc_free_disc_space;
 	}
 

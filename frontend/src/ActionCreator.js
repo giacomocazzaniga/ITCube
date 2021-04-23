@@ -45,10 +45,6 @@ export const categoriesList = (categories_list) => ({
   type: types.CATEGORIESLIST,
   categories_list: categories_list
 })
-export const categoryVsPlace = (toggle) => ({
-  type: types.CATEGORYVSPLACE,
-  category_vs_place: toggle
-})
 export const servicesList = (servicesList) => ({
   type: types.SERVICESLIST,
   servicesList: servicesList
@@ -81,6 +77,11 @@ export const updateSidebar = (elencoClients,sedi, token, listaNomi, listaSedi) =
   listaSedi: listaSedi
 })
 
+export const updateCTcategoryVsPlace = (toggle) => ({
+  type: types.CATEGORYVSPLACE,
+  category_vs_place: toggle
+})
+
 export const updateCTWindowsEvents = (n_problemi, n_warnings) => ({
   type: types.CLIENTTEMPLATEWINDOWSEVENTS,
   windows_events: {
@@ -89,11 +90,11 @@ export const updateCTWindowsEvents = (n_problemi, n_warnings) => ({
   }
 })
 
-export const updateCTWindowsServices = (n_monitorati, n_esecuzione, n_stop, n_totali) => ({
+export const updateCTWindowsServices = ( n_totali, n_running, n_stop, n_monitorati) => ({
   type: types.CLIENTTEMPLATEWINDOWSSERVICES,
   windows_services: {
     n_monitorati: n_monitorati,
-    n_esecuzione: n_esecuzione,
+    n_esecuzione: n_running,
     n_stop: n_stop,
     n_totali: n_totali
   }
@@ -113,4 +114,9 @@ export const updateCTAlert = (alert) => ({
 
 export const resetClientTemplate = () => ({
   type: types.CLIENTTEMPLATERESET
+})
+
+export const updateCompanyTemplateLicenze = (lista_licenze) => ({
+  type: types.COMPANYTEMPLATELICENZE,
+  lista_licenze: lista_licenze
 })

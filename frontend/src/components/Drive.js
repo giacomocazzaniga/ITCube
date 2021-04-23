@@ -20,10 +20,17 @@ const mapDispatchToProps = dispatch => ({});
 const mapStateToProps = state => ({});
 
 const Drive = (props) => {
-  let totalGB = (parseInt(props.totalSpace)/(1073741824)).toFixed(2);
-  let freeGB = (parseInt(props.occupiedSpace)/(1073741824)).toFixed(2);
-  let occupiedSpace = (totalGB-freeGB).toFixed(2);
+  let totalGB = (parseInt(props.totalSpace)/(1073741824));
+  let freeGB = (parseInt(props.occupiedSpace)/(1073741824));
+  let occupiedSpace = (totalGB-freeGB);
   const percentage = ((occupiedSpace*100)/totalGB).toFixed(0);
+
+  totalGB = totalGB.toFixed(2);
+  freeGB = freeGB.toFixed(2);
+  occupiedSpace = (totalGB-freeGB).toFixed(2);
+  
+
+
   return(
     <Box title={"Drive "+props.driveLabel+" "+parseInt(100-percentage)+"% libero"} type="primary" collapsable footer={"Ultimo aggiornamento "+Backend2FrontendDateConverter(props.lastUpdate)}>
       <Col md={4} xs={12}>

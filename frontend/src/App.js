@@ -33,12 +33,12 @@ const mapDispatchToProps =  dispatch => {
 const mapStateToProps = state => {
   return {
     client_list: state.client_list,
-    nome_company: state.nome_company,
+    nome_company: state.company_template.company_data.ragione_sociale,
     logged: state.logged,
     searched_client: state.searched_client,
     categories_list: state.categories_list,
     places_list: state.places_list,
-    category_vs_place: state.category_vs_place,
+    category_vs_place: state.company_template.category_vs_place,
     token: state.token,
     id_company: state.id_company,
     lista_nomi_sedi: state.lista_nomi_sedi,

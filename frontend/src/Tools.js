@@ -1,7 +1,13 @@
 import { _LICENZE } from "./Constants";
 
 export const Backend2FrontendDateConverter = (bcknd_date) => {
-  let frtnd_date = bcknd_date.replace("T", " ").substring(0,bcknd_date.indexOf("."));
+  let frtnd_date = bcknd_date;
+  if(bcknd_date.indexOf(".") != -1){
+    frtnd_date = bcknd_date.substring(0,bcknd_date.indexOf("."));
+  }
+  if(bcknd_date.indexOf("T") != -1){
+    frtnd_date = frtnd_date.replace("T", " ")
+  }
   return frtnd_date;
 }
 
@@ -32,4 +38,14 @@ export const idToNomeLicenza = (id) => {
     case _LICENZE.ANTIVIRUS.tipo:
       return _LICENZE.ANTIVIRUS.label
   }
+}
+
+export const sortResults = (prop, asc, list) => {
+  list.sort(function(a, b) {
+      if (asc) {
+          return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
+      } else {
+          return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
+      }
+  });
 }

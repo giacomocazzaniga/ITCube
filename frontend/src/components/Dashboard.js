@@ -22,11 +22,8 @@ document.body.classList.add('fixed');
  * @param {*} dispatch 
  */
 const mapDispatchToProps = dispatch => ({
-  SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
-    dispatch(serviziOverview(n_totali, n_running, n_stop, n_monitorati))
-  },
-  SetClientTemplateWindowsServices: (n_monitorati, n_esecuzione, n_stop, n_totali) => {
-    dispatch(updateCTWindowsServices(n_monitorati, n_esecuzione, n_stop, n_totali ))
+  SetClientTemplateWindowsServices: (n_totali, n_running, n_stop, n_monitorati) => {
+    dispatch(updateCTWindowsServices(n_totali, n_running, n_stop, n_monitorati))
   },
   SetClientTemplateWindowsEvents: (n_problemi, n_warnings) => {
     dispatch(updateCTWindowsEvents(n_problemi, n_warnings))
@@ -137,8 +134,7 @@ const Dashboard = (props) => {
       _getServiziOverview(props.token, props.id_client)
       .then(function (response) {
         //n_monitorati, n_esecuzione, n_stop
-        props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-        props.SetClientTemplateWindowsServices(response.data.n_monitorati, response.data.n_running, response.data.n_stopped, response.data.n_totali)
+        props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
         _getEventiOverview(props.token, props.id_client)
         .then(function (response) {
           props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)

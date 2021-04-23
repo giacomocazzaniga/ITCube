@@ -32,7 +32,7 @@ const mapDispatchToProps =  dispatch => ({
  */
 const mapStateToProps = state => ({
     client_list: state.client_list,
-    nome_company: state.nome_company
+    nome_company: state.company_template.company_data.ragione_sociale
   }
 );
 

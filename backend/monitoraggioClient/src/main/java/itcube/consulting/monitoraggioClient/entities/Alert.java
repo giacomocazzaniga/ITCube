@@ -19,6 +19,7 @@ public class Alert {
 	private int id_company;
 	private String tipo;
 	private String corpo_messaggio;
+	private int categoria;
 //	private String nome_disco;
 //	private float perc_free_disc;
 	
@@ -79,5 +80,11 @@ public class Alert {
 	}
 	public void setCorpo_messaggio(String corpo_messaggio) {
 		this.corpo_messaggio = corpo_messaggio;
+	}
+	public int getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(int categoria) {
+		this.categoria = categoria;
 	}
 }
