@@ -107,6 +107,10 @@ public class ServicesAndEventsController {
 		String nome_servizio=null;
 		Alert newAlert=new Alert();
 		String alert=null;
+		int stato;
+		boolean monitora=false;
+		Integer idMonitoraggio;
+		String tipo=null;
 		
 		try
 		{
@@ -151,7 +155,7 @@ public class ServicesAndEventsController {
 						temp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
 						temp.setMonitora(true);
 						
-						Integer idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
+						idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
 
 						if(idMonitoraggio==null)
 						{
@@ -187,6 +191,41 @@ public class ServicesAndEventsController {
 						newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" presenta un errore");
 						
 						elencoAlertRepository.save(newAlert);
+					}
+					else
+					{
+						stato=Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status"));
+						idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
+						
+						if(idMonitoraggio!=null)
+						{
+							monitora=monitoraggioRepository.getMonitora(id_client, nome_servizio);
+							if(monitora==true && stato==1)
+							{
+								tipo="ERROR";
+							}
+							if(monitora==true && stato==4)
+							{
+								tipo="OK";
+							}
+						}
+						
+						if(monitora==true && elencoAlertRepository.getServiziAlert(id_client, nome_servizio)!=null  && elencoAlertRepository.isModified(id_client, nome_servizio, tipo)==null)
+						{
+							newAlert.setDate_and_time_alert(timestamp);
+							newAlert.setDate_and_time_mail(timestamp);
+							newAlert.setId_client(id_client);
+							newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+							newAlert.setCategoria(2);
+							newAlert.setTipo(tipo);
+							
+							if(tipo=="ERROR")
+								newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" presenta un errore");
+							else
+								newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" funziona correttamente");
+							
+							elencoAlertRepository.save(newAlert);
+						}
 					}
 				}
 			}

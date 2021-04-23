@@ -23,6 +23,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoAlertRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoClientsRepository;
 import itcube.consulting.monitoraggioClient.response.AlertResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.NumAlertResponse;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 
@@ -214,4 +215,64 @@ public class AlertController {
 			return ResponseEntity.badRequest().body(response);
 		}
 	}
+	
+	/*@PostMapping(path="/getNumAlert",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getNumAlert(@RequestBody Map<String,Object> body) {
+		NumAlertResponse response=new NumAlertResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_client;
+		Integer id_company;
+		String token;
+		Integer n_giorni;
+		int error;
+		int warning;
+		
+		try
+		{
+			id_client=Integer.parseInt((String)body.get("id_client"));
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			n_giorni=Integer.parseInt((String)body.get("n_giorni"));
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				if(n_giorni==null)
+					n_giorni=1;
+					
+				if(id_client==-1)
+				{
+					error=elencoAlertRepository.countErrorCompany(id_company, n_giorni);
+					warning=elencoAlertRepository.countWarningCompany(id_company, n_giorni);
+				}
+				else
+				{
+					error=elencoAlertRepository.countErrorClient(id_client, n_giorni);
+					warning=elencoAlertRepository.countWarningClient(id_client, n_giorni);
+				}
+				
+				response.setError(error);
+				response.setWarning(warning);
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(validToken.getToken());
+				
+				return ResponseEntity.ok(response); 
+				
+			} else {
+				response.setMessage("Autenticazione fallita");
+				response.setMessageCode(-2);
+				return ResponseEntity.badRequest().body(response);
+			}
+			
+		}
+		catch (Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}*/
 }

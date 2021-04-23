@@ -32,4 +32,7 @@ public interface MonitoraggioRepository extends CrudRepository<Monitoraggio,Inte
 	
 	@Query(value="Select m.id from monitoraggio m join conf_windows_services s on m.nome_servizio=s.nome_servizio where m.id_client= :id_client and m.monitora=true and m.nome_servizio= :nome_servizio and s.stato=1", nativeQuery=true)
 	Integer getMonitoratoStopped(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
+	
+	@Query(value="Select monitora from monitoraggio where id_client= :id_client and nome_servizio= :nome_servizio", nativeQuery=true)
+	boolean getMonitora(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
 }
