@@ -7,6 +7,7 @@ public class DeepClientResponse extends GeneralResponse{
 	private String nome_tipologia;
 	private String mac_address;
 	private String sede;
+	private String descrizione;
 	private List<String> codice_licenza;
 	private List<Integer> classe_licenza;
 	private int servizi_attivi;
@@ -83,6 +84,14 @@ public class DeepClientResponse extends GeneralResponse{
 	}
 	public void setServizi_warning(int servizi_warning) {
 		this.servizi_warning = servizi_warning;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 	
 	

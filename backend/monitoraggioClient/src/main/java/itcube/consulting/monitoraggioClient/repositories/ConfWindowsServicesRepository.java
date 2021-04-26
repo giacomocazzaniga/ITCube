@@ -48,6 +48,4 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	
 	@Query(value="select count(DISTINCT nome_servizio) from conf_windows_services where id_client= :id_client", nativeQuery=true)
 	int getTotServizi(@Param("id_client") int id_client);
-	
-	
 }

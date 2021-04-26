@@ -34,7 +34,7 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	int getIdCompany(@Param("id_client") int id_client);
 	
 	@Query(value="Select id from elenco_clients where nome= :nome and mac_address= :mac_address", nativeQuery=true)
-	int getIdFromInfo(@Param("nome") String nome, @Param("mac_address") String mac_address);
+	Integer getIdFromInfo(@Param("nome") String nome, @Param("mac_address") String mac_address);
 	
 	@Query(value="Select * from elenco_clients where id= :id_client", nativeQuery=true)
 	ElencoClients getClientFromId(@Param("id_client") int id_client);
@@ -49,5 +49,6 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	@Transactional
 	void modificaAllVecchieSediClient(@Param("id_company") int id_company, @Param("nuova_sede") String nuova_sede, @Param("vecchia_sede") String vecchia_sede);
 	
-	
+	@Query(value="Select id from elenco_clients where sede= :sede and id_company= :id_company", nativeQuery=true)
+	List<Integer> getClientsInSede(@Param("sede") int sede,@Param("id_company") int id_company );
 }

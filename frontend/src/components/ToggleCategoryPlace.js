@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { categoryVsPlace } from '../ActionCreator';
+import { categoryVsPlace, updateCTcategoryVsPlace } from '../ActionCreator';
 
 
 /**
@@ -9,7 +9,7 @@ import { categoryVsPlace } from '../ActionCreator';
  */
 const mapDispatchToProps = dispatch => ({
     Toggle: (actual_state) => {
-      dispatch(categoryVsPlace(!actual_state))
+      dispatch(updateCTcategoryVsPlace(!actual_state))
     }
   }
 );
@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
  * @param {*} state 
  */
 const mapStateToProps = state => ({
-    category_vs_place: state.category_vs_place
+    category_vs_place: state.company_template.category_vs_place
   }
 );
 

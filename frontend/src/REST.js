@@ -22,6 +22,12 @@ export const url_get_eventi = buildurl+"getEventi";
 export const url_modifica_sede = buildurl+"modificaSedeClient";
 export const url_get_drives = buildurl+"getDrives";
 export const url_get_n_sedi = buildurl+"getNSedi";
+export const url_inserimento_sede = buildurl+"inserimentoSede";
+export const url_cancellazione_sede = buildurl+"cancellazioneSede";
+export const url_get_nomi_sedi = buildurl+"getNomiSedi";
+export const url_get_latest_alert = buildurl+"getLatestAlerts";
+export const url_compra_licenza = buildurl+"compraLicenza";
+
 
 const portFake = "3001"; 
 const ipFake = "217.160.240.146";

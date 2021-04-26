@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import itcube.consulting.monitoraggioClient.entities.Alert;
 import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
@@ -26,6 +27,7 @@ import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
+import itcube.consulting.monitoraggioClient.repositories.ElencoAlertRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoClientsRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
@@ -86,14 +88,15 @@ public class ServicesAndEventsController {
 	@Autowired
 	private VisualizzazioneEventiRepository visualizzazioneEventiRepository;
 	
+	@Autowired
+	private ElencoAlertRepository elencoAlertRepository;
+	
 	@PostMapping(path="/inserimentoServizi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<AgentResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
 	{
 		AgentResponse generalResponse=new AgentResponse();
-		ValidToken validToken=new ValidToken();
 		int id_client;
-		String token;
 		List<ConfWindowsServices> servizi=new ArrayList<ConfWindowsServices>();
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
@@ -101,6 +104,13 @@ public class ServicesAndEventsController {
 		List<ConfTotalFreeDiscSpace> disco=new ArrayList<ConfTotalFreeDiscSpace>();
 		boolean serviziNotNull;
 		boolean dischiNotNull;
+		String nome_servizio=null;
+		String alert=null;
+		int stato;
+		boolean monitora=false;
+		Integer idMonitoraggio;
+		String tipo=null;
+		
 		try
 		{
 			id_client=Integer.parseInt((String)body.get("MyID"));
@@ -112,7 +122,6 @@ public class ServicesAndEventsController {
 			else
 				serviziNotNull=false;
 			
-			
 			if(disco.size()!=0)
 				dischiNotNull=true;
 			else
@@ -120,7 +129,6 @@ public class ServicesAndEventsController {
 			
 			if(serviziNotNull)
 			{
-				
 				for(int i=0; i < servizi.size(); i++)
 				{
 					ConfWindowsServices tmp = new ConfWindowsServices();
@@ -146,7 +154,7 @@ public class ServicesAndEventsController {
 						temp.setNome_servizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"));
 						temp.setMonitora(true);
 						
-						Integer idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
+						idMonitoraggio=monitoraggioRepository.containsServizio((String) ((Map<String, Object>) servizi.get(i)).get("ServiceName"), id_client);
 
 						if(idMonitoraggio==null)
 						{
@@ -156,7 +164,6 @@ public class ServicesAndEventsController {
 				}
 				else
 				{
-					
 					for(int i=0; i < servizi.size(); i++)
 					{
 						Monitoraggio temp=new Monitoraggio();
@@ -167,7 +174,33 @@ public class ServicesAndEventsController {
 						monitoraggioRepository.save(temp);
 					}
 				}
-			
+				
+				for(int i=0; i < servizi.size(); i++)
+				{
+					nome_servizio=(String) ((Map<String, Object>) servizi.get(i)).get("ServiceName");
+					stato = Integer.parseInt((String) ((Map<String, Object>) servizi.get(i)).get("Status"));
+					
+					if(stato == 1)
+						alert = "ERROR";
+					if(stato == 4)
+						alert = "OK";
+					
+					if(elencoAlertRepository.lastAlertStatus(id_client, nome_servizio) == null || (monitoraggioRepository.getMonitora(id_client, nome_servizio) && !elencoAlertRepository.lastAlertStatus(id_client, nome_servizio).equals(alert))) {
+							Alert newAlert=new Alert();		
+							newAlert.setDate_and_time_alert(timestamp);
+							newAlert.setDate_and_time_mail(timestamp);
+							newAlert.setId_client(id_client);
+							newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+							newAlert.setCategoria(2);
+							newAlert.setTipo(alert);
+							if(stato == 1)
+								newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" presenta un errore");
+							else if(stato == 4)
+								newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" funziona correttamente");
+							
+							elencoAlertRepository.save(newAlert);
+					}
+				}
 			}
 			
 			if(dischiNotNull)
@@ -210,8 +243,10 @@ public class ServicesAndEventsController {
 					}
 					else
 					{
-						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space);
+						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space, timestamp);
 					}
+					
+					AlertController.inserimentoAlertDischi(id_client, perc_free_disc_space, drive, elencoClientsRepository, elencoAlertRepository);
 				}
 			}
 
@@ -251,6 +286,11 @@ public class ServicesAndEventsController {
 		List<VisualizzazioneEventi> MySystemLogs=new ArrayList<VisualizzazioneEventi>();
 		List<VisualizzazioneEventi> MySecurityLogs=new ArrayList<VisualizzazioneEventi>();
 		LocalDateTime timestamp=java.time.LocalDateTime.now();
+		String alert = null;
+		String alertEmail = null;
+		int level;
+		String nome = null;
+		Alert newAlert = null;
 		
 		try
 		{
@@ -281,6 +321,36 @@ public class ServicesAndEventsController {
 			        
 					tmp.setDate_and_time_evento(formatDateTime);
 					visualizzazioneEventiRepository.save(tmp);
+					
+
+					level = Integer.parseInt((String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("EntryType"));
+					
+					if(level==1) {
+						alert="ERROR";
+						alertEmail="errore";
+					}
+
+					if(level==2) {
+						alert="WARNING";
+						alertEmail="warning";
+					}
+						
+
+					
+					nome=(String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("LogMessage");
+
+
+					newAlert=new Alert();
+					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+					newAlert.setDate_and_time_alert(timestamp);
+					newAlert.setDate_and_time_mail(timestamp);
+					newAlert.setId_client(id_client);
+					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+					newAlert.setTipo(alert);
+					newAlert.setCategoria(3);
+					
+					elencoAlertRepository.save(newAlert);
+					
 				}
 			}
 			
@@ -305,6 +375,33 @@ public class ServicesAndEventsController {
 			        
 					tmp.setDate_and_time_evento(formatDateTime);
 					visualizzazioneEventiRepository.save(tmp);
+					
+					level = Integer.parseInt((String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("EntryType"));
+					
+					if(level==1) {
+						alert="ERROR";
+						alertEmail="errore";
+					}
+
+					if(level==2) {
+						alert="WARNING";
+						alertEmail="warning";
+					}
+					
+					nome=(String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("LogMessage");
+
+
+					newAlert=new Alert();
+					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+					newAlert.setDate_and_time_alert(timestamp);
+					newAlert.setDate_and_time_mail(timestamp);
+					newAlert.setId_client(id_client);
+					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+					newAlert.setTipo(alert);
+					newAlert.setCategoria(3);
+					
+					elencoAlertRepository.save(newAlert);
+					
 				}
 			}
 			
@@ -329,6 +426,33 @@ public class ServicesAndEventsController {
 			        
 					tmp.setDate_and_time_evento(formatDateTime);
 					visualizzazioneEventiRepository.save(tmp);
+					
+					level = Integer.parseInt((String) ((Map<String, Object>) MySystemLogs.get(i)).get("EntryType"));
+					
+					if(level==1) {
+						alert="ERROR";
+						alertEmail="errore";
+					}
+
+					if(level==2) {
+						alert="WARNING";
+						alertEmail="warning";
+					}
+					
+					nome=(String) ((Map<String, Object>) MySystemLogs.get(i)).get("LogMessage");
+
+
+					newAlert=new Alert();
+					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+					newAlert.setDate_and_time_alert(timestamp);
+					newAlert.setDate_and_time_mail(timestamp);
+					newAlert.setId_client(id_client);
+					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+					newAlert.setTipo(alert);
+					newAlert.setCategoria(3);
+					
+					elencoAlertRepository.save(newAlert);
+						
 				}
 			}
 			
@@ -353,6 +477,33 @@ public class ServicesAndEventsController {
 			        
 					tmp.setDate_and_time_evento(formatDateTime);
 					visualizzazioneEventiRepository.save(tmp);
+					
+					level = Integer.parseInt((String) ((Map<String, Object>) MySecurityLogs.get(i)).get("EntryType"));
+					
+					if(level==1) {
+						alert="ERROR";
+						alertEmail="errore";
+					}
+
+					if(level==2) {
+						alert="WARNING";
+						alertEmail="warning";
+					}
+					
+					nome=(String) ((Map<String, Object>) MySecurityLogs.get(i)).get("LogMessage");
+
+
+					newAlert=new Alert();
+					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+					newAlert.setDate_and_time_alert(timestamp);
+					newAlert.setDate_and_time_mail(timestamp);
+					newAlert.setId_client(id_client);
+					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+					newAlert.setTipo(alert);
+					newAlert.setCategoria(3);
+					
+					elencoAlertRepository.save(newAlert);
+						
 				}
 			}
 			
@@ -713,8 +864,13 @@ public class ServicesAndEventsController {
 				if(Narrivo > eventi.size())
 					Narrivo = eventi.size();
 				
-				for(int i=Npartenza; i< Narrivo; i++) {
-					eventiSlot.add(eventi.get(i));
+				for(int i=Npartenza; i<= Narrivo; i++) {
+					try {
+						eventiSlot.add(eventi.get(i));
+					} catch (Exception e) {
+						break;
+					}
+					
 				}
 				
 				response.setEventi(eventiSlot);

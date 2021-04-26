@@ -6,10 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactPaginate from 'react-paginate';
 import PopUp from "./PopUp";
 import { eventsList } from "../ActionCreator";
-import { defaultUpperBound, _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
+import { defaultUpperBound } from "../Constants";
+import { _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
 import { Pagination } from "react-bootstrap";
-import { Backend2FrontendDateConverter } from "../Tools";
+import { Backend2FrontendDateConverter, sortResults } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -42,27 +43,33 @@ const WindowsEvents = (props) => {
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
   const getEventsList = (currentSlot=[1,1,1,1]) => {
+    console.log(currentSlot)
     const loadingToast = getLoadingToast("Caricamento...");
     _getEventi(props.token, props.id_client, "A", currentSlot[0])
     .then(function (response) {
       stopLoadingToast(loadingToast);
       //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
       let listA = response.data.eventi;
+      sortResults("date_and_time_evento",false,listA)
+      console.log(listA)
       _getEventi(props.token, props.id_client, "C", currentSlot[1])
       .then(function (response) {
         stopLoadingToast(loadingToast);
         //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'C' }).length)
         let listC = response.data.eventi;
+        sortResults("date_and_time_evento",false,listC)
         _getEventi(props.token, props.id_client, "H", currentSlot[2])
         .then(function (response) {
           stopLoadingToast(loadingToast);
           //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'H' }).length)
           let listH = response.data.eventi;
+          sortResults("date_and_time_evento",false,listH)
           _getEventi(props.token, props.id_client, "S", currentSlot[3])
           .then(function (response) {
             stopLoadingToast(loadingToast);
             //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'S' }).length)
             let listS = response.data.eventi;
+            sortResults("date_and_time_evento",false,listS)
             let merged = [...listA, ...listC, ...listH, ...listS];
             //console.log(merged)
             let list = servicesListMaker(merged);

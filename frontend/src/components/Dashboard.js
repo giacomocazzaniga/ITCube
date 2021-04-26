@@ -7,12 +7,13 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getDeepClient, _getDrives, _getEventiOverview, _getServiziOverview } from "../callableRESTs";
+import { _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { serviziOverview } from "../ActionCreator";
+import { resetClientTemplate, serviziOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { defaultUpdateInterval } from "../Constants";
 
 document.body.classList.add('fixed');
 
@@ -21,8 +22,20 @@ document.body.classList.add('fixed');
  * @param {*} dispatch 
  */
 const mapDispatchToProps = dispatch => ({
-  SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
-    dispatch(serviziOverview(n_totali, n_running, n_stop, n_monitorati))
+  SetClientTemplateWindowsServices: (n_totali, n_running, n_stop, n_monitorati) => {
+    dispatch(updateCTWindowsServices(n_totali, n_running, n_stop, n_monitorati))
+  },
+  SetClientTemplateWindowsEvents: (n_problemi, n_warnings) => {
+    dispatch(updateCTWindowsEvents(n_problemi, n_warnings))
+  },
+  SetClientTemplateInfo: (info) => {
+    dispatch(updateCTInfo(info))
+  },
+  ResetClientTemplate: () => {
+    dispatch(resetClientTemplate())
+  },
+  SetClientTemplateAlert: (alert) => {
+    dispatch(updateCTAlert(alert))
   }
 });
 
@@ -31,6 +44,7 @@ const mapDispatchToProps = dispatch => ({
  * @param {*} state 
  */
 const mapStateToProps = state => ({
+    client_template: state.client_template,
     client_list: state.client_list,
     nome_company: state.nome_company,
     token: state.token,
@@ -108,19 +122,22 @@ const Dashboard = (props) => {
     drives: []
   })
 
-  useEffect( () => {
+  const updateData = () => {
     //on component mount
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
+      props.SetClientTemplateInfo(response.data)
       setState((previousState) => {
         return { ...previousState, clientData: response.data };
       });
       _getServiziOverview(props.token, props.id_client)
       .then(function (response) {
-        props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+        //n_monitorati, n_esecuzione, n_stop
+        props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
         _getEventiOverview(props.token, props.id_client)
         .then(function (response) {
+          props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
           setState((previousState) => {
             return { ...previousState, 
               problemi_oggi: response.data.problemi_oggi,
@@ -135,7 +152,16 @@ const Dashboard = (props) => {
                 drives: response.data.drives
               };
             });
-          })
+            _getLatestAlerts(props.token,props.id_client)
+              .then(function (response) {
+                //props alert
+                props.SetClientTemplateAlert(response.data.alerts)
+              })
+              .catch(function (error) {
+                stopLoadingToast(loadingToast);
+                getErrorToast(String(error));
+              })
+            })
           .catch(function (error) {
             stopLoadingToast(loadingToast);
             getErrorToast(String(error));
@@ -151,9 +177,18 @@ const Dashboard = (props) => {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
     });
+  }
+
+  useEffect( () => {
+    props.ResetClientTemplate()
+    updateData();
+    let idInterval = setInterval(function(){ 
+      updateData();
+    }, defaultUpdateInterval);
     return () => {
       //on component unmount
-  }
+      clearInterval(idInterval);
+    }
  }, []);
   return (
   state.clientData != null 
@@ -161,13 +196,13 @@ const Dashboard = (props) => {
   <Content title={props.title} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
-        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.clientOverview.problems} warnings={props.clientOverview.warnings} running={props.clientOverview.running} />
+        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.client_template.overview.problemi} warnings={props.client_template.overview.warnings} running={props.client_template.overview.ok} />
         <Col md={8} xs={12}>
           <Communications />
-          <History apex={props.apex}/>
+          <History apex={props.client_template.history}/>
         </Col>
         <Col md={4} xs={6}>
-          <ClientInfo client={state.clientData} id_client={props.id_client}/>
+          <ClientInfo client={props.client_template.info} id_client={props.id_client}/>
         </Col>
         {state.drives != [] 
         ? state.drives.map((drive) =>  
@@ -181,10 +216,10 @@ const Dashboard = (props) => {
 
         </Col>*/}
         <Col md={4} xs={6}>
-          <WindowsServices selected={props.title} id_client={props.id_client} services={[props.n_monitorati, props.n_running, props.n_stop, props.n_totali]}/>
+          <WindowsServices selected={props.title} id_client={props.id_client} services={[props.client_template.windows_services.n_monitorati, props.client_template.windows_services.n_esecuzione, props.client_template.windows_services.n_stop, props.client_template.windows_services.n_totali]}/>
         </Col>
         <Col md={4} xs={6}>
-          <WindowsEvents selected={props.title} id_client={props.id_client} events={[state.problemi_oggi, state.warning_oggi]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>
+          <WindowsEvents selected={props.title} id_client={props.id_client} events={[props.client_template.windows_events.n_problemi, props.client_template.windows_events.n_warnings]} tot_per_sottocategoria={state.tot_per_sottocategoria}/>
         </Col>
       </ModalProvider>
     </Row>

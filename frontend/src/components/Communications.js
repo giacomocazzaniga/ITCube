@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Box } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Backend2FrontendDateConverter } from '../Tools';
+import { _ALERTCATEGORY } from '../Constants';
 
 
 /**
@@ -14,62 +16,42 @@ const mapDispatchToProps = dispatch => ({});
  * connect the redux state to the component
  * @param {*} state 
  */
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  client_template: state.client_template
+});
 
 const Communications = (props) => {
+
+  const [state, setState] = React.useState({
+    error_icon: <FontAwesomeIcon icon={["fas", "times-circle"]} size="3x" color="#dd4b39"/>,
+    warning_icon: <FontAwesomeIcon icon={["fas", "exclamation-circle"]} size="3x" color="#f39c12"/>,
+    success_icon: <FontAwesomeIcon icon={["fas", "check-circle"]} size="3x" color="#00a65a"/>
+  })
+
   return (
     <Box title="Comunicazioni" type="primary" collapsable>
-      <div class="card card-danger direct-chat direct-chat-danger">
-        <div class="card-body">
-          <div class="direct-chat-messages">
-            <div class="direct-chat-msg">
-              <div class="direct-chat-infos clearfix">
-                <span class="direct-chat-name float-left">[Host Network Service] - </span>
-                <span class="direct-chat-timestamp float-right">12 Feb 17:59</span>
-              </div>
-              <span class="direct-chat-img">
-                <FontAwesomeIcon icon={["fas", "check-circle"]} size="3x" color="#00a65a"/>
-              </span>
-              <div class="direct-chat-text">
-                Il servizio è stato ripristinato ed è in esecuzione.
-              </div>
-            </div>
-            <div class="direct-chat-msg">
-              <div class="direct-chat-infos clearfix">
-                <span class="direct-chat-name float-left">[WindowsFreeDiskSpace] - </span>
-                <span class="direct-chat-timestamp float-right">12 Feb 17:54</span>
-              </div>
-              <span class="direct-chat-img">
-                <FontAwesomeIcon icon={["fas", "times-circle"]} size="3x" color="#dd4b39"/>
-              </span>
-              <div class="direct-chat-text">
-                Il drive C: ha il 7% di spazio libero rimanente.
-              </div>
-            </div>
-            <div class="direct-chat-msg">
-              <div class="direct-chat-infos clearfix">
-                <span class="direct-chat-name float-left">[WindowsFreeDiskSpace] - </span>
-                <span class="direct-chat-timestamp float-right">12 Feb 12:14</span>
-              </div>
-              <span class="direct-chat-img">
-                <FontAwesomeIcon icon={["fas", "exclamation-circle"]} size="3x" color="#f39c12"/>
-              </span>
-              <div class="direct-chat-text">
-                Il drive C: ha il 12% di spazio libero rimanente.
-              </div>
-            </div>
-            <div class="direct-chat-msg">
-              <div class="direct-chat-infos clearfix">
-                <span class="direct-chat-name float-left">[Print Spooler] - </span>
-                <span class="direct-chat-timestamp float-right">12 Feb 10:07</span>
-              </div>
-              <span class="direct-chat-img">
-                <FontAwesomeIcon icon={["fas", "check-circle"]} size="3x" color="#00a65a"/>
-              </span>
-              <div class="direct-chat-text">
-                Il servizio è stato ripristinato ed è in esecuzione.
-              </div>
-            </div>
+      <div className="card card-danger direct-chat direct-chat-danger">
+        <div className="card-body">
+          <div className="direct-chat-messages">
+            {props.client_template.alert.map((alert, i) => {
+              return(
+                <div className="direct-chat-msg" key={i}>
+                  <div className="direct-chat-infos clearfix">
+                    <span className="direct-chat-name float-left">[{_ALERTCATEGORY[alert.categoria]}] - </span>
+                    <span className="direct-chat-timestamp float-right">{Backend2FrontendDateConverter(alert.date_and_time_alert)}</span>
+                  </div>
+                  <span className="direct-chat-img">
+                    {(alert.tipo == "ERROR") ? state.error_icon 
+                    : (alert.tipo == "WARNING") ? state.warning_icon 
+                    : (alert.tipo == "OK") ? state.success_icon
+                    : <></>} 
+                  </span>
+                  <div className="direct-chat-text">
+                    {alert.corpo_messaggio}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>

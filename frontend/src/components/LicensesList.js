@@ -4,10 +4,11 @@ import { Box, Col } from 'adminlte-2-react';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import { addLicense, removeLicense } from '../ActionCreator';
+import { addLicense, removeLicense, updateCompanyTemplateLicenze } from '../ActionCreator';
 import PopUp from './PopUp';
 import { _LICENZE } from '../Constants';
-import { getLoadingToast } from '../toastManager';
+import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
+import { _compraLicenza, _getLicenzeShallow } from '../callableRESTs';
 
 
 /**
@@ -20,6 +21,9 @@ const mapDispatchToProps = dispatch => ({
     },
     RemoveLicense: (license) => {
       dispatch(removeLicense(license))
+    },
+    CompanyTemplateLicenze: (lista_licenze) => {
+      dispatch(updateCompanyTemplateLicenze(lista_licenze))
     }
   }
 );
@@ -36,7 +40,10 @@ const mapStateToProps = state => ({
               {name: _LICENZE.ANTIVIRUS.label, id: _LICENZE.ANTIVIRUS.tipo}
     ],
     selectedValue: state.licensesList,
-    licensesList: state.licensesList
+    licensesList: state.licensesList,
+    token: state.token,
+    id_company: state.id_company,
+    company_template: state.company_template
   }
 );
 
@@ -66,15 +73,24 @@ const LicensesList = (props) => {
     console.log(state.selectedValue);
     //buy new license
     const loadingToast = getLoadingToast("Acquistando la licenza...");
-    /*return _service()
+    return _compraLicenza(props.token, props.id_company, state.selectedValue)
     .then(function (response) {
-      stopLoadingToast(loadingToast);
       getSuccessToast(response.data.message);
+      //getLicenze
+      _getLicenzeShallow(props.id_company, props.token)
+      .then(function (response) {
+        props.CompanyTemplateLicenze(response.data.licenzeShallow)
+        stopLoadingToast(loadingToast);
+      })
+      .catch(function (error) {
+        stopLoadingToast(loadingToast);
+        getErrorToast(String(error));
+      })
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));
-    });*/
+    });
   }
 
   const _onSelect = (e) => {
@@ -90,23 +106,23 @@ const LicensesList = (props) => {
       { value: '2', label: 'BACKUP' },
       { value: '3', label: 'ANTIVIRUS' },
       { value: '4', label: 'RETE' },
-      { value: '5', label: 'VUNERABILITÀ' },
+      { value: '5', label: 'VUNERABILITA\'' },
     ];
     childList = [
     <>
       <Col xs={8} md={6}><strong><h4>CODICE LICENZA</h4></strong></Col>
       <Col xs={4} md={6}><strong><h4>CATEGORIA</h4></strong></Col>
-      {props.list.map((license, i) => {
+      {props.company_template.licensesList.map((license, i) => {
         return (isOdd(i)) 
-        ? <><Col xs={8} md={6} class="oddColor col-md-6 col-xs-8">{license.codice}</Col><Col class="oddColor col-md-6 col-xs-4" xs={4} md={6}>{license.tipologia}</Col></>
-        : <><Col xs={8} md={6} class="evenColor col-md-6 col-xs-8">{license.codice}</Col><Col class="evenColor col-md-6 col-xs-4" xs={4} md={6}>{license.tipologia}</Col></>
+        ? <><Col xs={8} md={6} className="oddColor col-md-6 col-xs-8">{license.codice}</Col><Col className="oddColor col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
+        : <><Col xs={8} md={6} className="evenColor col-md-6 col-xs-8">{license.codice}</Col><Col className="evenColor col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
       })
       }
       <Col xs={12} md={12}><p></p></Col>
       <Col xs={8} md={6}>
         {state.selectedValue==0
-          ? <button class="btn btn-primary" onClick={() => clickService()} disabled>Acquista licenza</button>
-          : <button class="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
+          ? <button className="btn btn-primary" onClick={() => clickService()} disabled>Acquista licenza</button>
+          : <button className="btn btn-primary" onClick={() => clickService()}>Acquista licenza</button>
         }
       </Col>
       <Col xs={4} md={6}>
@@ -128,7 +144,7 @@ const LicensesList = (props) => {
   
 
   return (
-    <Box title={props.title} type="primary" collapsable footer={<span href="#" class="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
+    <Box title={props.title} type="primary" collapsable footer={<span href="#" className="small-box-footer"><PopUp title="Gestione delle licenze" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Multiselect
         placeholder="Filtra per tipologia"
         emptyRecordMsg="Nessun filtro disponibile"
@@ -141,8 +157,7 @@ const LicensesList = (props) => {
         displayValue="name" // Property name to display in the dropdown options
       />
       <br />
-      {console.log(props.list)}
-      {props.list.map((license) => {
+      {props.company_template.licensesList.map((license) => {
         return (JSON.stringify(props.licensesList).toUpperCase().includes(license.tipologia.toUpperCase())) 
         ? <>
             {console.log(JSON.stringify(props.selectedValue)+" "+license.tipologia+" "+license.codice)}

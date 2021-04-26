@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.security.PermitAll;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -52,6 +53,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.Sedi;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
@@ -65,6 +67,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
+import itcube.consulting.monitoraggioClient.repositories.SediRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
@@ -78,6 +81,11 @@ import itcube.consulting.monitoraggioClient.services.Services;
 import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
 @RestController
 @RequestMapping(path="/be/main")
@@ -113,6 +121,9 @@ public class LoginController {
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
 	
+	@Autowired
+	private SediRepository sediRepository;
+	
 	//http://localhost:8080/be/main/registrazione
 	@PostMapping(path="/registrazione",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -126,7 +137,8 @@ public class LoginController {
 		ElencoCompanies company;
 		ElencoLicenze elencoLicenze;
 		String codice;
-
+		String chiave_di_registrazione;
+		
 		try {
 			email=body.get("email").toString();
 			password=body.get("password").toString();
@@ -149,7 +161,16 @@ public class LoginController {
 				company.setEmail_alert(email_alert);
 				company.setRagione_sociale(ragione_sociale);
 				
+				chiave_di_registrazione=Services.getLicenseKey();
+				
+				company.setChiave_di_registrazione(chiave_di_registrazione);
+				
 				elencoCompaniesRepository.save(company);
+				
+				Integer id_company = elencoCompaniesRepository.getIdCompanyFromChiave(chiave_di_registrazione);
+				Sedi newSede = new Sedi("Senza sede",id_company);
+				
+				sediRepository.save(newSede);
 				
 				//salva la licenza
 				do
@@ -157,12 +178,13 @@ public class LoginController {
 					codice=Services.getLicenseKey();
 				}while(elencoLicenzeRepository.countCodes(codice)!=0);
 				
+				
 				elencoLicenze=new ElencoLicenze();
 				elencoLicenze.setCodice(codice);
 				elencoLicenze.setElencoClients(null);
 				elencoLicenze.setTipologieLicenze(tipologieLicenzeRepository.getLicenza("1"));
 				elencoLicenze.setElencoCompanies(company);
-				elencoLicenze.setScadenza(Services.getScadenza());
+				elencoLicenze.setScadenza(Services.getScadenza(6));
 				
 				elencoLicenzeRepository.save(elencoLicenze);
 				
@@ -231,6 +253,7 @@ public class LoginController {
 				responseLogin.setId_company(company.getId());
 				responseLogin.setEmailNotify(company.getEmail_alert());
 				responseLogin.setToken(token);
+				responseLogin.setChiave_di_registrazione(company.getChiave_di_registrazione());
 				
 				System.out.println(Services.getCurrentDate()+" /login SUCCESS "+email);
 				
@@ -248,6 +271,9 @@ public class LoginController {
 	@PostMapping(path="/hello",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public String helloWorld(@RequestBody Map<String,Object> body) {
+	
+		
+		
 		if(Services.isValid(Integer.parseInt((String)body.get("id_company")), (String)body.get("token")))
 		{
 			String newToken=Services.checkThreshold((Integer)body.get("id_company"),(String)body.get("token"));

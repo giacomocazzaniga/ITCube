@@ -105,19 +105,19 @@ const SignUpPage = (props) => {
             <div className="col-md-6 col-md-offset-3">
               <form>
                 <div className="form-group">
-                  <label for="exampleInputEmail1">Indirizzo email</label>
+                  <label htmlFor="exampleInputEmail1">Indirizzo email</label>
                   <input type="email" value={state.emailSignUp} onChange={handleEmailSignUp} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email" />
                 </div>
                 <div className="form-group">
-                  <label for="exampleInputPassword1">Password</label>
+                  <label htmlFor="exampleInputPassword1">Password</label>
                   <input type="password" value={state.pswSignUp} onChange={handlePswSignUp} className="form-control" id="exampleInputPassword1" placeholder="Password" />
                 </div>
                 <div className="form-group">
-                  <label for="exampleInputEmail2">Indirizzo email per le comunicazioni</label>
+                  <label htmlFor="exampleInputEmail2">Indirizzo email per le comunicazioni</label>
                   <input type="email" value={state.emailAlertSignUp} onChange={handleEmailAlertSignUp} className="form-control" id="exampleInputEmail2" aria-describedby="emailHelp" placeholder="Email" />
                 </div>
                 <div className="form-group">
-                  <label for="exampleInputRagioneSociale">Ragione Sociale</label>
+                  <label htmlFor="exampleInputRagioneSociale">Ragione Sociale</label>
                   <input value={state.ragioneSocialeSignUp} onChange={handleRagioneSocialeSignUp} className="form-control" id="exampleInputRagioneSociale" aria-describedby="emailHelp" placeholder="Ragione Sociale" />
                 </div>
                 <button type="button" onClick={() => SignUpController(state.emailSignUp, state.pswSignUp, state.emailAlertSignUp, state.ragioneSocialeSignUp)} className="btn btn-primary">Registrati</button>

@@ -21,12 +21,13 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 	@Query(value="Select * from elenco_companies where elenco_companies.id= :id_company", nativeQuery=true)
 	ElencoCompanies getInfoCompany(@Param("id_company") int id);
 	
-	@Query(value="select count(*) from(\r\n"
-			+ "Select distinct cli.sede\r\n"
-			+ " from elenco_companies comp join elenco_clients cli on cli.id_company = comp.id\r\n"
-			+ " where comp.id= :id_company and cli.sede <> \"Senza sede\""
-			+ " group by cli.sede) as SUB", nativeQuery=true)
+	@Query(value="select count(*) from sedi where id_company = :id_company and nome <> 'Senza sede'", nativeQuery=true)
 	Integer getNSedi(@Param("id_company") int id_company);
 	
+	@Query(value="Select id from elenco_companies where chiave_di_registrazione= :chiave_di_registrazione",nativeQuery=true)
+	Integer getIdCompanyFromChiave(@Param("chiave_di_registrazione") String chiave);
+	
+	@Query(value="SELECT id FROM agentwindows.sedi WHERE nome = 'Senza sede' AND id_company = :id_company",nativeQuery=true)
+	Integer getSenzaSedeOfCompany(@Param("id_company") int id_company);
 	
 }

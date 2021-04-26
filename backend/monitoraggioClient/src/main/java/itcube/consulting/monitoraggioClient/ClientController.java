@@ -52,6 +52,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.Sedi;
 import itcube.consulting.monitoraggioClient.entities.TipologiaClient;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
@@ -66,6 +67,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
+import itcube.consulting.monitoraggioClient.repositories.SediRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
@@ -117,6 +119,9 @@ public class ClientController {
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
 	
+	@Autowired
+	private SediRepository sediRepository;
+	
 	@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> shallowClientsList (@RequestBody Map<String,Object> body) {
@@ -128,7 +133,7 @@ public class ClientController {
 		
 		try
 		{
-			id_company=(Integer)body.get("id_company");
+			id_company=Integer.parseInt((String)body.get("id_company"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
 			
@@ -177,7 +182,7 @@ public class ClientController {
 		
 		try 
 		{
-			id_company=(Integer)body.get("id_company");
+			id_company=Integer.parseInt((String)body.get("id_company"));
 			id_client=Integer.parseInt((String)body.get("id_client"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
@@ -195,6 +200,7 @@ public class ClientController {
 					codiciLicenze.add(i.getCodice());
 					classiLicenze.add(elencoLicenzeRepository.getClasseLicenza(i.getTipologieLicenze().getId()));
 				}
+				deepClientResponse.setDescrizione(deepClient.getDescrizione());
 				deepClientResponse.setCodice_licenza(codiciLicenze);
 				deepClientResponse.setClasse_licenza(classiLicenze);
 				
@@ -484,7 +490,7 @@ public class ClientController {
 		{
 			//MyID, LicenseKey, MachineName, MachineLabel, Type, MACAddress): MyID, Message, MessageCode
 			Integer id_client=Integer.parseInt((String)body.get("MyID"));
-			String codice=(String)body.get("LicenseKey");
+			String chiave=(String)body.get("LicenseKey");
 			String nome=(String)body.get("MachineName");
 			String descrizione=(String)body.get("MachineLabel");
 			int tipologiaClient=Integer.parseInt((String)body.get("Type"));
@@ -492,47 +498,61 @@ public class ClientController {
 			
 			if(id_client==0)
 			{
-				//salva nel db
-				ElencoClients newClient=new ElencoClients();
-				newClient.setNome(nome);
-				newClient.setDescrizione(descrizione);
-				newClient.setSede("Senza sede");
-				TipologiaClient tipo=new TipologiaClient();
-				tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
-				System.out.println(tipo);
-				newClient.setTipologiaClient(tipo);
-				newClient.setMac_address(mac_address);
-				//id_company
-				Integer id_company=elencoLicenzeRepository.getIdCompanyFromLicenza(codice);
-				//TODO:getIdLicenzaFromLicenza
-//				Integer id_licenza = elencoLicenzeRepository.getIdLicenzaFromLicenza(codice);
-				
-				if(id_company!=null)
-				{
-					ElencoCompanies company=new ElencoCompanies();
-					company=elencoCompaniesRepository.getInfoCompany(id_company);
-					newClient.setElencoCompanies(company);
-					//licenza in uso
-					List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
-					ElencoLicenze licenza = elencoLicenzeRepository.getLicenza(codice);
-					elencoLicenze.add(licenza);
-					newClient.setElencoLicenze(elencoLicenze);
-					System.out.println(newClient.getElencoLicenze().get(0).getId());
-					//sede
+				if(elencoClientsRepository.getIdFromInfo(nome, mac_address) == null) {
+					//salva nel db
+					ElencoClients newClient=new ElencoClients();
+					newClient.setNome(nome);
+					newClient.setDescrizione(descrizione);
 					
-					elencoClientsRepository.save(newClient);
+					TipologiaClient tipo=new TipologiaClient();
+					tipo=tipologieClientRepository.getNomeFromNum(tipologiaClient);
+					System.out.println(tipo);
+					newClient.setTipologiaClient(tipo);
+					newClient.setMac_address(mac_address);
+					//id_company
+					Integer id_company = elencoCompaniesRepository.getIdCompanyFromChiave(chiave);
+					Integer idSenzaSede = elencoCompaniesRepository.getSenzaSedeOfCompany(id_company);
 					
+					if(idSenzaSede != null) {
+						newClient.setSede(idSenzaSede.toString());
+					} else {
+						Sedi newSede = sediRepository.save(new Sedi("Senza sede", id_company));
+						newClient.setSede( ((Integer) newSede.getId()).toString() );
+					}
+					
+					if(id_company!=null)
+					{
+						ElencoCompanies company=new ElencoCompanies();
+						company=elencoCompaniesRepository.getInfoCompany(id_company);
+						newClient.setElencoCompanies(company);
+						//licenza in uso
+						List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
+						
+						ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
+						elencoLicenze.add(licenza);
+						newClient.setElencoLicenze(elencoLicenze);
+						System.out.println(newClient.getElencoLicenze().get(0).getId());
+						//sede
+						
+						elencoClientsRepository.save(newClient);
+						
+						response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
+						response.setMessage("OK");
+						response.setMessageCode(0);
+						return ResponseEntity.ok(response);
+					}
+					else
+					{
+						response.setMyID(null);
+						response.setMessage("Company non registrata");
+						response.setMessageCode(-1);
+						return ResponseEntity.badRequest().body(response);
+					}
+				} else {
 					response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
 					response.setMessage("OK");
 					response.setMessageCode(0);
 					return ResponseEntity.ok(response);
-				}
-				else
-				{
-					response.setMyID(null);
-					response.setMessage("Licenza non registrata");
-					response.setMessageCode(-1);
-					return ResponseEntity.badRequest().body(response);
 				}
 			}
 			else
@@ -554,7 +574,7 @@ public class ClientController {
 		}
 	}
 	
-	@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	/*@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> modificaSedeClient(@RequestBody Map<String,Object> body)
 	{
@@ -601,7 +621,7 @@ public class ClientController {
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
-	}
+	}*/
 	
 	@PostMapping(path="/getDrives",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin

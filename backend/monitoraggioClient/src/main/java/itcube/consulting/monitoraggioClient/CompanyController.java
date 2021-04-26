@@ -52,6 +52,7 @@ import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.ElencoLicenze;
+import itcube.consulting.monitoraggioClient.entities.Sedi;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
@@ -65,6 +66,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoOperazioniRepository;
 import itcube.consulting.monitoraggioClient.repositories.RealTimeRepository;
+import itcube.consulting.monitoraggioClient.repositories.SediRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
@@ -73,6 +75,7 @@ import itcube.consulting.monitoraggioClient.response.GetNSediResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeShallowResponse;
+import itcube.consulting.monitoraggioClient.response.NomiSediResponse;
 import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
@@ -113,6 +116,9 @@ public class CompanyController {
 	
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
+	
+	@Autowired
+	private SediRepository sediRepository;
 	
 	@PostMapping(path="/editCompanyData",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -219,6 +225,212 @@ public class CompanyController {
 			response.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/modificaSedeClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> modificaSedeClient(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		Integer id_client;
+		String token;
+		String nuovaSede;
+		String vecchiaSede;
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				vecchiaSede=(String) body.get("vecchiaSede");
+				nuovaSede= (String) body.get("nuovaSede");
+				String id_vecchia_sede = "";
+				if(!vecchiaSede.equals("")) {
+					id_vecchia_sede = Integer.toString(sediRepository.nomeToId(id_company, vecchiaSede));
+				}
+				
+				id_client=Integer.parseInt( (String) body.get("id_client") );
+			
+				String id_nuova_sede =  Integer.toString(sediRepository.nomeToId(id_company, nuovaSede)) ;
+
+				if(id_client==-1)
+				{
+					elencoClientsRepository.modificaAllVecchieSediClient(id_company,id_nuova_sede, id_vecchia_sede);
+				}
+				else
+				{
+					elencoClientsRepository.modificaSingolaSedeClient(id_client, id_nuova_sede);
+				}
+				
+				generalResponse.setMessage("OK");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(validToken.getToken());
+				return ResponseEntity.ok(generalResponse);
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/inserimentoSede",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> inserimentoSede(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		String nome;
+		Sedi sede=new Sedi();
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				nome=(String) body.get("nome");
+				
+				sede.setId_company(id_company);
+				sede.setNome(nome);
+				
+				sediRepository.save(sede);
+				
+				generalResponse.setMessage("OK");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(validToken.getToken());
+				return ResponseEntity.ok(generalResponse);
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/cancellazioneSede",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> cancellazioneSede(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		String nome;
+		List<Integer> clients=new ArrayList<>();
+		Sedi sede=new Sedi();
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				nome=(String) body.get("nome");
+				if(nome.equals("Senza sede")) {
+					generalResponse.setMessage("Impossibile eliminare 'Senza sede'");
+					generalResponse.setMessageCode(1);
+					generalResponse.setToken(validToken.getToken());
+					return ResponseEntity.ok(generalResponse);
+				}
+				
+				sede=sediRepository.isPresent(nome, id_company);
+				clients=elencoClientsRepository.getClientsInSede(sede.getId(), id_company);
+
+				System.out.println(sede.getNome());
+				System.out.println(clients.size());
+				
+				if(clients.size()==0 && sede!=null)
+				{
+					sediRepository.delete(sede);
+					
+					generalResponse.setMessage("OK");
+					generalResponse.setMessageCode(0);
+					generalResponse.setToken(validToken.getToken());
+					return ResponseEntity.ok(generalResponse);
+				}
+				else
+				{
+					generalResponse.setMessage("Impossibile completare l'operazione");
+					generalResponse.setMessageCode(-3);
+					generalResponse.setToken(validToken.getToken());
+					return ResponseEntity.ok(generalResponse);
+				}
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.ok(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+//			generalResponse.setMessage("Impossibile completare l'operazione");
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/getNomiSedi",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getNomiSedi(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		NomiSediResponse response=new NomiSediResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		List<String> nomi=new ArrayList<>();
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid())
+			{
+				nomi=sediRepository.getNomiSedi(id_company);
+				
+				response.setSedi(nomi);
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				response.setToken(validToken.getToken());
+				return ResponseEntity.ok(response);
+			}
+			generalResponse.setMessage("Autenticazione fallita");
+			generalResponse.setMessageCode(-2);
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+		catch(Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
 }

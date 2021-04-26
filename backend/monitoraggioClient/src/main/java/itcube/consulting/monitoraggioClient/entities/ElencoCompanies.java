@@ -28,6 +28,7 @@ public class ElencoCompanies {
 	private String password;
 	private String email;
 	private String email_alert;
+	private String chiave_di_registrazione;
 
 	public ElencoCompanies() {
 	}
@@ -86,6 +87,14 @@ public class ElencoCompanies {
 
 	public void setElencoClients(List<ElencoClients> elencoClients) {
 		this.elencoClients = elencoClients;
+	}
+
+	public String getChiave_di_registrazione() {
+		return chiave_di_registrazione;
+	}
+
+	public void setChiave_di_registrazione(String chiave_di_registrazione) {
+		this.chiave_di_registrazione = chiave_di_registrazione;
 	}
 
 	@Override

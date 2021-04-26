@@ -11,6 +11,7 @@ import { categoriesList, searchClient } from './ActionCreator';
 import { _FILTERS, _LICENZE } from './Constants';
 import { ClientFilter } from './HierarchyManager';
 import { toaster } from './toastManager';
+import { idToNomeLicenza, idToNomeSede } from './Tools';
 
 /**
  * connect the actions to the component
@@ -32,58 +33,22 @@ const mapDispatchToProps =  dispatch => {
 const mapStateToProps = state => {
   return {
     client_list: state.client_list,
-    nome_company: state.nome_company,
+    nome_company: state.company_template.company_data.ragione_sociale,
     logged: state.logged,
     searched_client: state.searched_client,
     categories_list: state.categories_list,
     places_list: state.places_list,
-    category_vs_place: state.category_vs_place,
+    category_vs_place: state.company_template.category_vs_place,
     token: state.token,
-    id_company: state.id_company
+    id_company: state.id_company,
+    lista_nomi_sedi: state.lista_nomi_sedi,
+    lista_id_sedi: state.lista_id_sedi
   }
 }
 
 const { Item, Searchbar } = Sidebar;
 
-const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
-  /**
-   * {"Client": 1,
-   * "Server": 2}
-   */
-  let category = [{"nome": "Client", "n_client": 0}, {"nome": "Server", "n_client": 0}]
-  category.map((cat) => {
-    if(cat.nome=="Client"){cat.n_client = categories_list["Client"]}
-    else if(cat.nome=="Server"){cat.n_client = categories_list["Server"]}
-  })
-  let filterMap = ClientFilter(client_list, _FILTERS.CLIENT_TYPE);
-  let filtered_client_list = filterMap[0];
-  let map = filterMap[1];
-  let lastComponent = [];
-  {filtered_client_list.map((filtered_clients) => {
-    lastComponent = [lastComponent, <Item icon="fa-map-marker-alt" text={filtered_clients.place+" ("+filtered_clients.filteredList.length+")"}>
-      {category.map((cat) => {
-        return (<Item icon="fa-users" text={cat.nome}>
-          {client_list.map((item) => {
-            return (item.sede==filtered_clients.place && item.tipo_client==cat.nome)
-            ? (searched_client=="")
-              ?
-                (item.tipo_client=="Client")
-                ? <Item icon={"fa-desktop"} key={item.id_client} text={<>{item.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+item.id_client} />
-                : <Item icon={"fa-server"} key={item.id_client} text={<>{item.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+item.id_client} /> 
-              :
-                (item.tipo_client=="Client")
-                ? (item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={"fa-desktop"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
-                : (item.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={"fa-server"} key={item.id_client} text={item.nome_client} to={"/company"+nome_company+"user"+item.id_client} /> : <></>
-            : <></>
-          })}
-        </Item>)
-      })}
-    </Item>]
-  })}
-  return lastComponent;
-}
-
-const getSidebarByLicense = (client_list, nome_company, searched_client, licenses_list) =>{
+const getSidebarByLicense2 = (client_list, nome_company, searched_client, licenses_list) =>{
   /**
    * {"1": 1,
    * "2": 2,
@@ -158,6 +123,74 @@ const App = (props) => {
   const handleChange = event => {
     props.Search(event.target.value);
   }
+
+  const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
+    /**
+     * {"Client": 1,
+     * "Server": 2}
+     */
+    let categories = ["Client","Server"];
+    let categoriesIcons = ["fa-desktop","fa-server"]
+    let lastComponent = [];
+    if(props.lista_id_sedi != undefined){ 
+      props.lista_id_sedi.map((sede) => {
+      (client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
+      ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
+        {categories.map((category,i) => {
+          return (client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length > 0 && client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
+          ? <Item icon="fa-users" text={category+ " ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length+")"}>
+          {props.client_list.map((client) => {
+            return (client.sede == sede && client.tipo_client===category)
+            ? (searched_client=="")
+              ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+            : <></>
+            })
+          }
+          </Item>
+        : <></>  
+        })}
+      </Item>]
+      : lastComponent = lastComponent;
+    })
+  }
+    return lastComponent;
+  }
+
+
+  const getSidebarByLicense = (client_list, nome_company, searched_client, licenses_list) =>{
+    /**
+     * {"1": 1,
+     * "2": 2,
+     * ...}
+     */
+    let categories = [1,2,3,4,5];
+    let lastComponent = [];
+    if(props.lista_id_sedi != undefined){ 
+      props.lista_id_sedi.map((sede) => {
+      (client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
+      ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
+        {categories.map((category) => {
+          return (client_list.filter(function(o) { return (o.sede == sede && o.classe_licenza.includes(category))}).length > 0 && client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
+          ? <Item icon="fa-users" text={idToNomeLicenza(category)+ " ("+client_list.filter(function(o) { return (o.sede == sede && o.classe_licenza.includes(category))}).length+")"}>
+          {props.client_list.map((client) => {
+            return (client.sede == sede && client.classe_licenza.includes(category))
+            ? (searched_client=="")
+              ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+            : <></>
+            })
+          }
+          </Item>
+        : <></>  
+        })}
+      </Item>]
+      : lastComponent = lastComponent;
+    })
+  }
+    return lastComponent;
+  }
+
   return (
     
       <div>
@@ -167,7 +200,7 @@ const App = (props) => {
             <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
             {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
           </AdminLTE>
-        : <AdminLTE title={["nome progetto"]} theme="blue" sidebar={getSidebarUnlogged()}>
+        : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
             <div path="/accedi" title="Accedi"><LoginPage /></div>
             <div path="/registrati" title="Registrati"><SignUpPage /></div>
           </AdminLTE>

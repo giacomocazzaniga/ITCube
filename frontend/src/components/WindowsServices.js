@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUp from "./PopUp";
-import { servicesList, serviziOverview } from "../ActionCreator";
-import { defaultUpperBound, _getServiziAll, _getServiziMonitorati, _getServiziOverview, _modificaMonitoraggioServizio } from "../callableRESTs";
+import { servicesList, serviziOverview, updateCTWindowsServices } from "../ActionCreator";
+import { defaultUpperBound } from "../Constants";
+import { _getServiziAll, _getServiziMonitorati, _getServiziOverview, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 import ReactPaginate from "react-paginate";
-import { Backend2FrontendDateConverter } from "../Tools";
+import { Backend2FrontendDateConverter, sortResults } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -18,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(servicesList(services))
     },
     SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
-      dispatch(serviziOverview(n_totali, n_running, n_stop, n_monitorati))
+      dispatch(updateCTWindowsServices(n_totali, n_running, n_stop, n_monitorati))
     }
   }
 );
@@ -51,13 +52,12 @@ const WindowsServices = (props) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getServiziAll(props.token, props.id_client)
     .then(function (response) {
-      console.log(response.data.confWindowsServices)
       let tmp_list = response.data.confWindowsServices
       _getServiziMonitorati(props.token, props.id_client)
       .then(function (response) {
         stopLoadingToast(loadingToast);
-        console.log(response.data.monitoraggi)
         let tmp_list2 = merge_object_arrays(tmp_list, response.data.monitoraggi, 'nome_servizio')
+        sortResults('nome_servizio', true, tmp_list2);
         let list = servicesListMaker(tmp_list2);
         props.ServicesList(list)
       })
@@ -129,13 +129,11 @@ const WindowsServices = (props) => {
   const getCard = (returnList, opname, stato, i, ServiceControllerStatus, ServiceStartMode, ServiceType, start_type, service_type, monitora) => {
     return (!isOdd(i))
     ? 
-      monitora != null
-      ?
         monitora == true
         ?
           returnList = [returnList, 
             <>
-              <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
+              <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
               <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
               <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
               <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
@@ -145,31 +143,19 @@ const WindowsServices = (props) => {
         :
           returnList = [returnList, 
             <>
-              <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname}/></Col>
+              <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} autocomplete="off"/></Col>
               <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
               <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
               <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
               <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
-      :
-        returnList = [returnList, 
-          <>
-            <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-            <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
-            <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
-            <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
-            <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
-          </>
-        ]
     : 
-      monitora != null
-      ?
         monitora == true
         ?
           returnList = [returnList, 
             <>
-              <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
+              <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
               <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
               <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
               <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
@@ -179,23 +165,13 @@ const WindowsServices = (props) => {
         :
           returnList = [returnList, 
             <>
-              <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname}/></Col>
+              <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} autocomplete="off"/></Col>
               <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
               <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
               <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
               <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
-      :
-        returnList = [returnList, 
-          <>
-            <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-            <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
-            <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
-            <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
-            <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
-          </>
-        ]
   }
 
   return (
