@@ -36,6 +36,15 @@ public interface ElencoAlertRepository extends CrudRepository<Alert,Integer> {
 			+ "	where id_client=:id_client and corpo_messaggio LIKE concat('%', :nome_servizio ,'%'))", nativeQuery=true)
 	Integer isModified(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio, @Param("tipo") String tipo);
 	
+	@Query(value="Select tipo "
+			+ "from alert "
+			+ "where categoria=2 and id_client= :id_client and corpo_messaggio LIKE concat('%', :nome_servizio ,'%') "
+			+ "order by date_and_time_alert desc "
+			+ "limit 1", nativeQuery=true)
+	String lastAlertStatus(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
+	
+	
+	
 	/*@Query(value="Select count(*) from alert where id_client= :id_client and tipo='ERROR' and AND date_and_time_alert between date_sub(now(),INTERVAL :n_giorni DAY) and now()", nativeQuery=true)
 	int countErrorClient(@Param("id_client") int id_client, @Param("n_giorni") int n_giorni);
 	

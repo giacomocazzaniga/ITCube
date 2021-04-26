@@ -357,8 +357,11 @@ public class CompanyController {
 					return ResponseEntity.ok(generalResponse);
 				}
 				
-				clients=elencoClientsRepository.getClientsInSede(nome, id_company);
 				sede=sediRepository.isPresent(nome, id_company);
+				clients=elencoClientsRepository.getClientsInSede(sede.getId(), id_company);
+
+				System.out.println(sede.getNome());
+				System.out.println(clients.size());
 				
 				if(clients.size()==0 && sede!=null)
 				{
@@ -373,16 +376,18 @@ public class CompanyController {
 				{
 					generalResponse.setMessage("Impossibile completare l'operazione");
 					generalResponse.setMessageCode(-3);
-					return ResponseEntity.badRequest().body(generalResponse);
+					generalResponse.setToken(validToken.getToken());
+					return ResponseEntity.ok(generalResponse);
 				}
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
 			generalResponse.setMessage(e.getMessage());
+//			generalResponse.setMessage("Impossibile completare l'operazione");
 			generalResponse.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);

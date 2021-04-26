@@ -106,7 +106,7 @@ const UserData = (props) => {
     const loadingToast = getLoadingToast("Rimuovendo la sede...");
     return _cancellazioneSede( props.token, props.id_company, nome)
     .then(function (response) {
-      if(response.data.messageCode == _MSGCODE.ERR){
+      if(response.data.messageCode != _MSGCODE.NO_ERR){
         stopLoadingToast(loadingToast);
         getErrorToast(String(response.data.message))
       } else {
