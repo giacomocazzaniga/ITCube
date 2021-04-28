@@ -25,4 +25,34 @@ public interface ConfTotalFreeDiscSpaceRepository extends CrudRepository<ConfTot
 	@Query(value="Select * from conf_total_free_disc_space where id_client= :id_client", nativeQuery=true)
 	List<ConfTotalFreeDiscSpace> getDrives(@Param("id_client") int id_client);
 	
+	@Query(value="select count(*) from ( "
+			+ "Select * "
+			+ "from conf_total_free_disc_space "
+			+ "WHERE id_client= :id_client "
+			+ "ORDER by date_and_time desc "
+			+ "limit :limite "
+			+ ") SUB where perc_free_disc_space > 10 and perc_free_disc_space <= 20 ", nativeQuery=true)
+	int getNumWarning(@Param("id_client") int id_client, @Param("limite") int limite);
+	
+	@Query(value="select count(*) from ( "
+			+ "Select * "
+			+ "from conf_total_free_disc_space "
+			+ "WHERE id_client= :id_client "
+			+ "ORDER by date_and_time desc "
+			+ "limit :limite "
+			+ ") SUB where perc_free_disc_space <= 10 ", nativeQuery=true)
+	int getNumError(@Param("id_client") int id_client, @Param("limite") int limite);
+	
+	@Query(value="select count(*) from ( "
+			+ "Select * "
+			+ "from conf_total_free_disc_space "
+			+ "WHERE id_client= :id_client "
+			+ "ORDER by date_and_time desc "
+			+ "limit :limite "
+			+ ") SUB where perc_free_disc_space > 20 ", nativeQuery=true)
+	int getNumOk(@Param("id_client") int id_client, @Param("limite") int limite);
+	
+	@Query(value="select count(DISTINCT drive) from conf_total_free_disc_space where id_client= :id_client", nativeQuery=true)
+	int getTotDrives(@Param("id_client") int id_client);
+	
 }

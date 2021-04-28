@@ -160,7 +160,7 @@ const LicensesList = (props) => {
       {props.company_template.licensesList.map((license) => {
         return (JSON.stringify(props.licensesList).toUpperCase().includes(license.tipologia.toUpperCase())) 
         ? <>
-            {console.log(JSON.stringify(props.selectedValue)+" "+license.tipologia+" "+license.codice)}
+            {/* {console.log(JSON.stringify(props.selectedValue)+" "+license.tipologia+" "+license.codice)} */}
             <Col xs={8} md={6}>{license.codice}</Col>
             <Col xs={4} md={6}>{license.tipologia}</Col>
           </>

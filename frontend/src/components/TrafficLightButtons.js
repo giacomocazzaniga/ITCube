@@ -30,7 +30,13 @@ const TrafficLightButtons = (props) => {
             <FontAwesomeIcon icon={["fas", "times-circle"]} />
           </div>
           <span href="#" className="small-box-footer">
-            <PopUp title="Problemi" linkClass={"whiteLink"} childs={[]} action={()=>(console.log("action"))}/>
+            {(props.isHome == false) 
+            ? 
+              <PopUp title="Problemi" linkClass={"whiteLink"} childs={props.popUpChildsProblemi} action={()=>(console.log("action"))}/>
+            :
+              <PopUp title="Problemi" linkClass={"whiteLink"} childs={props.idClientsProblemi} action={()=>(console.log("action"))}/>
+            }
+            
           </span>
         </div>
       </Col>
@@ -44,7 +50,14 @@ const TrafficLightButtons = (props) => {
             <FontAwesomeIcon icon={["fas", "exclamation-circle"]} />
           </div>
           <span href="#" className="small-box-footer">
-            <PopUp title="Warnings" linkClass={"whiteLink"} childs={[]} action={()=>(console.log("action"))}/>
+            {
+              (props.isHome == false)
+              ?
+              <PopUp title="Warnings" linkClass={"whiteLink"} childs={props.popUpChildsWarnings} action={()=>(console.log("action"))}/>
+              :
+              <PopUp title="Warnings" linkClass={"whiteLink"} childs={props.idClientsWarnings} action={()=>(console.log("action"))}/>
+            }
+            
           </span>
         </div>
       </Col>

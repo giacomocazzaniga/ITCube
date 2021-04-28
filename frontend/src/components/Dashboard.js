@@ -7,13 +7,14 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
+import { _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { resetClientTemplate, serviziOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
 import { defaultUpdateInterval } from "../Constants";
+import { Container } from "react-bootstrap";
 
 document.body.classList.add('fixed');
 
@@ -36,6 +37,9 @@ const mapDispatchToProps = dispatch => ({
   },
   SetClientTemplateAlert: (alert) => {
     dispatch(updateCTAlert(alert))
+  },
+  SetClientTemplateOverview: (errori,warnings,ok) => {
+    dispatch(updateClientOverview(errori,warnings,ok))
   }
 });
 
@@ -131,11 +135,7 @@ const Dashboard = (props) => {
       setState((previousState) => {
         return { ...previousState, clientData: response.data };
       });
-      _getServiziOverview(props.token, props.id_client)
-      .then(function (response) {
-        //n_monitorati, n_esecuzione, n_stop
-        props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-        _getEventiOverview(props.token, props.id_client)
+      _getEventiOverview(props.token, props.id_client)
         .then(function (response) {
           props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
           setState((previousState) => {
@@ -156,11 +156,28 @@ const Dashboard = (props) => {
               .then(function (response) {
                 //props alert
                 props.SetClientTemplateAlert(response.data.alerts)
-              })
-              .catch(function (error) {
-                stopLoadingToast(loadingToast);
-                getErrorToast(String(error));
-              })
+                _getServiziOverview(props.token, props.id_client)
+                .then(function (response) {
+                  //n_monitorati, n_esecuzione, n_stop
+                  props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+                  _getClientOverview(props.token, props.id_client)
+                  .then(function (response) {
+                    // props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+                    props.SetClientTemplateOverview(
+                      response.errori,
+                      response.warnings,
+                      response.ok
+                    )
+                  })
+                  .catch(function (error) {
+                    stopLoadingToast(loadingToast);
+                    getErrorToast(String(error));
+                  })
+                })
+                .catch(function (error) {
+                  stopLoadingToast(loadingToast);
+                  getErrorToast(String(error));
+                })
             })
           .catch(function (error) {
             stopLoadingToast(loadingToast);
@@ -190,13 +207,39 @@ const Dashboard = (props) => {
       clearInterval(idInterval);
     }
  }, []);
+
+ const isOdd = (num) => { return ((num % 2)==1) ? true : false }
+
+ const getChilds = (list,tipo) => {
+  let col = ["servizi","eventi","drives"]
+  let returnList = [
+    <div className="col-md-12 col-xs-12">
+      {list.map( (el,i) => {
+        return (isOdd(i)) 
+        ?
+          <Row>
+            <Col className="oddColor col-md-6 col-xs-6"><h4>Numero di <strong>{col[i]}</strong> che presentano {tipo}:</h4></Col>
+            <Col className="oddColor col-md-6 col-xs-6"><h4>{el} </h4></Col>
+          </Row>
+        :
+          <Row>
+            <Col className="evenColor col-md-6 col-xs-6"><h4>Numero di <strong>{col[i]}</strong> che presentano {tipo}:</h4></Col>
+            <Col className="evenColor col-md-6 col-xs-6"><h4>{el} </h4></Col>
+          </Row>
+      })}
+    </div>
+    
+  ];
+  return returnList;
+ }
+
   return (
   state.clientData != null 
   ? 
   <Content title={props.title} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
-        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Servizi in esecuzione"]} problems={props.client_template.overview.problemi} warnings={props.client_template.overview.warnings} running={props.client_template.overview.ok} />
+        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Problemi e warning risolti"]} problems={(props.client_template.overview.problemi.map(p => p).reduce((sum, current) => sum + current, 0 ))} warnings={(props.client_template.overview.warnings.map(p => p).reduce((sum, current) => sum + current, 0 ))} running={(props.client_template.overview.ok.map(p => p).reduce((sum, current) => sum + current, 0 ))} popUpChildsWarnings={getChilds(props.client_template.overview.warnings,"warnings")} popUpChildsProblemi={getChilds(props.client_template.overview.problemi,"problemi")} idClientsWarnings={[]} idClientsProblemi={[]} isHome={false}/>
         <Col md={8} xs={12}>
           <Communications />
           <History apex={props.client_template.history}/>

@@ -27,6 +27,9 @@ export const url_cancellazione_sede = buildurl+"cancellazioneSede";
 export const url_get_nomi_sedi = buildurl+"getNomiSedi";
 export const url_get_latest_alert = buildurl+"getLatestAlerts";
 export const url_compra_licenza = buildurl+"compraLicenza";
+export const url_get_client_overview_services = buildurl+"getClientOverview";
+export const url_get_company_overview = buildurl+"getCompanyOverview";
+
 
 
 const portFake = "3001"; 

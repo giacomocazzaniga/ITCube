@@ -36,7 +36,8 @@ const mapStateToProps = state => ({
     emailNotify: state.company_template.company_data.emailNotify,
     email: state.company_template.company_data.email,
     lista_sedi: state.company_template.company_data.n_sedi,
-    listaNomiSedi: state.lista_nomi_sedi
+    listaNomiSedi: state.lista_nomi_sedi,
+    lista_id_sedi: state.lista_id_sedi
   }
 );
 
@@ -87,6 +88,16 @@ const UserData = (props) => {
             listaSedi.push(sede.substring(0,sede.indexOf(",")));
             
           })
+          let tmp_list = props.client_list;
+          tmp_list.map(tmp_client => {
+            props.listaNomiSedi.map((sede,i) => {
+              if((tmp_client.sede == sede) || (tmp_client.sede == props.lista_id_sedi[i])){
+                tmp_client.sede = props.lista_id_sedi[i];
+              }
+            })
+          })
+          //props.FixSedi(tmp_list);
+        
           props.UpdateListaSedi(listaNomi, token, listaSedi);
           getSuccessToast("Sede aggiunta correttamente.");
         })

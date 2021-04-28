@@ -51,9 +51,9 @@ public class AlertController {
 		{
 			id_company=elencoClientsRepository.getIdCompany(id_client);
 			
-			if(perc_free_space < 10)
+			if(perc_free_space <= 10)
 				disc_state = "ERROR";
-			if(perc_free_space >= 10 && perc_free_space <= 20)
+			if(perc_free_space > 10 && perc_free_space <= 20)
 				disc_state = "WARNING";
 			if(perc_free_space > 20)
 				disc_state = "OK";

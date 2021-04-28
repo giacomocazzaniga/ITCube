@@ -85,10 +85,11 @@ const initialState = {
         }
       ]
     },
+    //services, events, drives
     overview: {
-      problemi: 0,
-      warnings: 0,
-      ok: 0
+      problemi: [0,0,0],
+      warnings: [0,0,0],
+      ok: [0,0,0]
     },
     drives: [
       {
@@ -102,9 +103,9 @@ const initialState = {
   },
   company_template: {
     client_overview: {
-      n_errori: 0,
-      n_warnings: 0,
-      n_running: 0
+      n_errori: [],
+      n_warnings: [],
+      n_running: []
     },
     category_vs_place: true,
     history: {  
@@ -159,7 +160,6 @@ const initialState = {
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
-      ...state,
       company_template: {
         ...state.company_template,
         company_data: {
@@ -186,7 +186,6 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.UPDATECOMPANYDATA) {
     return Object.assign({}, state, {
-      ...state,
       company_template: {
         ...state.company_template,
         company_data: {
@@ -235,7 +234,6 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.CATEGORYVSPLACE) {
     return Object.assign({}, state, {
-      ...state,
       company_template: {
         ...state.company_template,
         category_vs_place: action.category_vs_place
@@ -262,7 +260,7 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.LISTANOMISEDI) {
     return Object.assign({}, state, {
-      ...state,
+      //client_list: action.tmp_list,
       lista_nomi_sedi: action.listaNomi,
       token: action.token,
       lista_id_sedi: action.listaId,
@@ -286,7 +284,6 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEWINDOWSEVENTS) {
     return Object.assign({}, state, {
-      ...state,
       client_template: {
         ...state.client_template,
         windows_events: action.windows_events
@@ -295,7 +292,6 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEWINDOWSSERVICES) {
     return Object.assign({}, state, {
-      ...state,
       client_template: {
         ...state.client_template,
         windows_services: action.windows_services
@@ -304,7 +300,6 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEINFO) {
     return Object.assign({}, state, {
-      ...state,
       client_template: {
         ...state.client_template,
         info: action.info
@@ -313,7 +308,6 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEALERT) {
     return Object.assign({}, state, {
-      ...state,
       client_template: {
         ...state.client_template,
         alert: action.alert
@@ -322,17 +316,36 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATERESET) {
     return Object.assign({}, state, {
-      ...state,
       client_template: initialState.client_template
     });
   }
   if(action.type === types.COMPANYTEMPLATELICENZE) {
     return Object.assign({}, state, {
-      ...state,
       company_template: {
         ...state.company_template,
         licensesList: action.lista_licenze
       }
+    });
+  }
+  if(action.type === types.UPDATECLIENTOVERVIEW) {
+    return Object.assign({}, state, {
+      client_template: {
+        ...state.client_template,
+        overview: action.overview
+      }
+    });
+  }
+  if(action.type === types.UPDATECOMPANYOVERVIEW) {
+    return Object.assign({}, state, {
+      company_template: {
+        ...state.company_template,
+        client_overview: action.overview
+      }
+    });
+  }
+  if(action.type === types.FIXSEDI) {
+    return Object.assign({}, state, {
+      client_list: action.lista_client
     });
   }
 
