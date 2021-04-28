@@ -1,5 +1,5 @@
 const port = "8080";
-const ip = "217.160.240.146";
+const ip = "127.0.0.1";//"217.160.240.146";
 const buildurl = "http://"+ip+":"+port+"/be/main/";
 export const url_login = buildurl+"login"; //V
 export const url_signup = buildurl+"registrazione"; //V
@@ -27,10 +27,13 @@ export const url_cancellazione_sede = buildurl+"cancellazioneSede";
 export const url_get_nomi_sedi = buildurl+"getNomiSedi";
 export const url_get_latest_alert = buildurl+"getLatestAlerts";
 export const url_compra_licenza = buildurl+"compraLicenza";
+export const url_get_client_overview_services = buildurl+"getClientOverview";
+export const url_get_company_overview = buildurl+"getCompanyOverview";
+
 
 
 const portFake = "3001"; 
-const ipFake = "217.160.240.146";
+const ipFake = "127.0.0.1";//"217.160.240.146";
 const buildurlFake = "http://"+ipFake+":"+portFake+"/";
 export const url_loginFake = buildurlFake+"login";
 export const url_signupFake = buildurlFake+"signup";

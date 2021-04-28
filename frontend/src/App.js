@@ -133,14 +133,20 @@ const App = (props) => {
     let categoriesIcons = ["fa-desktop","fa-server"]
     let lastComponent = [];
     if(props.lista_id_sedi != undefined){ 
-      props.lista_id_sedi.map((sede) => {
+      props.lista_id_sedi.map((sede, j) => {
       (client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
       ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
         {categories.map((category,i) => {
           return (client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length > 0 && client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
           ? <Item icon="fa-users" text={category+ " ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length+")"}>
           {props.client_list.map((client) => {
-            return (client.sede == sede && client.tipo_client===category)
+            //if((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category)){
+            //    console.log(client.sede)
+            //  console.log(props.lista_nomi_sedi[j])
+            //  console.log(sede)
+            //}
+            
+            return ((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category))
             ? (searched_client=="")
               ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
               : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
@@ -167,14 +173,14 @@ const App = (props) => {
     let categories = [1,2,3,4,5];
     let lastComponent = [];
     if(props.lista_id_sedi != undefined){ 
-      props.lista_id_sedi.map((sede) => {
+      props.lista_id_sedi.map((sede, j) => {
       (client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
       ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { return o.sede == sede }).length+")"}>
         {categories.map((category) => {
           return (client_list.filter(function(o) { return (o.sede == sede && o.classe_licenza.includes(category))}).length > 0 && client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
           ? <Item icon="fa-users" text={idToNomeLicenza(category)+ " ("+client_list.filter(function(o) { return (o.sede == sede && o.classe_licenza.includes(category))}).length+")"}>
           {props.client_list.map((client) => {
-            return (client.sede == sede && client.classe_licenza.includes(category))
+            return ((client.sede == sede && client.classe_licenza.includes(category)) || (client.sede == props.lista_nomi_sedi[j] && client.classe_licenza.includes(category)))
             ? (searched_client=="")
               ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
               : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>

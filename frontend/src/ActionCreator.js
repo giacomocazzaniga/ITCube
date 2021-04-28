@@ -66,6 +66,7 @@ export const listaNomiSedi = (listaNomi, token, listaId) => ({
   listaNomi: listaNomi,
   token: token,
   listaId: listaId
+  //tmp_list: tmp_list
 })
 
 export const updateSidebar = (elencoClients,sedi, token, listaNomi, listaSedi) => ({
@@ -119,4 +120,27 @@ export const resetClientTemplate = () => ({
 export const updateCompanyTemplateLicenze = (lista_licenze) => ({
   type: types.COMPANYTEMPLATELICENZE,
   lista_licenze: lista_licenze
+})
+
+export const updateClientOverview = (n_errori,n_warnings,n_ok) => ({
+  type: types.UPDATECLIENTOVERVIEW,
+    overview: {
+      problemi: n_errori,
+      warnings: n_warnings,
+      ok: n_ok
+  }
+})
+
+export const updateCompanyOverview = (n_errori, n_warning, n_ok) => ({
+  type: types.UPDATECOMPANYOVERVIEW,
+    overview: {
+      n_errori: n_errori,
+      n_running: n_ok,
+      n_warnings: n_warning
+  }
+})
+
+export const fixSedi = (lista_client) => ({
+  type: types.FIXSEDI,
+  lista_client: lista_client
 })

@@ -85,10 +85,11 @@ const initialState = {
         }
       ]
     },
+    //services, events, drives
     overview: {
-      problemi: 0,
-      warnings: 0,
-      ok: 0
+      problemi: [0,0,0],
+      warnings: [0,0,0],
+      ok: [0,0,0]
     },
     drives: [
       {
@@ -102,9 +103,9 @@ const initialState = {
   },
   company_template: {
     client_overview: {
-      n_errori: 0,
-      n_warnings: 0,
-      n_running: 0
+      n_errori: [],
+      n_warnings: [],
+      n_running: []
     },
     category_vs_place: true,
     history: {  
@@ -204,32 +205,38 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.SIGNUP) {
     return Object.assign({}, state, {
+      ...state,
       message: action.message,
       messageCode: action.messageCode
     });
   }
   if (action.type === types.ADDLICENSE) {
     return Object.assign({}, state, {
+      ...state,
       licensesList: action.license
     });
   }
   if (action.type === types.REMOVELICENSE) {
     return Object.assign({}, state, {
+      ...state,
       licensesList: action.license
     });
   }
   if (action.type === types.SEARCHCLIENT) {
     return Object.assign({}, state, {
+      ...state,
       searched_client: action.client_name
     });
   }
   if (action.type === types.PLACESLIST) {
     return Object.assign({}, state, {
+      ...state,
       places_list: action.places_list
     });
   }
   if (action.type === types.CATEGORIESLIST) {
     return Object.assign({}, state, {
+      ...state,
       categories_list: action.categories_list
     });
   }
@@ -244,16 +251,19 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.SERVICESLIST) {
     return Object.assign({}, state, {
+      ...state,
       services_list: action.servicesList
     });
   }
   if (action.type === types.EVENTSLIST) {
     return Object.assign({}, state, {
+      ...state,
       events_list: action.eventsList
     });
   }
   if (action.type === types.SERVIZIOVERVIEW) {
     return Object.assign({}, state, {
+      ...state,
       n_totali: action.n_totali,
       n_running: action.n_running,
       n_stop: action.n_stop,
@@ -263,6 +273,7 @@ export function rootReducer(state = initialState, action) {
   if (action.type === types.LISTANOMISEDI) {
     return Object.assign({}, state, {
       ...state,
+      //client_list: action.tmp_list,
       lista_nomi_sedi: action.listaNomi,
       token: action.token,
       lista_id_sedi: action.listaId,
@@ -277,6 +288,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.UPDATESIDEBAR) {
     return Object.assign({}, state, {
+      ...state,
       client_list: action.clientList,
       token: action.token,
       lista_sedi: action.lista_sedi,
@@ -333,6 +345,30 @@ export function rootReducer(state = initialState, action) {
         ...state.company_template,
         licensesList: action.lista_licenze
       }
+    });
+  }
+  if(action.type === types.UPDATECLIENTOVERVIEW) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        overview: action.overview
+      }
+    });
+  }
+  if(action.type === types.UPDATECOMPANYOVERVIEW) {
+    return Object.assign({}, state, {
+      ...state,
+      company_template: {
+        ...state.company_template,
+        client_overview: action.overview
+      }
+    });
+  }
+  if(action.type === types.FIXSEDI) {
+    return Object.assign({}, state, {
+      ...state,
+      client_list: action.lista_client
     });
   }
 

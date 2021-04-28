@@ -195,9 +195,9 @@ const WindowsEvents = (props) => {
             {services.map((service, i) => getCategories(service.level, service.source, service.id_event, service.task_category, service.info, i, status, compare_sottocategoria, service.sottocategoria, service.date_and_time_evento))}
             <Col className="col-xs-12 col-md-12 reactPaginate"><br/>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-secondary" onClick={()=>pagination_foo(state.currentSlot, j, false, props.tot_per_sottocategoria, j)}>← Precedente</button>
+                <button type="button" class="btn btn-secondary" onClick={()=>pagination_foo(Math.ceil(n_sottocategoria/defaultUpperBound) - state.currentSlot + 1, j, false, props.tot_per_sottocategoria, j)}>← Precedente</button>
                 <button type="button" class="btn btn-secondary">{state.currentSlot[j]}/{Math.ceil(n_sottocategoria/defaultUpperBound)}</button>
-                <button type="button" class="btn btn-secondary" onClick={()=>pagination_foo(state.currentSlot, j, true, props.tot_per_sottocategoria, j)}>Successivo →</button>
+                <button type="button" class="btn btn-secondary" onClick={()=>pagination_foo(Math.ceil(n_sottocategoria/defaultUpperBound) - state.currentSlot + 1, j, true, props.tot_per_sottocategoria, j)}>Successivo →</button>
               </div>
             </Col>
           </Collapsible>
