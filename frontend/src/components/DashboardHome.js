@@ -27,24 +27,16 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateCompanyOverview(n_errori, n_warnings, n_ok))
   },
   FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
-    console.log(client_list)
-    console.log(client_list[0].sede)
     let tmp_list = client_list;
     let tmp_list2 = []
-    console.log(tmp_list[0].sede)
-    console.log(tmp_list2.length)
     tmp_list.map(tmp_client => {
       lista_nomi_sedi.map((sede,i) => {
         if((tmp_client.sede === sede) || (tmp_client.sede === lista_id_sedi[i])){
-          console.log([tmp_client.sede, sede, lista_id_sedi[i]])
-          console.log(tmp_client.sede)
           tmp_client.sede = String(lista_id_sedi[i]);
-          console.log(tmp_client.sede)
           tmp_list2.push(tmp_client)
         }
       })
     })
-    console.log(tmp_list2[0].sede)
     dispatch(fixSedi(tmp_list2))
   }
 });
@@ -85,28 +77,37 @@ const DashboardHome = (props) => {
     .then(function (response) {
       let tmp_list = props.client_list;
       let tmp_list2 = []
-      console.log(tmp_list[0].sede)
-      console.log(tmp_list2.length)
       tmp_list.map(tmp_client => {
         props.lista_nomi_sedi.map((sede,i) => {
           if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
-            console.log([tmp_client.sede, sede, props.lista_id_sedi[i]])
-            console.log(tmp_client.sede)
             tmp_client.sede = String(props.lista_id_sedi[i]);
-            console.log(tmp_client.sede)
             tmp_list2.push(tmp_client)
           }
         })
       })
-      console.log(tmp_list[0].sede)
-      console.log(tmp_list2[0].sede)
-      props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
       props.CompanyTemplateLicenze(response.data.licenzeShallow)
-      props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
       _getCompanyOverview(props.token, props.id_company)
       .then(function (response) {
-        props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
-        props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
+        let myPromise = new Promise(function (myResolve,myReject) {
+          props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
+          myResolve();
+        });
+        myPromise.then(
+          function (value) {    
+            let tmp_list = props.client_list;
+            let tmp_list2 = []
+            tmp_list.map(tmp_client => {
+              props.lista_nomi_sedi.map((sede,i) => {
+                if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                  tmp_client.sede = String(props.lista_id_sedi[i]);
+                  tmp_list2.push(tmp_client)
+                }
+              })
+            })
+            props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
+          },
+          function (error) {}
+        )
         stopLoadingToast(loadingToast);
       })
       .catch(function (error) {

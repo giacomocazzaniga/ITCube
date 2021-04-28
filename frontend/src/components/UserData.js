@@ -19,6 +19,19 @@ const mapDispatchToProps = dispatch => ({
     },
     UpdateListaSedi: (listaSedi, token, listaId) => {
       dispatch(listaNomiSedi(listaSedi, token, listaId))
+    },
+    FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
+      let tmp_list = client_list;
+      let tmp_list2 = []
+      tmp_list.map(tmp_client => {
+        lista_nomi_sedi.map((sede,i) => {
+          if((tmp_client.sede === sede) || (tmp_client.sede === lista_id_sedi[i])){
+            tmp_client.sede = String(lista_id_sedi[i]);
+            tmp_list2.push(tmp_client)
+          }
+        })
+      })
+      dispatch(fixSedi(tmp_list2))
     }
   }
 );
@@ -88,17 +101,27 @@ const UserData = (props) => {
             listaSedi.push(sede.substring(0,sede.indexOf(",")));
             
           })
-          let tmp_list = props.client_list;
-          tmp_list.map(tmp_client => {
-            props.listaNomiSedi.map((sede,i) => {
-              if((tmp_client.sede == sede) || (tmp_client.sede == props.lista_id_sedi[i])){
-                tmp_client.sede = props.lista_id_sedi[i];
-              }
-            })
-          })
-          //props.FixSedi(tmp_list);
-        
-          props.UpdateListaSedi(listaNomi, token, listaSedi);
+          
+          let myPromise = new Promise(function (myResolve,myReject) {
+            props.UpdateListaSedi(listaNomi, token, listaSedi)
+            myResolve();
+          });
+          myPromise.then(
+            function (value) {    
+              let tmp_list = props.client_list;
+              let tmp_list2 = []
+              tmp_list.map(tmp_client => {
+                props.listaNomiSedi.map((sede,i) => {
+                  if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                    tmp_client.sede = String(props.lista_id_sedi[i]);
+                    tmp_list2.push(tmp_client)
+                  }
+                })
+              })
+              props.FixSedi(tmp_list2, props.listaNomiSedi, props.lista_id_sedi);
+            },
+            function (error) {}
+          )
           getSuccessToast("Sede aggiunta correttamente.");
         })
         .catch(function (error) {
@@ -131,7 +154,26 @@ const UserData = (props) => {
             listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
             listaSedi.push(sede.substring(0,sede.indexOf(",")));
           })
-          props.UpdateListaSedi(listaNomi, token, listaSedi);
+          let myPromise = new Promise(function (myResolve,myReject) {
+            props.UpdateListaSedi(listaNomi, token, listaSedi)
+            myResolve();
+          });
+          myPromise.then(
+            function (value) {    
+              let tmp_list = props.client_list;
+              let tmp_list2 = []
+              tmp_list.map(tmp_client => {
+                props.listaNomiSedi.map((sede,i) => {
+                  if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                    tmp_client.sede = String(props.lista_id_sedi[i]);
+                    tmp_list2.push(tmp_client)
+                  }
+                })
+              })
+              props.FixSedi(tmp_list2, props.listaNomiSedi, props.lista_id_sedi);
+            },
+            function (error) {}
+          )
           getSuccessToast("Sede rimossa correttamente.");
         })
         .catch(function (error) {
@@ -228,7 +270,26 @@ const UserData = (props) => {
           listaSedi.push(sede.substring(0,sede.indexOf(",")));
           
         })
-        props.UpdateListaSedi(listaNomi, token, listaSedi);
+        let myPromise = new Promise(function (myResolve,myReject) {
+          props.UpdateListaSedi(listaNomi, token, listaSedi)
+          myResolve();
+        });
+        myPromise.then(
+          function (value) {    
+            let tmp_list = props.client_list;
+            let tmp_list2 = []
+            props.client_list.map(tmp_client => {
+              props.listaNomiSedi.map((sede,i) => {
+                if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                  tmp_client.sede = String(props.lista_id_sedi[i]);
+                  tmp_list2.push(tmp_client)
+                }
+              })
+            })
+            props.FixSedi(tmp_list2, props.listaNomiSedi, props.lista_id_sedi);
+          },
+          function (error) {}
+        )
       })
       .catch(function (error) {
         getErrorToast(String(error));
