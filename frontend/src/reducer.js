@@ -160,6 +160,7 @@ const initialState = {
 export function rootReducer(state = initialState, action) {
   if (action.type === types.LOGIN) {
     return Object.assign({}, state, {
+      ...state,
       company_template: {
         ...state.company_template,
         company_data: {
@@ -186,6 +187,7 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.UPDATECOMPANYDATA) {
     return Object.assign({}, state, {
+      ...state,
       company_template: {
         ...state.company_template,
         company_data: {
@@ -203,37 +205,44 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.SIGNUP) {
     return Object.assign({}, state, {
+      ...state,
       message: action.message,
       messageCode: action.messageCode
     });
   }
   if (action.type === types.ADDLICENSE) {
     return Object.assign({}, state, {
+      ...state,
       licensesList: action.license
     });
   }
   if (action.type === types.REMOVELICENSE) {
     return Object.assign({}, state, {
+      ...state,
       licensesList: action.license
     });
   }
   if (action.type === types.SEARCHCLIENT) {
     return Object.assign({}, state, {
+      ...state,
       searched_client: action.client_name
     });
   }
   if (action.type === types.PLACESLIST) {
     return Object.assign({}, state, {
+      ...state,
       places_list: action.places_list
     });
   }
   if (action.type === types.CATEGORIESLIST) {
     return Object.assign({}, state, {
+      ...state,
       categories_list: action.categories_list
     });
   }
   if (action.type === types.CATEGORYVSPLACE) {
     return Object.assign({}, state, {
+      ...state,
       company_template: {
         ...state.company_template,
         category_vs_place: action.category_vs_place
@@ -242,16 +251,19 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.SERVICESLIST) {
     return Object.assign({}, state, {
+      ...state,
       services_list: action.servicesList
     });
   }
   if (action.type === types.EVENTSLIST) {
     return Object.assign({}, state, {
+      ...state,
       events_list: action.eventsList
     });
   }
   if (action.type === types.SERVIZIOVERVIEW) {
     return Object.assign({}, state, {
+      ...state,
       n_totali: action.n_totali,
       n_running: action.n_running,
       n_stop: action.n_stop,
@@ -260,6 +272,7 @@ export function rootReducer(state = initialState, action) {
   }
   if (action.type === types.LISTANOMISEDI) {
     return Object.assign({}, state, {
+      ...state,
       //client_list: action.tmp_list,
       lista_nomi_sedi: action.listaNomi,
       token: action.token,
@@ -275,6 +288,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.UPDATESIDEBAR) {
     return Object.assign({}, state, {
+      ...state,
       client_list: action.clientList,
       token: action.token,
       lista_sedi: action.lista_sedi,
@@ -284,6 +298,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEWINDOWSEVENTS) {
     return Object.assign({}, state, {
+      ...state,
       client_template: {
         ...state.client_template,
         windows_events: action.windows_events
@@ -292,6 +307,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEWINDOWSSERVICES) {
     return Object.assign({}, state, {
+      ...state,
       client_template: {
         ...state.client_template,
         windows_services: action.windows_services
@@ -300,6 +316,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEINFO) {
     return Object.assign({}, state, {
+      ...state,
       client_template: {
         ...state.client_template,
         info: action.info
@@ -308,6 +325,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATEALERT) {
     return Object.assign({}, state, {
+      ...state,
       client_template: {
         ...state.client_template,
         alert: action.alert
@@ -316,11 +334,13 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.CLIENTTEMPLATERESET) {
     return Object.assign({}, state, {
+      ...state,
       client_template: initialState.client_template
     });
   }
   if(action.type === types.COMPANYTEMPLATELICENZE) {
     return Object.assign({}, state, {
+      ...state,
       company_template: {
         ...state.company_template,
         licensesList: action.lista_licenze
@@ -329,6 +349,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.UPDATECLIENTOVERVIEW) {
     return Object.assign({}, state, {
+      ...state,
       client_template: {
         ...state.client_template,
         overview: action.overview
@@ -337,6 +358,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.UPDATECOMPANYOVERVIEW) {
     return Object.assign({}, state, {
+      ...state,
       company_template: {
         ...state.company_template,
         client_overview: action.overview
@@ -345,6 +367,7 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.FIXSEDI) {
     return Object.assign({}, state, {
+      ...state,
       client_list: action.lista_client
     });
   }

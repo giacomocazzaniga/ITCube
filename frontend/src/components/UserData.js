@@ -4,7 +4,7 @@ import { Col, Box } from 'adminlte-2-react';
 import Dropdown from 'react-dropdown';
 import PopUp from './PopUp';
 import { _cancellazioneSede, _editCompanyData, _getNomiSedi, _inserimentoSede } from '../callableRESTs';
-import { listaNomiSedi, updateCompanyData } from '../ActionCreator';
+import { fixSedi, listaNomiSedi, updateCompanyData } from '../ActionCreator';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
 import { dispatch } from 'react-hot-toast';
 import { _MSGCODE } from '../Constants';

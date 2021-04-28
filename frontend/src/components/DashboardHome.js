@@ -26,8 +26,26 @@ const mapDispatchToProps = dispatch => ({
   UpdateCompanyOverview: (n_errori, n_warnings, n_ok) => {
     dispatch(updateCompanyOverview(n_errori, n_warnings, n_ok))
   },
-  FixSedi: (client_list) => {
-    dispatch(fixSedi(client_list))
+  FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
+    console.log(client_list)
+    console.log(client_list[0].sede)
+    let tmp_list = client_list;
+    let tmp_list2 = []
+    console.log(tmp_list[0].sede)
+    console.log(tmp_list2.length)
+    tmp_list.map(tmp_client => {
+      lista_nomi_sedi.map((sede,i) => {
+        if((tmp_client.sede === sede) || (tmp_client.sede === lista_id_sedi[i])){
+          console.log([tmp_client.sede, sede, lista_id_sedi[i]])
+          console.log(tmp_client.sede)
+          tmp_client.sede = String(lista_id_sedi[i]);
+          console.log(tmp_client.sede)
+          tmp_list2.push(tmp_client)
+        }
+      })
+    })
+    console.log(tmp_list2[0].sede)
+    dispatch(fixSedi(tmp_list2))
   }
 });
   
@@ -65,10 +83,30 @@ const DashboardHome = (props) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
+      let tmp_list = props.client_list;
+      let tmp_list2 = []
+      console.log(tmp_list[0].sede)
+      console.log(tmp_list2.length)
+      tmp_list.map(tmp_client => {
+        props.lista_nomi_sedi.map((sede,i) => {
+          if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+            console.log([tmp_client.sede, sede, props.lista_id_sedi[i]])
+            console.log(tmp_client.sede)
+            tmp_client.sede = String(props.lista_id_sedi[i]);
+            console.log(tmp_client.sede)
+            tmp_list2.push(tmp_client)
+          }
+        })
+      })
+      console.log(tmp_list[0].sede)
+      console.log(tmp_list2[0].sede)
+      props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
       props.CompanyTemplateLicenze(response.data.licenzeShallow)
+      props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
       _getCompanyOverview(props.token, props.id_company)
       .then(function (response) {
         props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
+        props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
         stopLoadingToast(loadingToast);
       })
       .catch(function (error) {
@@ -98,7 +136,7 @@ const DashboardHome = (props) => {
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
   const getChilds = (listId) => {
-    console.log(listId.length)
+    //console.log(listId.length)
     let listClients = [];
     let tmp_client;
     props.client_list.map( client => {
@@ -114,7 +152,7 @@ const DashboardHome = (props) => {
         }
       })
     })
-    console.log(listClients);
+    //console.log(listClients);
     let list = [<Col className="oddColor col-md-4 col-xs-4"><strong>Nome client</strong></Col>, <Col className="oddColor col-md-4 col-xs-4"><strong>Sede</strong></Col>, <Col className="oddColor col-md-4 col-xs-4"><strong>Tipologia</strong></Col>];
     
     listClients.map((client,i) => {

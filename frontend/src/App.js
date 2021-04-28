@@ -140,11 +140,11 @@ const App = (props) => {
           return (client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length > 0 && client_list.filter(function(o) { return (o.sede == sede && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
           ? <Item icon="fa-users" text={category+ " ("+client_list.filter(function(o) { return (o.sede == sede && o.tipo_client==category)}).length+")"}>
           {props.client_list.map((client) => {
-            if((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category)){
-                console.log(client.sede)
-              console.log(props.lista_nomi_sedi[j])
-              console.log(sede)
-            }
+            //if((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category)){
+            //    console.log(client.sede)
+            //  console.log(props.lista_nomi_sedi[j])
+            //  console.log(sede)
+            //}
             
             return ((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category))
             ? (searched_client=="")
