@@ -1,5 +1,5 @@
 const port = "8080";
-const ip = "127.0.0.1";//"217.160.240.146";
+const ip = "127.0.0.1" //"217.160.240.146";
 const buildurl = "http://"+ip+":"+port+"/be/main/";
 export const url_login = buildurl+"login"; //V
 export const url_signup = buildurl+"registrazione"; //V
@@ -29,6 +29,8 @@ export const url_get_latest_alert = buildurl+"getLatestAlerts";
 export const url_compra_licenza = buildurl+"compraLicenza";
 export const url_get_client_overview_services = buildurl+"getClientOverview";
 export const url_get_company_overview = buildurl+"getCompanyOverview";
+export const url_get_client_history = buildurl + "getClientHistory";
+export const url_get_company_history = buildurl + "getCompanyHistory";
 
 
 

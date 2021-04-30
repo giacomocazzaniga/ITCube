@@ -74,12 +74,12 @@ const initialState = {
       colors: ["#dd4b39", "#f39c12"],
       series: [
         {
-          name: "Warnings",
+          name: "N° di warnings",
           data: [],   //Dinamico
           color: "#f39c12"
         },
         {
-          name: "Problemi",
+          name: "N° di problemi",
           data: [],  //Dinamico
           color: "#dd4b39"
         }
@@ -136,12 +136,12 @@ const initialState = {
       colors: ["#dd4b39", "#f39c12"],
       series: [
         {
-          name: "Warnings",
+          name: "N° di client con warnings",
           data: [],   //Dinamico
           color: "#f39c12"
         },
         {
-          name: "Problemi",
+          name: "N° di client con problemi",
           data: [],  //Dinamico
           color: "#dd4b39"
         }
@@ -371,7 +371,60 @@ export function rootReducer(state = initialState, action) {
       client_list: action.lista_client
     });
   }
-
+  if(action.type === types.UPDATECLIENTHISTORY) {
+    return Object.assign({}, state, {
+      client_template: {
+        ...state.client_template,
+        history: {
+          ...state.client_template.history,
+          lastUpdate: action.history_data.last_update,
+          options: {
+            ...state.client_template.history.options,
+            xaxis: {
+              categories: action.history_data.xaxis
+            }
+          },
+          series: [
+            {
+              ...state.client_template.history.series[0],
+              data: action.history_data.warnings,   //Dinamico
+            },
+            {
+              ...state.client_template.history.series[1],
+              data: action.history_data.problems,  //Dinamico
+            }
+          ]
+        }
+      }
+    });
+  }
+  if(action.type === types.UPDATECOMPANYHISTORY) {
+    return Object.assign({}, state, {
+      company_template: {
+        ...state.company_template,
+        history: {
+          ...state.company_template.history,
+          lastUpdate: action.history_data.last_update,
+          options: {
+            ...state.company_template.history.options,
+            xaxis: {
+              categories: action.history_data.xaxis
+            }
+          },
+          series: [
+            {
+              ...state.company_template.history.series[0],
+              data: action.history_data.warnings,   //Dinamico
+            },
+            {
+              ...state.company_template.history.series[1],
+              data: action.history_data.problems,  //Dinamico
+            }
+          ]
+        }
+      }
+    });
+  }
   //returning the state
   return state;
 }

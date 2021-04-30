@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ import itcube.consulting.monitoraggioClient.repositories.TipologieClientReposito
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.repositories.VisualizzazioneEventiRepository;
 import itcube.consulting.monitoraggioClient.response.AgentResponse;
+import itcube.consulting.monitoraggioClient.response.ClientHistoryResponse;
+import itcube.consulting.monitoraggioClient.response.ClientHistoryResponseSub;
 import itcube.consulting.monitoraggioClient.response.ClientOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ClientOverviewResponseSub;
 import itcube.consulting.monitoraggioClient.response.CompanyOverviewResponse;
@@ -997,111 +1000,6 @@ public class ServicesAndEventsController {
 		}
 	}
 	
-//	@PostMapping(path="/getClientOverviewEvents",produces=MediaType.APPLICATION_JSON_VALUE)
-//	@CrossOrigin
-//	public ResponseEntity<GeneralResponse> getClientOverviewEvents(@RequestBody Map<String,Object> body) {
-//		ClientOverviewResponse response=new ClientOverviewResponse();
-//		ValidToken validToken=new ValidToken();
-//		int id_company;
-//		int id_client;
-//		String token;
-//		int n_errori;
-//		int n_warning;
-//		int limite;
-//		
-//		try
-//		{
-//			id_client = Integer.parseInt( (String) body.get("id_client"));
-//			id_company=elencoClientsRepository.getIdCompany(id_client);
-//			token=(String)body.get("token");
-//			validToken= Services.checkToken(id_company, token);
-//			
-//			if(validToken.isValid()) {
-//				
-//				limite = visualizzazioneEventiRepository.getTotEventiToday(id_client);
-//				n_errori = visualizzazioneEventiRepository.getNumStato(id_client, 1, limite);
-//				n_warning = visualizzazioneEventiRepository.getNumStato(id_client, 2, limite);
-//				
-//				response.setErrori(n_errori);
-//				response.setWarning(n_warning);
-//				
-//				String newToken=Services.checkThreshold(id_company, token);
-//				
-//				response.setMessage("Operazione effettuata con successo");
-//				response.setMessageCode(0);
-//				response.setToken(newToken);
-//				
-//				return ResponseEntity.ok(response); 
-//			}
-//			
-//			response.setMessage("Autenticazione fallita");
-//			response.setMessageCode(-2);
-//			return ResponseEntity.badRequest().body(response);
-//		
-//		}
-//		catch(Exception e)
-//		{
-//			response.setMessage(e.getMessage());
-//			response.setMessageCode(-1);
-//			System.out.println(e.getMessage());
-//			return ResponseEntity.badRequest().body(response);
-//		}
-//	}
-//	
-//	@PostMapping(path="/getClientOverviewDrives",produces=MediaType.APPLICATION_JSON_VALUE)
-//	@CrossOrigin
-//	public ResponseEntity<GeneralResponse> getClientOverviewDrives(@RequestBody Map<String,Object> body) {
-//		ClientOverviewResponse response=new ClientOverviewResponse();
-//		ValidToken validToken=new ValidToken();
-//		int id_company;
-//		int id_client;
-//		String token;
-//		int n_errori;
-//		int n_warning;
-//		int n_ok;
-//		int limite;
-//		
-//		try
-//		{
-//			id_client = Integer.parseInt( (String) body.get("id_client"));
-//			id_company=elencoClientsRepository.getIdCompany(id_client);
-//			token=(String)body.get("token");
-//			validToken= Services.checkToken(id_company, token);
-//			
-//			if(validToken.isValid()) {
-//				
-//				limite = confTotalFreeDiscSpaceRepository.getTotDrives(id_client);
-//				n_errori = confTotalFreeDiscSpaceRepository.getNumError(id_client, limite);
-//				n_warning = confTotalFreeDiscSpaceRepository.getNumWarning(id_client, limite);
-//				n_ok = confTotalFreeDiscSpaceRepository.getNumOk(id_client, limite);
-//				
-//				response.setErrori(n_errori);
-//				response.setWarning(n_warning);
-//				response.setOk(n_ok);
-//				
-//				String newToken=Services.checkThreshold(id_company, token);
-//				
-//				response.setMessage("Operazione effettuata con successo");
-//				response.setMessageCode(0);
-//				response.setToken(newToken);
-//				
-//				return ResponseEntity.ok(response); 
-//			}
-//			
-//			response.setMessage("Autenticazione fallita");
-//			response.setMessageCode(-2);
-//			return ResponseEntity.badRequest().body(response);
-//		
-//		}
-//		catch(Exception e)
-//		{
-//			response.setMessage(e.getMessage());
-//			response.setMessageCode(-1);
-//			System.out.println(e.getMessage());
-//			return ResponseEntity.badRequest().body(response);
-//		}
-//	}
-	
 	@PostMapping(path="/getCompanyOverview",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> getCompanyOverview(@RequestBody Map<String,Object> body) {
@@ -1194,5 +1092,4 @@ public class ServicesAndEventsController {
 			return ResponseEntity.badRequest().body(response);
 		}
 	}
-	
 }

@@ -38,5 +38,6 @@ export const _ALERTCATEGORY = [
 
 export const defaultUpperBound = 20;
 export const defaultSlot = 1;
+export const defaultDaysAlert = 10;
 export const defaultSettimaneAlert = 1;
 export const defaultUpdateInterval = 60000;

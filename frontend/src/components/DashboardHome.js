@@ -8,10 +8,10 @@ import History from './History';
 import LicensesList from './LicensesList';
 import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
-import { _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
+import { _getCompanyHistory, _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 import { defaultUpdateInterval } from '../Constants';
-import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi } from '../ActionCreator';
+import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory } from '../ActionCreator';
 
 document.body.classList.add('fixed');
 
@@ -25,6 +25,9 @@ const mapDispatchToProps = dispatch => ({
   },
   UpdateCompanyOverview: (n_errori, n_warnings, n_ok) => {
     dispatch(updateCompanyOverview(n_errori, n_warnings, n_ok))
+  },
+  UpdateCompanyHistory: (history_data) => {
+    dispatch(updateCompanyHistory(history_data))
   },
   FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
     let tmp_list = client_list;
@@ -85,31 +88,40 @@ const DashboardHome = (props) => {
           }
         })
       })
-      props.CompanyTemplateLicenze(response.data.licenzeShallow)
-      _getCompanyOverview(props.token, props.id_company)
-      .then(function (response) {
-        let myPromise = new Promise(function (myResolve,myReject) {
-          props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
-          myResolve();
-        });
-        myPromise.then(
-          function (value) {    
-            let tmp_list = props.client_list;
-            let tmp_list2 = []
-            tmp_list.map(tmp_client => {
-              props.lista_nomi_sedi.map((sede,i) => {
-                if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
-                  tmp_client.sede = String(props.lista_id_sedi[i]);
-                  tmp_list2.push(tmp_client)
-                }
-              })
-            })
-            props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
-          },
-          function (error) {}
-        )
-        stopLoadingToast(loadingToast);
-      })
+        props.CompanyTemplateLicenze(response.data.licenzeShallow)
+
+        _getCompanyHistory(props.token,props.id_company)
+        .then( response => {
+          props.UpdateCompanyHistory(response)
+          _getCompanyOverview(props.token, props.id_company)
+          .then(function (response) {
+            let myPromise = new Promise(function (myResolve,myReject) {
+              props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
+              myResolve();
+            });
+            myPromise.then(
+              function (value) {    
+                let tmp_list = props.client_list;
+                let tmp_list2 = []
+                tmp_list.map(tmp_client => {
+                  props.lista_nomi_sedi.map((sede,i) => {
+                    if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                      tmp_client.sede = String(props.lista_id_sedi[i]);
+                      tmp_list2.push(tmp_client)
+                    }
+                  })
+                })
+                props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
+              },
+              function (error) {}
+            )
+            stopLoadingToast(loadingToast);
+          })
+        })
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        })
       .catch(function (error) {
         stopLoadingToast(loadingToast);
         getErrorToast(String(error));

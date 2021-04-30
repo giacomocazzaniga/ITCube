@@ -43,4 +43,19 @@ public interface ElencoAlertRepository extends CrudRepository<Alert,Integer> {
 			+ "limit 1", nativeQuery=true)
 	String lastAlertStatus(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
 
+	@Query(value="SELECT * "
+			+ "FROM alert "
+			+ "WHERE id_client = :id_client "
+			+ "AND date_and_time_alert >= CONCAT(curdate() - interval 10 * :slot day, ' 00:00:00') "
+			+ "AND date_and_time_alert <= CONCAT(curdate() - interval 10 * (:slot - 1) day, ' 23:59:59') "
+			+ "AND tipo <> 'OK'" , nativeQuery = true)
+	List<Alert> getAlertOfDay(@Param("id_client") int id_client, @Param("slot") int slot);
+	
+	@Query(value="SELECT * "
+			+ "FROM alert "
+			+ "WHERE id_company = :id_company "
+			+ "AND date_and_time_alert >= CONCAT(curdate() - interval 10 * :slot day, ' 00:00:00') "
+			+ "AND date_and_time_alert <= CONCAT(curdate() - interval 10 * (:slot - 1) day, ' 23:59:59') "
+			+ "AND tipo <> 'OK'" , nativeQuery = true)
+	List<Alert> getAlertOfCompanyOfDay(@Param("id_company") int id_company, @Param("slot") int slot);
 }

@@ -144,3 +144,13 @@ export const fixSedi = (lista_client) => ({
   type: types.FIXSEDI,
   lista_client: lista_client
 })
+
+export const updateClientHistory = (history_data) => ({
+  type: types.UPDATECLIENTHISTORY,
+  history_data: history_data
+})
+
+export const updateCompanyHistory = (history_data) => ({
+  type: types.UPDATECOMPANYHISTORY,
+  history_data: history_data
+})

@@ -7,12 +7,12 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
+import { _getClientHistory, _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { updateClientHistory, resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
 import { defaultUpdateInterval } from "../Constants";
 import { Container } from "react-bootstrap";
 
@@ -40,6 +40,9 @@ const mapDispatchToProps = dispatch => ({
   },
   SetClientTemplateOverview: (errori,warnings,ok) => {
     dispatch(updateClientOverview(errori,warnings,ok))
+  },
+  UpdateClientHistory: (history_data) => {
+    dispatch(updateClientHistory(history_data));
   }
 });
 
@@ -168,6 +171,14 @@ const Dashboard = (props) => {
                       response.warnings,
                       response.ok
                     )
+                    _getClientHistory(props.token,props.id_client)
+                    .then( response => {
+                      props.UpdateClientHistory(response);
+                    })
+                    .catch(function (error) {
+                      stopLoadingToast(loadingToast);
+                      getErrorToast(String(error));
+                    })
                   })
                   .catch(function (error) {
                     stopLoadingToast(loadingToast);
