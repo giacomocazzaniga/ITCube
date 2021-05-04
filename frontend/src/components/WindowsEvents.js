@@ -236,21 +236,21 @@ const WindowsEvents = (props) => {
       return (oddcolor==true)
       ? 
         <>
-          <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="oddColor col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
-          <Col className="oddColor col-md-2 col-xs-2"><p>{source}</p></Col>
-          <Col className="oddColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{source}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-1 col-xs-1"><p>{id_event}</p></Col>
           {/*<Col className="oddColor col-md-2 col-xs-2"><p>{task_category}</p></Col>*/}
-          <Col className="oddColor col-md-4 col-xs-4"><p>{info}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-4 col-xs-4"><p>{info}</p></Col>
         </>
       :
         <>
-          <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="evenColor col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
-          <Col className="evenColor col-md-2 col-xs-2"><p>{source}</p></Col>
-          <Col className="evenColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{source}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-1 col-xs-1"><p>{id_event}</p></Col>
           {/*<Col className="evenColor col-md-2 col-xs-2"><p>{task_category}</p></Col>*/}
-          <Col className="evenColor col-md-4 col-xs-4"><p>{info}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-4 col-xs-4"><p>{info}</p></Col>
         </>
     else return <></>
   }

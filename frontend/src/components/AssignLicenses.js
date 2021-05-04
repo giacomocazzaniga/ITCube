@@ -64,7 +64,7 @@ const AssignLicenses = (props) => {
                       token = response.data.token;
                     }
 
-                    props.UpdateClientLicenses(props.client.id_client,state)
+                    props.UpdateClientLicenses(state,props.client.id_client)
                     stopLoadingToast(loadingToast);
                 }
             })
@@ -82,38 +82,38 @@ const AssignLicenses = (props) => {
         (isOdd(props.idx))
         ?
             <>
-                <Col className="oddColor col-md-3 col-xs-3">
-                <h4>{props.client.nome_client}</h4>
+                <Col className="oddColor vertical-aligner col-md-3 col-xs-3">
+                    <h4>{props.client.nome_client}</h4>
                 </Col>
                 <Col className="oddColor col-md-4 col-xs-4">
-                {props.client.classe_licenza.map( classe_licenza => props.options.map( option => (option.value == classe_licenza) ? <div>{option.label}</div> : <></>))}
+                    {props.client.classe_licenza.map( classe_licenza => props.options.map( option => (option.value == classe_licenza) ? <div>{option.label}</div> : <></>))}
                 </Col>
-                <Col className="oddColor col-md-3 col-xs-3">
+                <Col className="oddColor vertical-aligner col-md-3 col-xs-3">
                     <select onChange={_licenseChange} >
                         <option value={0} selected hidden disabled>Seleziona una licenza</option>
                         {props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).map(license => <option value={license.classe}>{license.tipologia}</option>)}   
                     </select>
                 </Col>
-                <Col className="oddColor col-md-2 col-xs-2">
-                <button onClick={_assignLicense} class="btn btn-primary" type="button" >Assegna</button>          
+                <Col className="oddColor vertical-aligner col-md-2 col-xs-2">
+                    <button onClick={_assignLicense} class="btn btn-primary" type="button" >Assegna</button>          
                 </Col>
             </>
         :
             <>
-                <Col className="evenColor col-md-3 col-xs-3">
-                <h4>{props.client.nome_client}</h4>
+                <Col className="evenColor vertical-aligner col-md-3 col-xs-3">
+                    <h4>{props.client.nome_client}</h4>
                 </Col>
                 <Col className="evenColor col-md-4 col-xs-4">
-                {props.client.classe_licenza.map( classe_licenza => props.options.map( option => (option.value == classe_licenza) ? <div>{option.label}</div> : <></>))}
+                    {props.client.classe_licenza.map( classe_licenza => props.options.map( option => (option.value == classe_licenza) ? <div>{option.label}</div> : <></>))}
                 </Col>
-                <Col className="evenColor col-md-3 col-xs-3">
+                <Col className="evenColor vertical-aligner col-md-3 col-xs-3">
                     <select onChange={_licenseChange} >
                         <option value={0} selected hidden disabled>Seleziona una licenza</option>
                         {props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).map(license => <option value={license.classe}>{license.tipologia}</option>)}   
                     </select>
                 </Col>
-                <Col className="evenColor col-md-2 col-xs-2">
-                <button onClick={_assignLicense} class="btn btn-primary" type="button" >Assegna</button>          
+                <Col className="evenColor vertical-aligner col-md-2 col-xs-2">
+                    <button onClick={_assignLicense} class="btn btn-primary" type="button" >Assegna</button>          
                 </Col>
             </>
     );

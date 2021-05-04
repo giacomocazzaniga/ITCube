@@ -193,9 +193,9 @@ const DashboardHome = (props) => {
     listClients.map((client,i) => {
       (isOdd(i)) 
       ?
-        list = [...list, <Col className="oddColor col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>, <Col className="oddColor col-md-4 col-xs-4">{client.sede}</Col>, <Col className="oddColor col-md-4 col-xs-4">{client.tipo_client}</Col>]
+        list = [...list, <Col className="oddColor overview-popup-list vertical-aligner col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>, <Col className="oddColor vertical-aligner col-md-4 col-xs-4">{client.sede}</Col>, <Col className="oddColor vertical-aligner col-md-4 col-xs-4">{client.tipo_client}</Col>]
       :
-        list = [...list, <Col className="evenColor col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>,  <Col className="evenColor col-md-4 col-xs-4">{client.sede}</Col>, <Col className="evenColor col-md-4 col-xs-4">{client.tipo_client}</Col>]
+        list = [...list, <Col className="evenColor overview-popup-list vertical-aligner col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>,  <Col className="evenColor vertical-aligner col-md-4 col-xs-4">{client.sede}</Col>, <Col className="evenColor vertical-aligner col-md-4 col-xs-4">{client.tipo_client}</Col>]
       })
     return list;
   }

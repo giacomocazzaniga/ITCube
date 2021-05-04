@@ -422,7 +422,7 @@ export function rootReducer(state = initialState, action) {
   if(action.type === types.UPDATECLIENTLICENSES) {
     for(let i=0; i<state.client_list.length; i++) {
       if(state.client_list[i].id_client == action.id_client)
-        state.client_list[i].classe_licenza.push(action.license)  
+        state.client_list[i].classe_licenza.push(action.license)
     }
     return Object.assign({}, state);
   }

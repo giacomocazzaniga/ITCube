@@ -234,3 +234,19 @@ code {
   background-color: #337ab7;
 }
 
+.vertical-aligner {
+  display: flex;
+  align-items: center;
+}
+
+.vertical-aligner p {
+  margin: 0;
+}
+
+.overview-popup-list li {
+  display: block;
+}
+
+.overview-popup-list li a svg {
+  display: none;
+}

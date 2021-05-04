@@ -141,8 +141,8 @@ const LicensesList = (props) => {
       <Col xs={4} md={6}><strong><h4>CATEGORIA</h4></strong></Col>
       {props.company_template.licensesList.map((license, i) => {
         return (isOdd(i)) 
-        ? <><Col xs={8} md={6} className="oddColor col-md-6 col-xs-8">{license.codice}</Col><Col className="oddColor col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
-        : <><Col xs={8} md={6} className="evenColor col-md-6 col-xs-8">{license.codice}</Col><Col className="evenColor col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
+        ? <><Col xs={8} md={6} className="oddColor vertical-aligner col-md-6 col-xs-8">{license.codice}</Col><Col className="oddColor vertical-aligner col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
+        : <><Col xs={8} md={6} className="evenColor vertical-aligner col-md-6 col-xs-8">{license.codice}</Col><Col className="evenColor vertical-aligner col-md-6 col-xs-4" xs={4} md={6} key={i}>{license.tipologia}</Col></>
       })
       }
       <Col xs={12} md={12}><p></p></Col>

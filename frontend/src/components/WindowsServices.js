@@ -172,21 +172,21 @@ const WindowsServices = (props) => {
         ?
           returnList = [returnList, 
             <>
-              <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-              <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
+              <Col className="oddColor vertical-aligner col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
         :
           returnList = [returnList, 
             <>
-              <Col className="oddColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} autocomplete="off"/></Col>
-              <Col className="oddColor col-md-5 col-xs-5"><p>{opname}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
-              <Col className="oddColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} autocomplete="off"/></Col>
+              <Col className="oddColor vertical-aligner col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
     : 
@@ -194,21 +194,21 @@ const WindowsServices = (props) => {
         ?
           returnList = [returnList, 
             <>
-              <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
-              <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, true)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} defaultChecked="checked"/></Col>
+              <Col className="evenColor vertical-aligner col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
         :
           returnList = [returnList, 
             <>
-              <Col className="evenColor col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} autocomplete="off"/></Col>
-              <Col className="evenColor col-md-5 col-xs-5"><p>{opname}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
-              <Col className="evenColor col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-1 col-xs-1"><input type="checkbox" key={Math.random()+opname} onChange={()=>toggleMonitora(opname, false)} id={"monitora"+opname} name={"monitora"+opname} value={"monitora"+opname} autocomplete="off"/></Col>
+              <Col className="evenColor vertical-aligner col-md-5 col-xs-5"><p>{opname}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceControllerStatus[parseInt(stato)]}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceStartMode[parseInt(start_type)]}</p></Col>
+              <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{ServiceType[parseInt(service_type)]}</p></Col>
             </>
           ]
   }
