@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { ToastProvider } from 'react-toast-notifications';
-import AdminLTE, { Sidebar } from 'adminlte-2-react';
+import AdminLTE, { Sidebar, Navbar, Entry } from 'adminlte-2-react';
 import { connect } from 'react-redux';
 import Dashboard from './components/Dashboard';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import DashboardHome from './components/DashboardHome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { categoriesList, searchClient } from './ActionCreator';
+import { categoriesList, searchClient, totalReset } from './ActionCreator';
 import { _FILTERS, _LICENZE } from './Constants';
 import { ClientFilter } from './HierarchyManager';
 import { toaster } from './toastManager';
 import { idToNomeLicenza, idToNomeSede } from './Tools';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 /**
  * connect the actions to the component
@@ -21,6 +22,9 @@ const mapDispatchToProps =  dispatch => {
   return{
     Search: (nome_client) => {
       dispatch(searchClient(nome_client))
+    },
+    TotalReset: () => {
+      dispatch(totalReset())
     }
   }
 }
@@ -198,19 +202,21 @@ const App = (props) => {
   }
 
   return (
-    
       <div>
         {toaster}
-        {props.logged==true 
-        ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
-            <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
-            {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
-          </AdminLTE>
-        : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
-            <div path="/accedi" title="Accedi"><LoginPage /></div>
-            <div path="/registrati" title="Registrati"><SignUpPage /></div>
-          </AdminLTE>
-        }
+          {props.logged==true 
+          ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
+              <Navbar.Core>
+                <a id="logoutButton" onClick={() => props.TotalReset()}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> 
+              </Navbar.Core>
+              <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
+              {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
+            </AdminLTE>
+          : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
+              <div path="/accedi" title="Accedi"><LoginPage /></div>
+              <div path="/registrati" title="Registrati"><SignUpPage /></div>
+            </AdminLTE>
+          }
       </div>
   );
 }

@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import { addLicense, removeLicense, updateCompanyTemplateLicenze } from '../ActionCreator';
+import { addLicense, removeLicense, totalReset, updateCompanyTemplateLicenze, updateToken } from '../ActionCreator';
 import PopUp from './PopUp';
 import { _LICENZE } from '../Constants';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
 import { _compraLicenza, _getLicenzeShallow } from '../callableRESTs';
+import { Row } from 'react-bootstrap';
+import AssignLicenses from "./AssignLicenses";
+import { autenticazione_fallita, renewToken } from '../Tools';
 
 
 /**
@@ -24,6 +27,12 @@ const mapDispatchToProps = dispatch => ({
     },
     CompanyTemplateLicenze: (lista_licenze) => {
       dispatch(updateCompanyTemplateLicenze(lista_licenze))
+    },
+    TotalReset: () => {
+      dispatch(totalReset());
+    },
+    UpdateToken: (token) => {
+      dispatch(updateToken(token));
     }
   }
 );
@@ -43,7 +52,8 @@ const mapStateToProps = state => ({
     licensesList: state.licensesList,
     token: state.token,
     id_company: state.id_company,
-    company_template: state.company_template
+    company_template: state.company_template,
+    client_list: state.client_list
   }
 );
 
@@ -66,26 +76,43 @@ const LicensesList = (props) => {
   }, []);
 
   const [state, setState] = React.useState({
-    selectedValue: 0
+    selectedValue: 0,
+    selectedLicense: []
   })
 
   const clickService = () => {
     console.log(state.selectedValue);
+    let continueUpdating = true;
     //buy new license
     const loadingToast = getLoadingToast("Acquistando la licenza...");
     return _compraLicenza(props.token, props.id_company, state.selectedValue)
     .then(function (response) {
-      getSuccessToast(response.data.message);
-      //getLicenze
-      _getLicenzeShallow(props.id_company, props.token)
-      .then(function (response) {
-        props.CompanyTemplateLicenze(response.data.licenzeShallow)
+
+      if(autenticazione_fallita(response.data.messageCode)) {
         stopLoadingToast(loadingToast);
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      })
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+
+        getSuccessToast(response.data.message);
+        //getLicenze
+        _getLicenzeShallow(props.id_company, token)
+        .then(function (response) {
+          props.CompanyTemplateLicenze(response.data.licenzeShallow)
+          stopLoadingToast(loadingToast);
+        })
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        })
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -95,7 +122,7 @@ const LicensesList = (props) => {
 
   const _onSelect = (e) => {
     setState(() => {
-      return {selectedValue: e.value };  
+      return {...state,selectedValue: e.value };  
     });
   }
 
@@ -128,6 +155,19 @@ const LicensesList = (props) => {
       <Col xs={4} md={6}>
         <Dropdown options={options} onChange={_onSelect} placeholder="Seleziona una tipologia" />
       </Col>
+
+      <Col xs={12} md={12}><strong><h4>ASSEGNA LICENZE</h4></strong></Col>
+      <Row>
+        <Col xs={3} md={3}><h4>NOME CLIENT</h4></Col>
+        <Col xs={4} md={4}><h4>LICENZE IN USO</h4></Col>
+      </Row>
+
+
+      {props.client_list.map( (client,i) => {        
+        return(
+          <AssignLicenses key={i} idx={i} client={client} options={options} />
+        )
+      })}
     </>
     ]
     return childList;
@@ -170,7 +210,7 @@ const LicensesList = (props) => {
       {(JSON.stringify(props.licensesList)==="[]")
         ? <Col xs={12}>Nessuna licenza trovata in base ai filtri selezionati.</Col>
         : <></>
-      }
+      }     
     </Box>
   );
 }

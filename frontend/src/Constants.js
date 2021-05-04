@@ -29,7 +29,8 @@ export const _FILTERS = {
 
 export const _MSGCODE = {
     NO_ERR : "0",
-    ERR : "1"
+    ERR : "1",
+    AUTENTICAZIONE_FALLITA: "-2"
 }
 
 export const _ALERTCATEGORY = [

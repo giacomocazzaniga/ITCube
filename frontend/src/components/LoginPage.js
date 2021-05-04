@@ -32,7 +32,8 @@ const mapDispatchToProps =  dispatch => ({
  */
 const mapStateToProps = state => ({
     client_list: state.client_list,
-    nome_company: state.company_template.company_data.ragione_sociale
+    nome_company: state.company_template.company_data.ragione_sociale,
+    logged: state.logged
   }
 );
 
@@ -113,8 +114,7 @@ const LoginPage = (props) => {
                         listaSedi.push(sede.substring(0,sede.indexOf(",")));
                       })
                       props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi, chiaveRegistrazione, listaNomi, listaSedi);
-
-                  })
+                    })
                   .catch(function (error) {
                     getErrorToast(String(error));
                   });
@@ -148,7 +148,7 @@ const LoginPage = (props) => {
   }
 
   return (
-    (props.nome_company===null) 
+    (props.logged===false) 
     ?
       <div className="container">
         <div className="row">

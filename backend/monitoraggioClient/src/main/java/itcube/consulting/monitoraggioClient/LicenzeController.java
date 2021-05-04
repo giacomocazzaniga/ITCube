@@ -128,6 +128,7 @@ public class LicenzeController {
 		{
 			id_company= (Integer) body.get("id_company");    //Integer.parseInt((String)(body.get("id_company")));
 			token=(String)body.get("token");
+			System.out.println(token);
 			validToken= Services.checkToken(id_company, token);
 			
 			if(validToken.isValid())
@@ -149,7 +150,7 @@ public class LicenzeController {
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
 			System.out.println(Services.getCurrentDate()+" /getLicenzeShallow FAILED ");
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch (Exception e)
 		{
@@ -310,7 +311,7 @@ public class LicenzeController {
 			{
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -321,4 +322,56 @@ public class LicenzeController {
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
+	
+	@PostMapping(path="/assegnaLicenza",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> assegnaLicenza (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		Integer id_client;
+		Integer id_tipo;
+		Integer id_licenza;
+		String token;
+		
+		try
+		{
+			id_company=Integer.parseInt((String) body.get("id_company"));
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			id_tipo= Integer.parseInt((String)(body.get("id_tipo")));
+			id_client= Integer.parseInt((String)(body.get("id_client")));
+			
+			if(validToken.isValid())
+			{
+				
+				id_licenza = elencoLicenzeRepository.getIdLicenzaFromTipoAndCompany(id_company,id_tipo);
+				
+				elencoLicenzeRepository.assegnaLicenza(id_client, id_licenza);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				generalResponse.setMessage("Licenza assegnata con successo");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(newToken);
+				
+				return ResponseEntity.ok(generalResponse);
+			}
+			else
+			{
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.ok(generalResponse);
+			}
+		}
+		catch (Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
 }

@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -222,7 +224,7 @@ public class ClientController {
 				//deepClientResponse.setServizi_esecuzione(confWindowsServicesRepository.countEsecuzione(true));
 				
 				String newToken=Services.checkThreshold(id_company, token);
-				
+
 				deepClientResponse.setMessage("Operazione effettuata con successo");
 				deepClientResponse.setMessageCode(0);
 				deepClientResponse.setToken(newToken);
@@ -231,7 +233,7 @@ public class ClientController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch (Exception e)
 		{
@@ -291,7 +293,7 @@ public class ClientController {
 			{
 				generalResponse.setMessage("Autenticazione fallita ");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -350,7 +352,7 @@ public class ClientController {
 			{
 				generalResponse.setMessage("Autenticazione fallita ");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -369,7 +371,7 @@ public class ClientController {
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
 		ElencoLicenze licenza;
-		List<ElencoLicenze> el=new ArrayList();
+		Set<ElencoLicenze> el=new HashSet<ElencoLicenze>();
 		try
 		{
 			//token agent
@@ -480,7 +482,7 @@ public class ClientController {
 			{
 				generalResponse.setMessage("Autenticazione fallita ");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -538,12 +540,12 @@ public class ClientController {
 						company=elencoCompaniesRepository.getInfoCompany(id_company);
 						newClient.setElencoCompanies(company);
 						//licenza in uso
-						List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
+						Set<ElencoLicenze> elencoLicenze=new HashSet<ElencoLicenze>();
 						
 						ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
 						elencoLicenze.add(licenza);
 						newClient.setElencoLicenze(elencoLicenze);
-						System.out.println(newClient.getElencoLicenze().get(0).getId());
+//						System.out.println(newClient.getElencoLicenze().get(0).getId());
 						//sede
 						
 						elencoClientsRepository.save(newClient);
@@ -669,7 +671,7 @@ public class ClientController {
 			} else {
 				response.setMessage("Autenticazione fallita ");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 			
 			response.setToken(validToken.getToken());
@@ -737,7 +739,7 @@ public class ClientController {
 			} else {
 				response.setMessage("Autenticazione fallita ");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 			
 			response.setToken(validToken.getToken());
@@ -809,7 +811,7 @@ public class ClientController {
 			} else {
 				response.setMessage("Autenticazione fallita ");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 			
 			response.setToken(validToken.getToken());

@@ -238,7 +238,7 @@ public class LoginController {
 			{
 				company=elencoCompaniesRepository.getInfoCompany(email);
 				elencoClients=elencoClientsRepository.getElencoClients(company);
-				
+
 				String _tokenCompany=Services.tokenCompany(company.getId());
 				if(_tokenCompany==null)
 					token = Services.getJWTToken(company.getRagione_sociale());

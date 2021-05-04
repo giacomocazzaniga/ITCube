@@ -6,11 +6,7 @@ import { _LICENZE } from './Constants';
 const initialState = {
   message : "",
   messageCode : 0,
-  // nome_company : null, //ragione sociale
   id_company : null,
-  // email : null,
-  // emailNotify : null,
-  // chiave_di_registrazione : null,
   client_list : [],
   logged: false,
   token : null,
@@ -23,14 +19,12 @@ const initialState = {
   searched_client: "",
   places_list : [],
   categories_list : [],
-  // category_vs_place : true, //true==category, false==place
   services_list : [],
   events_list : [],
   n_totali: 0,
   n_running: 0,
   n_stop: 0,
   n_monitorati: 0,
-  // lista_sedi: 0,
   lista_nomi_sedi: [],
   lista_id_sedi: [],
   client_template: {
@@ -425,6 +419,23 @@ export function rootReducer(state = initialState, action) {
       }
     });
   }
+  if(action.type === types.UPDATECLIENTLICENSES) {
+    for(let i=0; i<state.client_list.length; i++) {
+      if(state.client_list[i].id_client == action.id_client)
+        state.client_list[i].classe_licenza.push(action.license)  
+    }
+    return Object.assign({}, state);
+  }
+  if(action.type === types.TOTALRESET) {
+    return Object.assign({}, state = initialState, {
+
+    });
+  }
+  if(action.type === types.UPDATETOKEN) {
+    return Object.assign({}, state, {
+      token: action.token
+    });
+  }
   //returning the state
   return state;
 }
@@ -432,7 +443,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'company_template' , 'client_template', 'lista_id_sedi', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
+  blacklist: []
 };
 
 export default persistReducer(persistConfig, rootReducer);

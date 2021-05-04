@@ -210,3 +210,27 @@ code {
 .reactPaginate {
   max-width: 84% !important;
 }
+
+
+#logoutButton {
+  color: #fff;
+}
+
+#logoutButton li {
+  padding: 16px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #fff;
+  height: 50px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#logoutButton li a {
+  color: #fff;
+}
+
+#logoutButton li:hover {
+  background-color: #337ab7;
+}
+

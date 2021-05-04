@@ -154,3 +154,18 @@ export const updateCompanyHistory = (history_data) => ({
   type: types.UPDATECOMPANYHISTORY,
   history_data: history_data
 })
+
+export const updateClientLicenses = (license, id_client) => ({
+  type: types.UPDATECLIENTLICENSES,
+  license: license,
+  id_client: id_client
+})
+
+export const totalReset = () => ({
+  type: types.TOTALRESET,
+})
+
+export const updateToken = (token) => ({
+  type: types.UPDATETOKEN,
+  token: token
+})

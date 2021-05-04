@@ -11,7 +11,8 @@ import ToggleCategoryPlace from './ToggleCategoryPlace';
 import { _getCompanyHistory, _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 import { defaultUpdateInterval } from '../Constants';
-import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory } from '../ActionCreator';
+import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory, updateToken, totalReset } from '../ActionCreator';
+import { autenticazione_fallita, renewToken } from '../Tools';
 
 document.body.classList.add('fixed');
 
@@ -28,6 +29,12 @@ const mapDispatchToProps = dispatch => ({
   },
   UpdateCompanyHistory: (history_data) => {
     dispatch(updateCompanyHistory(history_data))
+  },
+  UpdateToken: (token) => {
+    dispatch(updateToken(token));
+  },
+  TotalReset: () => {
+    dispatch(totalReset())
   },
   FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
     let tmp_list = client_list;
@@ -74,58 +81,73 @@ const { Item } = Sidebar;
 
 const DashboardHome = (props) => {
 
-  const updateData = () => {
+  const updateData = (continueUpdating) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
-      let tmp_list = props.client_list;
-      let tmp_list2 = []
-      tmp_list.map(tmp_client => {
-        props.lista_nomi_sedi.map((sede,i) => {
-          if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
-            tmp_client.sede = String(props.lista_id_sedi[i]);
-            tmp_list2.push(tmp_client)
-          }
-        })
-      })
-        props.CompanyTemplateLicenze(response.data.licenzeShallow)
 
-        _getCompanyHistory(props.token,props.id_company)
-        .then( response => {
-          props.UpdateCompanyHistory(response)
-          _getCompanyOverview(props.token, props.id_company)
-          .then(function (response) {
-            let myPromise = new Promise(function (myResolve,myReject) {
-              props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
-              myResolve();
-            });
-            myPromise.then(
-              function (value) {    
-                let tmp_list = props.client_list;
-                let tmp_list2 = []
-                tmp_list.map(tmp_client => {
-                  props.lista_nomi_sedi.map((sede,i) => {
-                    if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
-                      tmp_client.sede = String(props.lista_id_sedi[i]);
-                      tmp_list2.push(tmp_client)
-                    }
-                  })
-                })
-                props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
-              },
-              function (error) {}
-            )
-            stopLoadingToast(loadingToast);
+      if(autenticazione_fallita(response.data.messageCode)) {
+        stopLoadingToast(loadingToast);
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+        console.log(token)
+        let tmp_list = props.client_list;
+        let tmp_list2 = []
+        tmp_list.map(tmp_client => {
+          props.lista_nomi_sedi.map((sede,i) => {
+            if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+              tmp_client.sede = String(props.lista_id_sedi[i]);
+              tmp_list2.push(tmp_client)
+            }
           })
         })
+          props.CompanyTemplateLicenze(response.data.licenzeShallow)
+
+          _getCompanyHistory(token,props.id_company)
+          .then( response => {
+            props.UpdateCompanyHistory(response)
+            _getCompanyOverview(token, props.id_company)
+            .then(function (response) {
+              let myPromise = new Promise(function (myResolve,myReject) {
+                props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
+                myResolve();
+              });
+              myPromise.then(
+                function (value) {    
+                  let tmp_list = props.client_list;
+                  let tmp_list2 = []
+                  tmp_list.map(tmp_client => {
+                    props.lista_nomi_sedi.map((sede,i) => {
+                      if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                        tmp_client.sede = String(props.lista_id_sedi[i]);
+                        tmp_list2.push(tmp_client)
+                      }
+                    })
+                  })
+                  props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
+                },
+                function (error) {}
+              )
+              stopLoadingToast(loadingToast);
+            })
+          })
+          .catch(function (error) {
+            stopLoadingToast(loadingToast);
+            getErrorToast(String(error));
+          })
         .catch(function (error) {
           stopLoadingToast(loadingToast);
           getErrorToast(String(error));
-        })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      })  
+        })  
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -134,16 +156,16 @@ const DashboardHome = (props) => {
   }
 
   useEffect(() => {
-    updateData();
+    let continueUpdating = true;
+    updateData(continueUpdating);
     let idInterval = setInterval(function(){ 
-      updateData();
+      updateData(continueUpdating);
     }, defaultUpdateInterval);
 
     //component unmount
     return () => {
       clearInterval(idInterval);
     }
-
   }, [])
 
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }

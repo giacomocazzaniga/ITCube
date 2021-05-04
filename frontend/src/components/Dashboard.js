@@ -12,9 +12,10 @@ import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { updateClientHistory, resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { updateClientHistory, resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices, totalReset, updateToken } from "../ActionCreator";
 import { defaultUpdateInterval } from "../Constants";
 import { Container } from "react-bootstrap";
+import { autenticazione_fallita, renewToken } from "../Tools";
 
 document.body.classList.add('fixed');
 
@@ -43,6 +44,12 @@ const mapDispatchToProps = dispatch => ({
   },
   UpdateClientHistory: (history_data) => {
     dispatch(updateClientHistory(history_data));
+  },
+  TotalReset: () => {
+    dispatch(totalReset());
+  },
+  UpdateToken: (token) => {
+    dispatch(updateToken(token));
   }
 });
 
@@ -129,51 +136,69 @@ const Dashboard = (props) => {
     drives: []
   })
 
-  const updateData = () => {
+  const updateData = (continueUpdating) => {
     //on component mount
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
-      props.SetClientTemplateInfo(response.data)
-      setState((previousState) => {
-        return { ...previousState, clientData: response.data };
-      });
-      _getEventiOverview(props.token, props.id_client)
-        .then(function (response) {
-          props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
-          setState((previousState) => {
-            return { ...previousState, 
-              problemi_oggi: response.data.problemi_oggi,
-              warning_oggi: response.data.warning_oggi,
-              tot_per_sottocategoria: response.data.tot_per_sottocategoria
-            };
-          });
-          _getDrives(props.token, props.id_client)
+      console.log(response)
+      if(autenticazione_fallita(response.data.messageCode)) {
+        stopLoadingToast(loadingToast);
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+        props.SetClientTemplateInfo(response.data)
+        setState((previousState) => {
+          return { ...previousState, clientData: response.data };
+        });
+        _getEventiOverview(token, props.id_client)
           .then(function (response) {
+            props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
             setState((previousState) => {
               return { ...previousState, 
-                drives: response.data.drives
+                problemi_oggi: response.data.problemi_oggi,
+                warning_oggi: response.data.warning_oggi,
+                tot_per_sottocategoria: response.data.tot_per_sottocategoria
               };
             });
-            _getLatestAlerts(props.token,props.id_client)
-              .then(function (response) {
-                //props alert
-                props.SetClientTemplateAlert(response.data.alerts)
-                _getServiziOverview(props.token, props.id_client)
+            _getDrives(token, props.id_client)
+            .then(function (response) {
+              setState((previousState) => {
+                return { ...previousState, 
+                  drives: response.data.drives
+                };
+              });
+              _getLatestAlerts(token,props.id_client)
                 .then(function (response) {
-                  //n_monitorati, n_esecuzione, n_stop
-                  props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-                  _getClientOverview(props.token, props.id_client)
+                  //props alert
+                  props.SetClientTemplateAlert(response.data.alerts)
+                  _getServiziOverview(token, props.id_client)
                   .then(function (response) {
-                    // props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-                    props.SetClientTemplateOverview(
-                      response.errori,
-                      response.warnings,
-                      response.ok
-                    )
-                    _getClientHistory(props.token,props.id_client)
-                    .then( response => {
-                      props.UpdateClientHistory(response);
+                    //n_monitorati, n_esecuzione, n_stop
+                    props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+                    _getClientOverview(token, props.id_client)
+                    .then(function (response) {
+                      // props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+                      props.SetClientTemplateOverview(
+                        response.errori,
+                        response.warnings,
+                        response.ok
+                      )
+                      _getClientHistory(token,props.id_client)
+                      .then( response => {
+                        props.UpdateClientHistory(response);
+                      })
+                      .catch(function (error) {
+                        stopLoadingToast(loadingToast);
+                        getErrorToast(String(error));
+                      })
                     })
                     .catch(function (error) {
                       stopLoadingToast(loadingToast);
@@ -184,22 +209,18 @@ const Dashboard = (props) => {
                     stopLoadingToast(loadingToast);
                     getErrorToast(String(error));
                   })
-                })
-                .catch(function (error) {
-                  stopLoadingToast(loadingToast);
-                  getErrorToast(String(error));
-                })
+              })
+            .catch(function (error) {
+              stopLoadingToast(loadingToast);
+              getErrorToast(String(error));
             })
-          .catch(function (error) {
-            stopLoadingToast(loadingToast);
-            getErrorToast(String(error));
           })
         })
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      });
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        });
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -208,10 +229,11 @@ const Dashboard = (props) => {
   }
 
   useEffect( () => {
+    let continueUpdating = true;
     props.ResetClientTemplate()
-    updateData();
+    updateData(continueUpdating);
     let idInterval = setInterval(function(){ 
-      updateData();
+      updateData(continueUpdating);
     }, defaultUpdateInterval);
     return () => {
       //on component unmount

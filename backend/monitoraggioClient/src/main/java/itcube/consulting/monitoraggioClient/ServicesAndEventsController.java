@@ -576,7 +576,7 @@ public class ServicesAndEventsController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -627,7 +627,7 @@ public class ServicesAndEventsController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -682,7 +682,7 @@ public class ServicesAndEventsController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -734,7 +734,7 @@ public class ServicesAndEventsController {
 			
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -781,7 +781,7 @@ public class ServicesAndEventsController {
 			
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		
 		}
 		catch(Exception e)
@@ -828,7 +828,7 @@ public class ServicesAndEventsController {
 			
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		
 		}
 		catch(Exception e)
@@ -902,7 +902,7 @@ public class ServicesAndEventsController {
 			
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		
 		}
 		catch(Exception e)
@@ -988,7 +988,7 @@ public class ServicesAndEventsController {
 			
 			response.setMessage("Autenticazione fallita");
 			response.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.ok(response);
 		
 		}
 		catch(Exception e)
@@ -1081,7 +1081,7 @@ public class ServicesAndEventsController {
 			
 			response.setMessage("Autenticazione fallita");
 			response.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(response);
+			return ResponseEntity.ok(response);
 		
 		}
 		catch(Exception e)

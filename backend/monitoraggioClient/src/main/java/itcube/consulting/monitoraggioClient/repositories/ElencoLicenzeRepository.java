@@ -2,6 +2,9 @@ package itcube.consulting.monitoraggioClient.repositories;
 
 import java.util.*;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -28,5 +31,15 @@ public interface ElencoLicenzeRepository extends CrudRepository<ElencoLicenze,In
 	
 	@Query(value="select id from elenco_licenze where codice = :codice", nativeQuery=true)
 	Integer getIdLicenzaFromLicenza(@Param ("codice") String codice);
+	
+	@Query(value="INSERT INTO elenco_clients_elenco_licenze (id_client, id_licenza) "
+			+ "VALUES (:id_client, :id_licenza)", nativeQuery=true)
+	@Modifying
+	@Transactional
+	Integer assegnaLicenza(@Param ("id_client") int id_client,@Param ("id_licenza") int id_licenza);
+	
+	@Query(value="SELECT id FROM elenco_licenze WHERE acquistato_da = :id_company AND id_tipo= :id_tipo", nativeQuery=true)
+	Integer getIdLicenzaFromTipoAndCompany(@Param ("id_company") int id_company, @Param ("id_tipo") int id_tipo);
+	
 }
 

@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUp from "./PopUp";
-import { servicesList, serviziOverview, updateCTWindowsServices } from "../ActionCreator";
+import { servicesList, serviziOverview, totalReset, updateCTWindowsServices, updateToken } from "../ActionCreator";
 import { defaultUpperBound } from "../Constants";
 import { _getServiziAll, _getServiziMonitorati, _getServiziOverview, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 import ReactPaginate from "react-paginate";
-import { Backend2FrontendDateConverter, sortResults } from "../Tools";
+import { autenticazione_fallita, Backend2FrontendDateConverter, renewToken, sortResults } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -20,6 +20,12 @@ const mapDispatchToProps = dispatch => ({
     },
     SetOverviewServizi: (n_totali, n_running, n_stop, n_monitorati) => {
       dispatch(updateCTWindowsServices(n_totali, n_running, n_stop, n_monitorati))
+    },
+    TotalReset: () => {
+      dispatch(totalReset())
+    },
+    UpdateToken: (token) => {
+      dispatch(updateToken(token));
     }
   }
 );
@@ -49,22 +55,38 @@ const WindowsServices = (props) => {
   }
 
   const getServicesList = () => {
+    let continueUpdating = true;
     const loadingToast = getLoadingToast("Caricamento...");
     _getServiziAll(props.token, props.id_client)
     .then(function (response) {
-      let tmp_list = response.data.confWindowsServices
-      _getServiziMonitorati(props.token, props.id_client)
-      .then(function (response) {
+
+      if(autenticazione_fallita(response.data.messageCode)) {
         stopLoadingToast(loadingToast);
-        let tmp_list2 = merge_object_arrays(tmp_list, response.data.monitoraggi, 'nome_servizio')
-        sortResults('nome_servizio', true, tmp_list2);
-        let list = servicesListMaker(tmp_list2);
-        props.ServicesList(list)
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      });
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+
+        let tmp_list = response.data.confWindowsServices
+        _getServiziMonitorati(token, props.id_client)
+        .then(function (response) {
+          stopLoadingToast(loadingToast);
+          let tmp_list2 = merge_object_arrays(tmp_list, response.data.monitoraggi, 'nome_servizio')
+          sortResults('nome_servizio', true, tmp_list2);
+          let list = servicesListMaker(tmp_list2);
+          props.ServicesList(list)
+        })
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        });
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -104,22 +126,39 @@ const WindowsServices = (props) => {
   
   const toggleMonitora = (servizio, actualValue) => {
     //alert(actualValue)
+    let continueUpdating = true;
     let monitora
     if(actualValue==true || actualValue=="true") monitora = "false"
     else monitora = "true"
     const loadingToast = getLoadingToast("Modifica monitoraggio servizi...");
     _modificaMonitoraggioServizio(props.token, servizio, props.id_client, monitora)
     .then(function (response) {
-      getServicesList()
-      _getServiziOverview(props.token, props.id_client)
-      .then(function (response) {
+
+      if(autenticazione_fallita(response.data.messageCode)) {
         stopLoadingToast(loadingToast);
-        props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      });
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+
+
+        getServicesList()
+        _getServiziOverview(token, props.id_client)
+        .then(function (response) {
+          stopLoadingToast(loadingToast);
+          props.SetOverviewServizi(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+        })
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        });
+      }
     }).catch(function (error) {
       stopLoadingToast(loadingToast);
       getErrorToast(String(error));

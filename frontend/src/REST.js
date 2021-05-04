@@ -31,6 +31,7 @@ export const url_get_client_overview_services = buildurl+"getClientOverview";
 export const url_get_company_overview = buildurl+"getCompanyOverview";
 export const url_get_client_history = buildurl + "getClientHistory";
 export const url_get_company_history = buildurl + "getCompanyHistory";
+export const url_assign_license = buildurl + "assegnaLicenza";
 
 
 

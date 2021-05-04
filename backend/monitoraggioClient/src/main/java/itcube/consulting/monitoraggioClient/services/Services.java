@@ -41,7 +41,7 @@ public final class Services {
     private HttpServletRequest request;
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
-	private static int milliSecLenghtToken=10000000;
+	private static int milliSecLenghtToken=600000;
 	private static double threshold=0.1*milliSecLenghtToken;
 
 	//Metodo token
@@ -83,9 +83,9 @@ public final class Services {
 
 	public static String tokenCompany(Integer id_company)
 	{
-		if(AuthenticationManager.containsKey(id_company))
+		if(AuthenticationManager.containsKey(id_company) && AuthenticationManager.get(id_company).keySet().toArray().length > 0)
 		{
-			return (String) AuthenticationManager.get(id_company).keySet().toArray()[0];
+			return (String) AuthenticationManager.get(id_company).keySet().toArray()[0];			
 		}
 		else
 		{
@@ -116,15 +116,16 @@ public final class Services {
 	
 	public static String checkThreshold(int id_company, String token)
 	{
-		if((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(id_company).get(token)), TimeUnit.MILLISECONDS))<threshold)
-		{
-			System.out.println((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(id_company).get(token)), TimeUnit.MILLISECONDS)));
-			System.out.println(threshold);
-			String newToken=getJWTToken(token.substring(0,10));
-			AuthenticationManager.get(id_company).remove(token);
-			AuthenticationManager.get(id_company).put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
-			return newToken;
-		}
+		if(((AuthenticationManager.get(id_company).get(token).getTime())-new Date(System.currentTimeMillis()).getTime())<threshold)
+			{
+				String newToken=getJWTToken(token.substring(0,10));
+				AuthenticationManager.remove(id_company);
+				HashMap<String, Date> tmp = new HashMap<String, Date>();
+				tmp.put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
+				AuthenticationManager.put(id_company, tmp);
+//				AuthenticationManager.get(id_company).put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
+				return new String(newToken);
+			}
 		return null;
 	}
 	
@@ -135,14 +136,10 @@ public final class Services {
 		
 		if(Services.isValid(id_company, token))
 		{
-			
-			String newToken=Services.checkThreshold(id_company, token);
-			validToken.setToken(newToken);
 			validToken.setValid(true);
 		}
 		else
 		{
-			validToken.setToken(null);
 			validToken.setValid(false);
 		}
 		return validToken;
@@ -189,6 +186,7 @@ public final class Services {
 	} 
 	
 	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+		System.out.println(date2);
 	    long diffInMillies = date2.getTime() - date1.getTime();
 	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
 	}

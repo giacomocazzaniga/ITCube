@@ -2,6 +2,7 @@ package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -50,9 +51,9 @@ public class ElencoClients {
 	//al contrario le chiavi 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "elenco_clients_elenco_licenze",
-     joinColumns = { @JoinColumn(name = "licenza_in_uso",nullable = false, updatable = false)},
-     inverseJoinColumns = { @JoinColumn(name = "id",nullable = false, updatable = false)})
-	private List<ElencoLicenze> elencoLicenze;
+     joinColumns = { @JoinColumn(name = "id_client",nullable = false, updatable = false)},
+     inverseJoinColumns = { @JoinColumn(name = "id_licenza",nullable = false, updatable = false)})
+	private Set<ElencoLicenze> elencoLicenze;
 	
 	private String sede;
 
@@ -77,11 +78,11 @@ public class ElencoClients {
 //		this.visualizzazioneEventi = visualizzazioneEventi;
 //	}
 	
-	public List<ElencoLicenze> getElencoLicenze() {
+	public Set<ElencoLicenze> getElencoLicenze() {
 		return elencoLicenze;
 	}
 
-	public void setElencoLicenze(List<ElencoLicenze> elencoLicenze) {
+	public void setElencoLicenze(Set<ElencoLicenze> elencoLicenze) {
 		this.elencoLicenze = elencoLicenze;
 	}
 

@@ -175,7 +175,7 @@ public class CompanyController {
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
 			System.out.println(Services.getCurrentDate()+" /editCompanyData SUCCESS "+ragione_sociale);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch (Exception e)
 		{
@@ -217,7 +217,7 @@ public class CompanyController {
 			} else {
 				response.setMessage("Autenticazione fallita");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 
 		} catch (Exception e) {
@@ -275,7 +275,7 @@ public class CompanyController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -319,7 +319,7 @@ public class CompanyController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -423,7 +423,7 @@ public class CompanyController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{

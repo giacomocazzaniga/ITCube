@@ -157,7 +157,7 @@ public class AlertController {
 			} else {
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 			
 		}
@@ -203,7 +203,7 @@ public class AlertController {
 			} else {
 				response.setMessage("Autenticazione fallita");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 			
 		}

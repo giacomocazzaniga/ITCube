@@ -1,5 +1,5 @@
 import { defaultDaysAlert, defaultSettimaneAlert, defaultSlot, defaultUpperBound } from "./Constants.js";
-const { url_login, url_get_nomi_sedi, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio, url_get_eventi, url_get_eventi_overview, url_lista_sedi, url_lista_gruppi, url_deep_client, url_shallow_clients, url_modifica_sede, url_get_drives, url_get_n_sediFake, url_get_n_sedi, url_inserimento_sede, url_cancellazione_sede, url_get_latest_alert, url_compra_licenza, url_get_client_overview, url_get_client_overview_drives, url_get_client_overview_services, url_get_client_overview_events, url_get_company_overview, url_get_client_history, url_get_company_history } = require('./REST');
+const { url_login, url_get_nomi_sedi, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio, url_get_eventi, url_get_eventi_overview, url_lista_sedi, url_lista_gruppi, url_deep_client, url_shallow_clients, url_modifica_sede, url_get_drives, url_get_n_sediFake, url_get_n_sedi, url_inserimento_sede, url_cancellazione_sede, url_get_latest_alert, url_compra_licenza, url_get_client_overview, url_get_client_overview_drives, url_get_client_overview_services, url_get_client_overview_events, url_get_company_overview, url_get_client_history, url_get_company_history, url_assign_license } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -249,4 +249,13 @@ export const _getCompanyHistory = async(token, id_company, slot=defaultDaysAlert
   res.last_update = response.data.last_update;
 
   return res;
+}
+
+export const _assignLicenze = (id_client,token,id_tipo,id_company) => {
+  return axios.post(url_assign_license, {
+    id_client: String(id_client),
+    token: token,
+    id_tipo: String(id_tipo),
+    id_company: String(id_company),
+  })
 }
