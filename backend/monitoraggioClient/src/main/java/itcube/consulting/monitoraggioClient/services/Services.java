@@ -41,7 +41,7 @@ public final class Services {
     private HttpServletRequest request;
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
-	private static int milliSecLenghtToken=600000;
+	private static int milliSecLenghtToken=900000;
 	private static double threshold=0.1*milliSecLenghtToken;
 
 	//Metodo token

@@ -141,7 +141,6 @@ const Dashboard = (props) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
-      console.log(response)
       if(autenticazione_fallita(response.data.messageCode)) {
         stopLoadingToast(loadingToast);
         getErrorToast("Sessione scaduta");
