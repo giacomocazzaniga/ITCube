@@ -5,12 +5,12 @@ import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactPaginate from 'react-paginate';
 import PopUp from "./PopUp";
-import { eventsList } from "../ActionCreator";
+import { eventsList, totalReset, updateToken } from "../ActionCreator";
 import { defaultUpperBound } from "../Constants";
 import { _getEventi, _getServiziAll, _getServiziMonitorati, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
 import { Pagination } from "react-bootstrap";
-import { Backend2FrontendDateConverter, sortResults } from "../Tools";
+import { autenticazione_fallita, Backend2FrontendDateConverter, renewToken, sortResults } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -19,6 +19,12 @@ import { Backend2FrontendDateConverter, sortResults } from "../Tools";
 const mapDispatchToProps = dispatch => ({
     EventsList: (events) => {
       dispatch(eventsList(events))
+    },
+    TotalReset: () => {
+      dispatch(totalReset())
+    },
+    UpdateToken: (token) => {
+      dispatch(updateToken(token));
     }
   }
 );
@@ -43,37 +49,56 @@ const WindowsEvents = (props) => {
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
 
   const getEventsList = (currentSlot=[1,1,1,1]) => {
+    let continueUpdating = true;
     console.log(currentSlot)
     const loadingToast = getLoadingToast("Caricamento...");
     _getEventi(props.token, props.id_client, "A", currentSlot[0])
     .then(function (response) {
-      stopLoadingToast(loadingToast);
-      //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
-      let listA = response.data.eventi;
-      sortResults("date_and_time_evento",false,listA)
-      console.log(listA)
-      _getEventi(props.token, props.id_client, "C", currentSlot[1])
-      .then(function (response) {
+      
+      if(autenticazione_fallita(response.data.messageCode)) {
         stopLoadingToast(loadingToast);
-        //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'C' }).length)
-        let listC = response.data.eventi;
-        sortResults("date_and_time_evento",false,listC)
-        _getEventi(props.token, props.id_client, "H", currentSlot[2])
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+
+        stopLoadingToast(loadingToast);
+        //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
+        let listA = response.data.eventi;
+        sortResults("date_and_time_evento",false,listA)
+        _getEventi(token, props.id_client, "C", currentSlot[1])
         .then(function (response) {
           stopLoadingToast(loadingToast);
-          //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'H' }).length)
-          let listH = response.data.eventi;
-          sortResults("date_and_time_evento",false,listH)
-          _getEventi(props.token, props.id_client, "S", currentSlot[3])
+          //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'C' }).length)
+          let listC = response.data.eventi;
+          sortResults("date_and_time_evento",false,listC)
+          _getEventi(token, props.id_client, "H", currentSlot[2])
           .then(function (response) {
             stopLoadingToast(loadingToast);
-            //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'S' }).length)
-            let listS = response.data.eventi;
-            sortResults("date_and_time_evento",false,listS)
-            let merged = [...listA, ...listC, ...listH, ...listS];
-            //console.log(merged)
-            let list = servicesListMaker(merged);
-            props.EventsList(list)
+            //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'H' }).length)
+            let listH = response.data.eventi;
+            sortResults("date_and_time_evento",false,listH)
+            _getEventi(token, props.id_client, "S", currentSlot[3])
+            .then(function (response) {
+              stopLoadingToast(loadingToast);
+              //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'S' }).length)
+              let listS = response.data.eventi;
+              sortResults("date_and_time_evento",false,listS)
+              let merged = [...listA, ...listC, ...listH, ...listS];
+              //console.log(merged)
+              let list = servicesListMaker(merged);
+              props.EventsList(list)
+            })
+            .catch(function (error) {
+              stopLoadingToast(loadingToast);
+              getErrorToast(String(error));
+            });
           })
           .catch(function (error) {
             stopLoadingToast(loadingToast);
@@ -84,11 +109,7 @@ const WindowsEvents = (props) => {
           stopLoadingToast(loadingToast);
           getErrorToast(String(error));
         });
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      });
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -214,21 +235,21 @@ const WindowsEvents = (props) => {
       return (oddcolor==true)
       ? 
         <>
-          <Col className="oddColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="oddColor col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
-          <Col className="oddColor col-md-2 col-xs-2"><p>{source}</p></Col>
-          <Col className="oddColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><p>{source}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-1 col-xs-1"><p>{id_event}</p></Col>
           {/*<Col className="oddColor col-md-2 col-xs-2"><p>{task_category}</p></Col>*/}
-          <Col className="oddColor col-md-4 col-xs-4"><p>{info}</p></Col>
+          <Col className="oddColor vertical-aligner col-md-4 col-xs-4"><p>{info}</p></Col>
         </>
       :
         <>
-          <Col className="evenColor col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
-          <Col className="evenColor col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
-          <Col className="evenColor col-md-2 col-xs-2"><p>{source}</p></Col>
-          <Col className="evenColor col-md-1 col-xs-1"><p>{id_event}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{status[parseInt(level)]}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-3 col-xs-3"><p>{Backend2FrontendDateConverter(date)}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><p>{source}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-1 col-xs-1"><p>{id_event}</p></Col>
           {/*<Col className="evenColor col-md-2 col-xs-2"><p>{task_category}</p></Col>*/}
-          <Col className="evenColor col-md-4 col-xs-4"><p>{info}</p></Col>
+          <Col className="evenColor vertical-aligner col-md-4 col-xs-4"><p>{info}</p></Col>
         </>
     else return <></>
   }

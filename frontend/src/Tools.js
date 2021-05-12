@@ -1,4 +1,5 @@
-import { _LICENZE } from "./Constants";
+import { totalReset } from "./ActionCreator";
+import { _LICENZE, _MSGCODE } from "./Constants";
 
 export const Backend2FrontendDateConverter = (bcknd_date) => {
   let frtnd_date = bcknd_date;
@@ -48,4 +49,24 @@ export const sortResults = (prop, asc, list) => {
           return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
       }
   });
+}
+
+export const autenticazione_fallita = (msgCode) => {
+  if((msgCode == _MSGCODE.AUTENTICAZIONE_FALLITA) || (String(msgCode) == String(_MSGCODE.AUTENTICAZIONE_FALLITA))) {
+    // console.log(true)
+    // console.log(msgCode)
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export const renewToken = (oldToken, newToken) => {
+  if(newToken != null && oldToken != newToken)
+    return true;
+  return false;
+}
+
+export const dataUltimoInserimento = () => {
+  
 }

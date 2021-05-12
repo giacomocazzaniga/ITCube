@@ -29,11 +29,18 @@ export const url_get_latest_alert = buildurl+"getLatestAlerts";
 export const url_compra_licenza = buildurl+"compraLicenza";
 export const url_get_client_overview_services = buildurl+"getClientOverview";
 export const url_get_company_overview = buildurl+"getCompanyOverview";
+export const url_get_client_history = buildurl + "getClientHistory";
+export const url_get_company_history = buildurl + "getCompanyHistory";
+export const url_assign_license = buildurl + "assegnaLicenza";
+export const url_modifica_monitoraggio_alert = buildurl + "modificaMonitoraggioAlert";
+export const url_get_monitoraggio_alert = buildurl + "getMonitoraggioAlert";
+export const url_update_monitoraggio_alert = buildurl + "updateMonitoraggioAlert";
+export const url_get_last_date = buildurl + "getLastDate";
 
 
 
 const portFake = "3001"; 
-const ipFake = "217.160.240.146";
+const ipFake = "127.0.0.1";//"217.160.240.146";
 const buildurlFake = "http://"+ipFake+":"+portFake+"/";
 export const url_loginFake = buildurlFake+"login";
 export const url_signupFake = buildurlFake+"signup";

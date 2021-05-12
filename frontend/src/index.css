@@ -120,9 +120,9 @@ code {
   transition: opacity 0.3s ease-in-out;
 }
 
-.content .box-primary {
+/* .content .box-primary {
   max-height: 310px !important;
-}
+} */
 
 .small-box-footer {
   z-index: 0 !important;
@@ -209,4 +209,44 @@ code {
 
 .reactPaginate {
   max-width: 84% !important;
+}
+
+
+#logoutButton {
+  color: #fff;
+}
+
+#logoutButton li {
+  padding: 16px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #fff;
+  height: 50px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#logoutButton li a {
+  color: #fff;
+}
+
+#logoutButton li:hover {
+  background-color: #337ab7;
+}
+
+.vertical-aligner {
+  display: flex;
+  align-items: center;
+}
+
+.vertical-aligner p {
+  margin: 0;
+}
+
+.overview-popup-list li {
+  display: block;
+}
+
+.overview-popup-list li a svg {
+  display: none;
 }

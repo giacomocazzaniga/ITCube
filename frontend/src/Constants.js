@@ -29,7 +29,8 @@ export const _FILTERS = {
 
 export const _MSGCODE = {
     NO_ERR : "0",
-    ERR : "1"
+    ERR : "1",
+    AUTENTICAZIONE_FALLITA: "-2"
 }
 
 export const _ALERTCATEGORY = [
@@ -38,5 +39,6 @@ export const _ALERTCATEGORY = [
 
 export const defaultUpperBound = 20;
 export const defaultSlot = 1;
+export const defaultDaysAlert = 10;
 export const defaultSettimaneAlert = 1;
 export const defaultUpdateInterval = 60000;

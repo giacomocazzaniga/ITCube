@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Modal, useModal, ModalTransition } from 'react-simple-hook-modal';
 import { Col, Box } from 'adminlte-2-react';
@@ -19,14 +19,19 @@ const mapDispatchToProps = dispatch => ({});
 const mapStateToProps = state => ({});
 
 const PopUp = (props) => {
+
   const { isModalOpen, openModal, closeModal } = useModal();
+  
   const launchAction = () => {
     return () => {
       openModal();
       props.action();
+      console.log("errore")
       setTimeout(function(){ 
         try {
-          document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px";
+          let testModal = document.getElementsByClassName("modalWrapper")[0]
+          if(testModal != undefined) 
+            document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px";
         } catch (error) {
           console.error(error);
         }
@@ -40,7 +45,9 @@ const PopUp = (props) => {
         else if (document.body)//ie quirks
           vertical_position = document.body.scrollTop;
         try {
-          document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px";
+          let testModal1 = document.getElementsByClassName("modalWrapper")[0]
+          if(testModal1 != undefined) 
+            document.getElementsByClassName("modalWrapper")[0].style.marginTop = parseInt(window.scrollY)+"px";
         } catch (error) {
           console.error(error);
         }

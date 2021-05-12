@@ -6,11 +6,7 @@ import { _LICENZE } from './Constants';
 const initialState = {
   message : "",
   messageCode : 0,
-  // nome_company : null, //ragione sociale
   id_company : null,
-  // email : null,
-  // emailNotify : null,
-  // chiave_di_registrazione : null,
   client_list : [],
   logged: false,
   token : null,
@@ -23,17 +19,17 @@ const initialState = {
   searched_client: "",
   places_list : [],
   categories_list : [],
-  // category_vs_place : true, //true==category, false==place
   services_list : [],
   events_list : [],
   n_totali: 0,
   n_running: 0,
   n_stop: 0,
   n_monitorati: 0,
-  // lista_sedi: 0,
   lista_nomi_sedi: [],
   lista_id_sedi: [],
+  configurazione_alert:[],
   client_template: {
+    last_insert_date: "",
     windows_services: {
       n_monitorati: 0,
       n_esecuzione: 0,
@@ -74,12 +70,12 @@ const initialState = {
       colors: ["#dd4b39", "#f39c12"],
       series: [
         {
-          name: "Warnings",
+          name: "N° di warnings",
           data: [],   //Dinamico
           color: "#f39c12"
         },
         {
-          name: "Problemi",
+          name: "N° di problemi",
           data: [],  //Dinamico
           color: "#dd4b39"
         }
@@ -136,12 +132,12 @@ const initialState = {
       colors: ["#dd4b39", "#f39c12"],
       series: [
         {
-          name: "Warnings",
+          name: "N° di client con warnings",
           data: [],   //Dinamico
           color: "#f39c12"
         },
         {
-          name: "Problemi",
+          name: "N° di client con problemi",
           data: [],  //Dinamico
           color: "#dd4b39"
         }
@@ -335,7 +331,9 @@ export function rootReducer(state = initialState, action) {
   if(action.type === types.CLIENTTEMPLATERESET) {
     return Object.assign({}, state, {
       ...state,
-      client_template: initialState.client_template
+      client_template: initialState.client_template,
+      services_list: initialState.services_list,
+      events_list: initialState.events_list
     });
   }
   if(action.type === types.COMPANYTEMPLATELICENZE) {
@@ -356,6 +354,15 @@ export function rootReducer(state = initialState, action) {
       }
     });
   }
+  if(action.type === types.GETLASTDATE) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        last_insert_date: action.date
+      }
+    });
+  }
   if(action.type === types.UPDATECOMPANYOVERVIEW) {
     return Object.assign({}, state, {
       ...state,
@@ -371,7 +378,85 @@ export function rootReducer(state = initialState, action) {
       client_list: action.lista_client
     });
   }
+  if(action.type === types.UPDATECLIENTHISTORY) {
+    return Object.assign({}, state, {
+      client_template: {
+        ...state.client_template,
+        history: {
+          ...state.client_template.history,
+          lastUpdate: action.history_data.last_update,
+          options: {
+            ...state.client_template.history.options,
+            xaxis: {
+              categories: action.history_data.xaxis
+            }
+          },
+          series: [
+            {
+              ...state.client_template.history.series[0],
+              data: action.history_data.warnings,   //Dinamico
+            },
+            {
+              ...state.client_template.history.series[1],
+              data: action.history_data.problems,  //Dinamico
+            }
+          ]
+        }
+      }
+    });
+  }
+  if(action.type === types.UPDATECOMPANYHISTORY) {
+    return Object.assign({}, state, {
+      company_template: {
+        ...state.company_template,
+        history: {
+          ...state.company_template.history,
+          lastUpdate: action.history_data.last_update,
+          options: {
+            ...state.company_template.history.options,
+            xaxis: {
+              ...state.company_template.history.options.xaxis,
+              categories: action.history_data.xaxis,
+              type: "date"
+            }
+          },
+          series: [
+            {
+              ...state.company_template.history.series[0],
+              data: action.history_data.warnings,   //Dinamico
+            },
+            {
+              ...state.company_template.history.series[1],
+              data: action.history_data.problems,  //Dinamico
+            }
+          ]
+        }
+      }
+    });
+  }
+  if(action.type === types.UPDATECLIENTLICENSES) {
+    for(let i=0; i<state.client_list.length; i++) {
+      if(state.client_list[i].id_client == action.id_client){
+        state.client_list[i].classe_licenza.push(action.license)
+      }
+    }
+    return Object.assign({}, state);
+  }
+  if(action.type === types.TOTALRESET) {
+    return Object.assign({}, state = initialState, {
 
+    });
+  }
+  if(action.type === types.UPDATETOKEN) {
+    return Object.assign({}, state, {
+      token: action.token
+    });
+  }
+  if(action.type === types.GETCONFIGURAZIONEALERT) {
+    return Object.assign({}, state, {
+      configurazione_alert: action.operazioni
+    });
+  }
   //returning the state
   return state;
 }
@@ -379,7 +464,7 @@ export function rootReducer(state = initialState, action) {
 export const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['nome_company', 'company_template' , 'client_template', 'lista_id_sedi', 'lista_nomi_sedi', 'chiave_di_registrazione', 'id_company', 'client_list', 'logged', 'token', 'licensesList', 'searched_client', 'places_list', 'categories_list', 'services_list', 'events_list']
+  blacklist: []
 };
 
 export default persistReducer(persistConfig, rootReducer);

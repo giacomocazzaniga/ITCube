@@ -6,8 +6,8 @@ import PopUp from './PopUp';
 import { _getNomiSedi, _getPlaces, _getShallowClients, _modificaSedeClient } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 import Dropdown from 'react-dropdown';
-import { idToNomeSede, nomeToIdSede } from '../Tools';
-import { updateCTInfo, updateSidebar } from '../ActionCreator';
+import { autenticazione_fallita, idToNomeSede, nomeToIdSede, renewToken } from '../Tools';
+import { totalReset, updateCTInfo, updateSidebar } from '../ActionCreator';
 
 /**
  * connect the actions to the component
@@ -19,6 +19,9 @@ const mapDispatchToProps = dispatch => ({
   },
   SetClientTemplateInfo: (info) => {
     dispatch(updateCTInfo(info))
+  },
+  TotalReset: () => {
+    dispatch(totalReset())
   }
 });
 
@@ -43,17 +46,32 @@ const ClientInfo = (props) => {
   })
 
   useEffect(() => {
+    let continueUpdating = true;
     _getNomiSedi(props.token, props.id_company)
     .then(function (response) {
-      let listaNomi = [];
-        let listaSedi = [];
-        response.data.sedi.map((sede) => {
-          listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
-          listaSedi.push(sede.substring(0,sede.indexOf(",")));
-        })
-      setState((previousState) => {
-        return { ...previousState, sedi: listaNomi };
-      });
+
+      if(autenticazione_fallita(response.data.messageCode)) {
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+
+        let listaNomi = [];
+          let listaSedi = [];
+          response.data.sedi.map((sede) => {
+            listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+            listaSedi.push(sede.substring(0,sede.indexOf(",")));
+          })
+        setState((previousState) => {
+          return { ...previousState, sedi: listaNomi };
+        });
+      }
     })
     .catch(function (error) {
       getErrorToast(String(error));
@@ -84,42 +102,57 @@ const ClientInfo = (props) => {
   }
 
   const clickService = () => {
+    let continueUpdating = true;
     console.log(state.nuovaSede)
     console.log(state.vecchiaSede)
     const loadingToast = getLoadingToast("Modificando i dati...");
     return _modificaSedeClient(props.token, props.id_client, props.id_company, state.nuovaSede, state.vecchiaSede)
     .then(function (response) {
-      let info_tmp = props.client_template.info;
-      info_tmp.sede = nomeToIdSede(state.nuovaSede, props.lista_nomi_sedi, props.lista_id_sedi)
-      props.SetClientTemplateInfo(info_tmp);
-      _getShallowClients(props.id_company, props.token)
-      .then(function (response) {
-        let elencoClients = response.data.shallowClients;
-        _getPlaces(props.id_company, props.token)
+
+      if(autenticazione_fallita(response.data.messageCode)) {
+        stopLoadingToast(loadingToast);
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+
+        let info_tmp = props.client_template.info;
+        info_tmp.sede = nomeToIdSede(state.nuovaSede, props.lista_nomi_sedi, props.lista_id_sedi)
+        props.SetClientTemplateInfo(info_tmp);
+        _getShallowClients(props.id_company, token)
         .then(function (response) {
-          let sedi = response.data.sedi;
-            _getNomiSedi(props.token, props.id_company)
-            .then(function (response) {
-              let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
-              let listaNomi = [];
-              let listaSedi = [];
-              response.data.sedi.map((sede) => {
-                listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
-                listaSedi.push(sede.substring(0,sede.indexOf(",")));
+          let elencoClients = response.data.shallowClients;
+          _getPlaces(props.id_company, token)
+          .then(function (response) {
+            let sedi = response.data.sedi;
+              _getNomiSedi(token, props.id_company)
+              .then(function (response) {
+                let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
+                let listaNomi = [];
+                let listaSedi = [];
+                response.data.sedi.map((sede) => {
+                  listaNomi.push(sede.substring(sede.indexOf(",") + 1, sede.length));
+                  listaSedi.push(sede.substring(0,sede.indexOf(",")));
+                })
+                props.UpdateSidebar(elencoClients,sedi, token, listaNomi, listaSedi);
               })
-              props.UpdateSidebar(elencoClients,sedi, token, listaNomi, listaSedi);
+            .catch(function (error) {
+              stopLoadingToast(loadingToast);
+              getErrorToast(String(error));
             })
+          })
           .catch(function (error) {
             stopLoadingToast(loadingToast);
             getErrorToast(String(error));
           })
         })
-        .catch(function (error) {
-          stopLoadingToast(loadingToast);
-          getErrorToast(String(error));
-        })
-      })
-
+      }
 
 
 

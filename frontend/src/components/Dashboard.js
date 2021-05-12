@@ -7,14 +7,15 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
+import { _getClientHistory, _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLastDate, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices } from "../ActionCreator";
+import { updateClientHistory, resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices, totalReset, updateToken, getLastDate } from "../ActionCreator";
 import { defaultUpdateInterval } from "../Constants";
 import { Container } from "react-bootstrap";
+import { autenticazione_fallita, renewToken } from "../Tools";
 
 document.body.classList.add('fixed');
 
@@ -40,6 +41,18 @@ const mapDispatchToProps = dispatch => ({
   },
   SetClientTemplateOverview: (errori,warnings,ok) => {
     dispatch(updateClientOverview(errori,warnings,ok))
+  },
+  UpdateClientHistory: (history_data) => {
+    dispatch(updateClientHistory(history_data));
+  },
+  TotalReset: () => {
+    dispatch(totalReset());
+  },
+  UpdateToken: (token) => {
+    dispatch(updateToken(token));
+  },
+  GetLastDate: (date) => {
+    dispatch(getLastDate(date));
   }
 });
 
@@ -48,6 +61,7 @@ const mapDispatchToProps = dispatch => ({
  * @param {*} state 
  */
 const mapStateToProps = state => ({
+    last_insert_date: state.client_template.last_insert_date,
     client_template: state.client_template,
     client_list: state.client_list,
     nome_company: state.nome_company,
@@ -126,69 +140,99 @@ const Dashboard = (props) => {
     drives: []
   })
 
-  const updateData = () => {
+  const updateData = (continueUpdating) => {
     //on component mount
     const loadingToast = getLoadingToast("Caricamento...");
     _getDeepClient(props.id_client, props.id_company, props.token)
     .then(function (response) {
-      props.SetClientTemplateInfo(response.data)
-      setState((previousState) => {
-        return { ...previousState, clientData: response.data };
-      });
-      _getEventiOverview(props.token, props.id_client)
-        .then(function (response) {
-          props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
-          setState((previousState) => {
-            return { ...previousState, 
-              problemi_oggi: response.data.problemi_oggi,
-              warning_oggi: response.data.warning_oggi,
-              tot_per_sottocategoria: response.data.tot_per_sottocategoria
-            };
-          });
-          _getDrives(props.token, props.id_client)
+      if(autenticazione_fallita(response.data.messageCode)) {
+        stopLoadingToast(loadingToast);
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+        props.SetClientTemplateInfo(response.data)
+        setState((previousState) => {
+          return { ...previousState, clientData: response.data };
+        });
+        _getEventiOverview(token, props.id_client)
           .then(function (response) {
+            props.SetClientTemplateWindowsEvents(response.data.problemi_oggi, response.data.warning_oggi)
             setState((previousState) => {
               return { ...previousState, 
-                drives: response.data.drives
+                problemi_oggi: response.data.problemi_oggi,
+                warning_oggi: response.data.warning_oggi,
+                tot_per_sottocategoria: response.data.tot_per_sottocategoria
               };
             });
-            _getLatestAlerts(props.token,props.id_client)
-              .then(function (response) {
-                //props alert
-                props.SetClientTemplateAlert(response.data.alerts)
-                _getServiziOverview(props.token, props.id_client)
+            _getDrives(token, props.id_client)
+            .then(function (response) {
+              setState((previousState) => {
+                return { ...previousState, 
+                  drives: response.data.drives
+                };
+              });
+              _getLatestAlerts(token,props.id_client)
                 .then(function (response) {
-                  //n_monitorati, n_esecuzione, n_stop
-                  props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-                  _getClientOverview(props.token, props.id_client)
+                  //props alert
+                  props.SetClientTemplateAlert(response.data.alerts)
+                  _getServiziOverview(token, props.id_client)
                   .then(function (response) {
-                    // props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
-                    props.SetClientTemplateOverview(
-                      response.errori,
-                      response.warnings,
-                      response.ok
-                    )
+                    //n_monitorati, n_esecuzione, n_stop
+                    props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+                    _getClientOverview(token, props.id_client)
+                    .then(function (response) {
+                      // props.SetClientTemplateWindowsServices(response.data.n_totali, response.data.n_running, response.data.n_stopped, response.data.n_monitorati)
+                      props.SetClientTemplateOverview(
+                        response.errori,
+                        response.warnings,
+                        response.ok
+                      )
+                      _getClientHistory(token,props.id_client)
+                      .then( response => {
+                        props.UpdateClientHistory(response);
+                        _getLastDate(props.id_client,token)
+                        .then( response => {
+                          stopLoadingToast(loadingToast);
+                          props.GetLastDate(response.data.maxDate);
+                        })
+                        .catch(function (error) {
+                          stopLoadingToast(loadingToast);
+                          getErrorToast(String(error));
+                        })
+                      })
+                      .catch(function (error) {
+                        stopLoadingToast(loadingToast);
+                        getErrorToast(String(error));
+                      })
+                    })
+                    .catch(function (error) {
+                      stopLoadingToast(loadingToast);
+                      getErrorToast(String(error));
+                    })
                   })
                   .catch(function (error) {
                     stopLoadingToast(loadingToast);
                     getErrorToast(String(error));
                   })
-                })
-                .catch(function (error) {
-                  stopLoadingToast(loadingToast);
-                  getErrorToast(String(error));
-                })
+              })
+            .catch(function (error) {
+              stopLoadingToast(loadingToast);
+              getErrorToast(String(error));
             })
-          .catch(function (error) {
-            stopLoadingToast(loadingToast);
-            getErrorToast(String(error));
           })
         })
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      });
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        });
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -197,10 +241,11 @@ const Dashboard = (props) => {
   }
 
   useEffect( () => {
+    let continueUpdating = true;
     props.ResetClientTemplate()
-    updateData();
+    updateData(continueUpdating);
     let idInterval = setInterval(function(){ 
-      updateData();
+      updateData(continueUpdating);
     }, defaultUpdateInterval);
     return () => {
       //on component unmount
@@ -236,17 +281,18 @@ const Dashboard = (props) => {
   return (
   state.clientData != null 
   ? 
-  <Content title={props.title} browserTitle={props.title}>  
+  <Content title={props.title} subTitle={props.last_insert_date && "Ultimo inserimento: " + props.last_insert_date.replace("T"," ").substring(0,19)} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
         <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Problemi e warning risolti"]} problems={(props.client_template.overview.problemi.map(p => p).reduce((sum, current) => sum + current, 0 ))} warnings={(props.client_template.overview.warnings.map(p => p).reduce((sum, current) => sum + current, 0 ))} running={(props.client_template.overview.ok.map(p => p).reduce((sum, current) => sum + current, 0 ))} popUpChildsWarnings={getChilds(props.client_template.overview.warnings,"warnings")} popUpChildsProblemi={getChilds(props.client_template.overview.problemi,"problemi")} idClientsWarnings={[]} idClientsProblemi={[]} isHome={false}/>
         <Col md={8} xs={12}>
-          <Communications />
+          <Communications id_client={props.id_client}/>
           <History apex={props.client_template.history}/>
         </Col>
         <Col md={4} xs={6}>
           <ClientInfo client={props.client_template.info} id_client={props.id_client}/>
         </Col>
+
         {state.drives != [] 
         ? state.drives.map((drive) =>  
           <Col md={4} xs={6}>

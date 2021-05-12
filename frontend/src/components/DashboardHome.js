@@ -8,10 +8,11 @@ import History from './History';
 import LicensesList from './LicensesList';
 import UserData from './UserData';
 import ToggleCategoryPlace from './ToggleCategoryPlace';
-import { _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
+import { _getCompanyHistory, _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 import { defaultUpdateInterval } from '../Constants';
-import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi } from '../ActionCreator';
+import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory, updateToken, totalReset } from '../ActionCreator';
+import { autenticazione_fallita, renewToken } from '../Tools';
 
 document.body.classList.add('fixed');
 
@@ -25,6 +26,15 @@ const mapDispatchToProps = dispatch => ({
   },
   UpdateCompanyOverview: (n_errori, n_warnings, n_ok) => {
     dispatch(updateCompanyOverview(n_errori, n_warnings, n_ok))
+  },
+  UpdateCompanyHistory: (history_data) => {
+    dispatch(updateCompanyHistory(history_data))
+  },
+  UpdateToken: (token) => {
+    dispatch(updateToken(token));
+  },
+  TotalReset: () => {
+    dispatch(totalReset())
   },
   FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
     let tmp_list = client_list;
@@ -71,49 +81,73 @@ const { Item } = Sidebar;
 
 const DashboardHome = (props) => {
 
-  const updateData = () => {
+  const updateData = (continueUpdating) => {
     const loadingToast = getLoadingToast("Caricamento...");
     _getLicenzeShallow(props.id_company, props.token)
     .then(function (response) {
-      let tmp_list = props.client_list;
-      let tmp_list2 = []
-      tmp_list.map(tmp_client => {
-        props.lista_nomi_sedi.map((sede,i) => {
-          if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
-            tmp_client.sede = String(props.lista_id_sedi[i]);
-            tmp_list2.push(tmp_client)
-          }
+
+      if(autenticazione_fallita(response.data.messageCode)) {
+        stopLoadingToast(loadingToast);
+        getErrorToast("Sessione scaduta");
+        props.TotalReset();
+        continueUpdating = false;
+      }
+      if(continueUpdating != false) {
+        let token= props.token;
+        if(renewToken(props.token, response.data.token)){
+          props.UpdateToken(response.data.token);
+          token = response.data.token;
+        }
+        let tmp_list = props.client_list;
+        let tmp_list2 = []
+        tmp_list.map(tmp_client => {
+          props.lista_nomi_sedi.map((sede,i) => {
+            if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+              tmp_client.sede = String(props.lista_id_sedi[i]);
+              tmp_list2.push(tmp_client)
+            }
+          })
         })
-      })
-      props.CompanyTemplateLicenze(response.data.licenzeShallow)
-      _getCompanyOverview(props.token, props.id_company)
-      .then(function (response) {
-        let myPromise = new Promise(function (myResolve,myReject) {
-          props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
-          myResolve();
-        });
-        myPromise.then(
-          function (value) {    
-            let tmp_list = props.client_list;
-            let tmp_list2 = []
-            tmp_list.map(tmp_client => {
-              props.lista_nomi_sedi.map((sede,i) => {
-                if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
-                  tmp_client.sede = String(props.lista_id_sedi[i]);
-                  tmp_list2.push(tmp_client)
-                }
-              })
+          props.CompanyTemplateLicenze(response.data.licenzeShallow)
+
+          _getCompanyHistory(token,props.id_company)
+          .then( response => {
+            props.UpdateCompanyHistory(response)
+            _getCompanyOverview(token, props.id_company)
+            .then(function (response) {
+              let myPromise = new Promise(function (myResolve,myReject) {
+                props.UpdateCompanyOverview(response.data.errori, response.data.warning,response.data.ok )
+                myResolve();
+              });
+              myPromise.then(
+                function (value) {    
+                  let tmp_list = props.client_list;
+                  let tmp_list2 = []
+                  tmp_list.map(tmp_client => {
+                    props.lista_nomi_sedi.map((sede,i) => {
+                      if((tmp_client.sede === sede) || (tmp_client.sede === props.lista_id_sedi[i])){
+                        tmp_client.sede = String(props.lista_id_sedi[i]);
+                        tmp_list2.push(tmp_client)
+                      }
+                    })
+                  })
+                  
+                  props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
+                },
+                function (error) {}
+              )
+              stopLoadingToast(loadingToast);
             })
-            props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
-          },
-          function (error) {}
-        )
-        stopLoadingToast(loadingToast);
-      })
-      .catch(function (error) {
-        stopLoadingToast(loadingToast);
-        getErrorToast(String(error));
-      })  
+          })
+          .catch(function (error) {
+            stopLoadingToast(loadingToast);
+            getErrorToast(String(error));
+          })
+        .catch(function (error) {
+          stopLoadingToast(loadingToast);
+          getErrorToast(String(error));
+        })  
+      }
     })
     .catch(function (error) {
       stopLoadingToast(loadingToast);
@@ -122,16 +156,16 @@ const DashboardHome = (props) => {
   }
 
   useEffect(() => {
-    updateData();
+    let continueUpdating = true;
+    updateData(continueUpdating);
     let idInterval = setInterval(function(){ 
-      updateData();
+      updateData(continueUpdating);
     }, defaultUpdateInterval);
 
     //component unmount
     return () => {
       clearInterval(idInterval);
     }
-
   }, [])
 
   const isOdd = (num) => { return ((num % 2)==1) ? true : false }
@@ -159,9 +193,9 @@ const DashboardHome = (props) => {
     listClients.map((client,i) => {
       (isOdd(i)) 
       ?
-        list = [...list, <Col className="oddColor col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>, <Col className="oddColor col-md-4 col-xs-4">{client.sede}</Col>, <Col className="oddColor col-md-4 col-xs-4">{client.tipo_client}</Col>]
+        list = [...list, <Col className="oddColor overview-popup-list vertical-aligner col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>, <Col className="oddColor vertical-aligner col-md-4 col-xs-4">{client.sede}</Col>, <Col className="oddColor vertical-aligner col-md-4 col-xs-4">{client.tipo_client}</Col>]
       :
-        list = [...list, <Col className="evenColor col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>,  <Col className="evenColor col-md-4 col-xs-4">{client.sede}</Col>, <Col className="evenColor col-md-4 col-xs-4">{client.tipo_client}</Col>]
+        list = [...list, <Col className="evenColor overview-popup-list vertical-aligner col-md-4 col-xs-4"><Item key={client.id_client} text={client.nome_client} to={"/company"+props.nome_company+"user"+client.id_client} /></Col>,  <Col className="evenColor vertical-aligner col-md-4 col-xs-4">{client.sede}</Col>, <Col className="evenColor vertical-aligner col-md-4 col-xs-4">{client.tipo_client}</Col>]
       })
     return list;
   }
