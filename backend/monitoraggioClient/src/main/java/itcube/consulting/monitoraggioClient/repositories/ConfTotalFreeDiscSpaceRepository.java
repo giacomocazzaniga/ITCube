@@ -55,4 +55,8 @@ public interface ConfTotalFreeDiscSpaceRepository extends CrudRepository<ConfTot
 	@Query(value="select count(DISTINCT drive) from conf_total_free_disc_space where id_client= :id_client", nativeQuery=true)
 	int getTotDrives(@Param("id_client") int id_client);
 	
+	@Query(value="SELECT max(date_and_time) FROM conf_total_free_disc_space WHERE id_client = :id_client",nativeQuery=true)
+	public LocalDateTime getMaxDateAndTimeDrives(@Param("id_client") int id_client);
+	
+	
 }

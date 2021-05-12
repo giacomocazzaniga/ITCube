@@ -7,12 +7,12 @@ import History from './History';
 import Drive from './Drive';
 import ClientInfo from './ClientInfo';
 import { ModalProvider } from 'react-simple-hook-modal';
-import { _getClientHistory, _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
+import { _getClientHistory, _getClientOverview, _getDeepClient, _getDrives, _getEventiOverview, _getLastDate, _getLatestAlerts, _getServiziOverview } from "../callableRESTs";
 import WindowsServices from "./WindowsServices";
 import WindowsEvents from "./WindowsEvents";
 import OperationsList from "./OperationsList";
 import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManager";
-import { updateClientHistory, resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices, totalReset, updateToken } from "../ActionCreator";
+import { updateClientHistory, resetClientTemplate, serviziOverview, updateClientOverview, updateCTAlert, updateCTInfo, updateCTWindowsEvents, updateCTWindowsServices, totalReset, updateToken, getLastDate } from "../ActionCreator";
 import { defaultUpdateInterval } from "../Constants";
 import { Container } from "react-bootstrap";
 import { autenticazione_fallita, renewToken } from "../Tools";
@@ -50,6 +50,9 @@ const mapDispatchToProps = dispatch => ({
   },
   UpdateToken: (token) => {
     dispatch(updateToken(token));
+  },
+  GetLastDate: (date) => {
+    dispatch(getLastDate(date));
   }
 });
 
@@ -58,6 +61,7 @@ const mapDispatchToProps = dispatch => ({
  * @param {*} state 
  */
 const mapStateToProps = state => ({
+    last_insert_date: state.client_template.last_insert_date,
     client_template: state.client_template,
     client_list: state.client_list,
     nome_company: state.nome_company,
@@ -193,6 +197,15 @@ const Dashboard = (props) => {
                       _getClientHistory(token,props.id_client)
                       .then( response => {
                         props.UpdateClientHistory(response);
+                        _getLastDate(props.id_client,token)
+                        .then( response => {
+                          stopLoadingToast(loadingToast);
+                          props.GetLastDate(response.data.maxDate);
+                        })
+                        .catch(function (error) {
+                          stopLoadingToast(loadingToast);
+                          getErrorToast(String(error));
+                        })
                       })
                       .catch(function (error) {
                         stopLoadingToast(loadingToast);
@@ -268,17 +281,18 @@ const Dashboard = (props) => {
   return (
   state.clientData != null 
   ? 
-  <Content title={props.title} browserTitle={props.title}>  
+  <Content title={props.title} subTitle={props.last_insert_date && "Ultimo inserimento: " + props.last_insert_date.replace("T"," ").substring(0,19)} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
         <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Problemi e warning risolti"]} problems={(props.client_template.overview.problemi.map(p => p).reduce((sum, current) => sum + current, 0 ))} warnings={(props.client_template.overview.warnings.map(p => p).reduce((sum, current) => sum + current, 0 ))} running={(props.client_template.overview.ok.map(p => p).reduce((sum, current) => sum + current, 0 ))} popUpChildsWarnings={getChilds(props.client_template.overview.warnings,"warnings")} popUpChildsProblemi={getChilds(props.client_template.overview.problemi,"problemi")} idClientsWarnings={[]} idClientsProblemi={[]} isHome={false}/>
         <Col md={8} xs={12}>
-          <Communications />
+          <Communications id_client={props.id_client}/>
           <History apex={props.client_template.history}/>
         </Col>
         <Col md={4} xs={6}>
           <ClientInfo client={props.client_template.info} id_client={props.id_client}/>
         </Col>
+
         {state.drives != [] 
         ? state.drives.map((drive) =>  
           <Col md={4} xs={6}>

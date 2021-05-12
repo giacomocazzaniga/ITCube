@@ -53,8 +53,8 @@ export const sortResults = (prop, asc, list) => {
 
 export const autenticazione_fallita = (msgCode) => {
   if((msgCode == _MSGCODE.AUTENTICAZIONE_FALLITA) || (String(msgCode) == String(_MSGCODE.AUTENTICAZIONE_FALLITA))) {
-    console.log(true)
-    console.log(msgCode)
+    // console.log(true)
+    // console.log(msgCode)
     return true;
   } else {
     return false;
@@ -67,7 +67,6 @@ export const renewToken = (oldToken, newToken) => {
   return false;
 }
 
-//TODO:
-//Nella navbar inserire un pulsante 
-//SE IL token è scaduto ma non ne ho uno nuovo mi slogghi
-//ALLA LOGIN REINDIRIZZARE ALLA PAGINA DASHBOARDHOME
+export const dataUltimoInserimento = () => {
+  
+}

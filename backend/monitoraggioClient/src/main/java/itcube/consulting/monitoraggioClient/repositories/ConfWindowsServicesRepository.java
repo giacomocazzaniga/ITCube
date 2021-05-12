@@ -63,4 +63,6 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	@Query(value="update conf_windows_services set stato=:stato, date_and_time= :date_and_time where id_client= :id_client and nome_servizio = :nome_servizio", nativeQuery=true)
 	void updateService(@Param("id_client") int id_client, @Param("stato") int stato, @Param("date_and_time") LocalDateTime date_and_time, @Param("nome_servizio") String nome_servizio);
 	
+	@Query(value="SELECT max(date_and_time) FROM conf_windows_services WHERE id_client = :id_client",nativeQuery=true)
+	public LocalDateTime getMaxDateAndTimeServices(@Param("id_client") int id_client);
 }

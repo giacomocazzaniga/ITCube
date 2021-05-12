@@ -32,6 +32,10 @@ export const url_get_company_overview = buildurl+"getCompanyOverview";
 export const url_get_client_history = buildurl + "getClientHistory";
 export const url_get_company_history = buildurl + "getCompanyHistory";
 export const url_assign_license = buildurl + "assegnaLicenza";
+export const url_modifica_monitoraggio_alert = buildurl + "modificaMonitoraggioAlert";
+export const url_get_monitoraggio_alert = buildurl + "getMonitoraggioAlert";
+export const url_update_monitoraggio_alert = buildurl + "updateMonitoraggioAlert";
+export const url_get_last_date = buildurl + "getLastDate";
 
 
 

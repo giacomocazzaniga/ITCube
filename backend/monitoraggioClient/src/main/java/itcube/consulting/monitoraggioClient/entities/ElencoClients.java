@@ -14,8 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ElencoClients {
@@ -37,10 +40,12 @@ public class ElencoClients {
 	
 	@ManyToOne
 	@JoinColumn(name = "tipologiaClient")
+	@JsonIgnore
 	private TipologiaClient tipologiaClient;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_company")
+	@JsonIgnore
 	private ElencoCompanies elencoCompanies;
 	//private int id_company;
 	
@@ -49,11 +54,17 @@ public class ElencoClients {
 	//Chiave esterna licenza_in_uso 
 	
 	//al contrario le chiavi 
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "elenco_clients_elenco_licenze",
      joinColumns = { @JoinColumn(name = "id_client",nullable = false, updatable = false)},
      inverseJoinColumns = { @JoinColumn(name = "id_licenza",nullable = false, updatable = false)})
 	private Set<ElencoLicenze> elencoLicenze;
+	
+	
+	@OneToMany(mappedBy = "elencoClients")
+	@JsonIgnore
+	private List<AlertConfigurazione> alertConfigurazione;
 	
 	private String sede;
 

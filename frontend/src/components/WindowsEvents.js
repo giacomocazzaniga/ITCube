@@ -72,7 +72,6 @@ const WindowsEvents = (props) => {
         //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
         let listA = response.data.eventi;
         sortResults("date_and_time_evento",false,listA)
-        console.log(listA)
         _getEventi(token, props.id_client, "C", currentSlot[1])
         .then(function (response) {
           stopLoadingToast(loadingToast);

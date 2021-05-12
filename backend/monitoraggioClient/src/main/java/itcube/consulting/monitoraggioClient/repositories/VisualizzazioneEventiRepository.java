@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -36,5 +37,8 @@ public interface VisualizzazioneEventiRepository extends CrudRepository<Visualiz
 			+ "limit :limite "
 			+ ") SUB where SUB.level = :level ", nativeQuery=true)
 	int getNumStato(@Param("id_client") int id_client, @Param("level") int level, @Param("limite") int limite);
+	
+	@Query(value="SELECT max(date_and_time) FROM visualizzazione_eventi WHERE id_client = :id_client",nativeQuery=true)
+	public LocalDateTime getMaxDateAndTimeEvents(@Param("id_client") int id_client);
 	
 }

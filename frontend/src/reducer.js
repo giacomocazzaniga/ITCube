@@ -27,7 +27,9 @@ const initialState = {
   n_monitorati: 0,
   lista_nomi_sedi: [],
   lista_id_sedi: [],
+  configurazione_alert:[],
   client_template: {
+    last_insert_date: "",
     windows_services: {
       n_monitorati: 0,
       n_esecuzione: 0,
@@ -350,6 +352,15 @@ export function rootReducer(state = initialState, action) {
       }
     });
   }
+  if(action.type === types.GETLASTDATE) {
+    return Object.assign({}, state, {
+      ...state,
+      client_template: {
+        ...state.client_template,
+        last_insert_date: action.date
+      }
+    });
+  }
   if(action.type === types.UPDATECOMPANYOVERVIEW) {
     return Object.assign({}, state, {
       ...state,
@@ -402,7 +413,9 @@ export function rootReducer(state = initialState, action) {
           options: {
             ...state.company_template.history.options,
             xaxis: {
-              categories: action.history_data.xaxis
+              ...state.company_template.history.options.xaxis,
+              categories: action.history_data.xaxis,
+              type: "date"
             }
           },
           series: [
@@ -421,8 +434,9 @@ export function rootReducer(state = initialState, action) {
   }
   if(action.type === types.UPDATECLIENTLICENSES) {
     for(let i=0; i<state.client_list.length; i++) {
-      if(state.client_list[i].id_client == action.id_client)
+      if(state.client_list[i].id_client == action.id_client){
         state.client_list[i].classe_licenza.push(action.license)
+      }
     }
     return Object.assign({}, state);
   }
@@ -434,6 +448,11 @@ export function rootReducer(state = initialState, action) {
   if(action.type === types.UPDATETOKEN) {
     return Object.assign({}, state, {
       token: action.token
+    });
+  }
+  if(action.type === types.GETCONFIGURAZIONEALERT) {
+    return Object.assign({}, state, {
+      configurazione_alert: action.operazioni
     });
   }
   //returning the state

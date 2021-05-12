@@ -41,14 +41,21 @@ const AssignLicenses = (props) => {
     const [state,setState] = useState(0);
 
     const _licenseChange = (e) => {
-        setState(e.target.value);
+        props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).forEach( (license,i) => {
+            if(i==e.target.value){
+                setState({
+                    "codice": license.codice,
+                    "classe": license.classe
+                });
+            }
+        })
     }
 
     const _assignLicense = () => {
         let continueUpdating=true;
         if(state != 0) {
             const loadingToast = getLoadingToast("Assegnando la licenza...");
-            _assignLicenze(props.client.id_client,props.token,state,props.id_company)
+            _assignLicenze(props.client.id_client,props.token,state.codice,props.id_company)
             .then( response => {
 
                 if(autenticazione_fallita(response.data.messageCode)) {
@@ -64,7 +71,7 @@ const AssignLicenses = (props) => {
                       token = response.data.token;
                     }
 
-                    props.UpdateClientLicenses(state,props.client.id_client)
+                    props.UpdateClientLicenses(state.classe,props.client.id_client)
                     stopLoadingToast(loadingToast);
                 }
             })
@@ -91,7 +98,7 @@ const AssignLicenses = (props) => {
                 <Col className="oddColor vertical-aligner col-md-3 col-xs-3">
                     <select onChange={_licenseChange} >
                         <option value={0} selected hidden disabled>Seleziona una licenza</option>
-                        {props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).map(license => <option value={license.classe}>{license.tipologia}</option>)}   
+                        {props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).map((license,i) => <option value={i}>{license.tipologia}</option>)}   
                     </select>
                 </Col>
                 <Col className="oddColor vertical-aligner col-md-2 col-xs-2">
@@ -109,7 +116,7 @@ const AssignLicenses = (props) => {
                 <Col className="evenColor vertical-aligner col-md-3 col-xs-3">
                     <select onChange={_licenseChange} >
                         <option value={0} selected hidden disabled>Seleziona una licenza</option>
-                        {props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).map(license => <option value={license.classe}>{license.tipologia}</option>)}   
+                        {props.company_template.licensesList.filter( licenza => !props.client.classe_licenza.includes(licenza.classe)).map((license,i) => <option value={i}>{license.tipologia}</option>)}   
                     </select>
                 </Col>
                 <Col className="evenColor vertical-aligner col-md-2 col-xs-2">

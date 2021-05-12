@@ -45,7 +45,7 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 	
 	@Query(value="SELECT DISTINCT c.id "
 			+ "	FROM conf_total_free_disc_space d INNER JOIN elenco_clients c ON d.id_client = c.id "
-			+ "	WHERE c.id_company = :id_company AND d.perc_free_disc_space < 10 ",nativeQuery=true)
+			+ "	WHERE c.id_company = :id_company AND d.perc_free_disc_space <= 10 ",nativeQuery=true)
 	List<Integer> getIdsOfClientsWithDrivesErrors(@Param("id_company") int id_company);
 	
 	@Query(value="SELECT DISTINCT c.id"

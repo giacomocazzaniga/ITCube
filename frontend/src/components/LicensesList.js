@@ -197,13 +197,14 @@ const LicensesList = (props) => {
         displayValue="name" // Property name to display in the dropdown options
       />
       <br />
-      {props.company_template.licensesList.map((license) => {
+      {props.company_template.licensesList.map((license,i) => {
         return (JSON.stringify(props.licensesList).toUpperCase().includes(license.tipologia.toUpperCase())) 
-        ? <>
+        ? 
+          <div key={i}>
             {/* {console.log(JSON.stringify(props.selectedValue)+" "+license.tipologia+" "+license.codice)} */}
             <Col xs={8} md={6}>{license.codice}</Col>
             <Col xs={4} md={6}>{license.tipologia}</Col>
-          </>
+          </div>
         : <></>
       })
       }

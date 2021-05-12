@@ -98,7 +98,6 @@ const DashboardHome = (props) => {
           props.UpdateToken(response.data.token);
           token = response.data.token;
         }
-        console.log(token)
         let tmp_list = props.client_list;
         let tmp_list2 = []
         tmp_list.map(tmp_client => {
@@ -132,6 +131,7 @@ const DashboardHome = (props) => {
                       }
                     })
                   })
+                  
                   props.FixSedi(tmp_list2, props.lista_nomi_sedi, props.lista_id_sedi);
                 },
                 function (error) {}

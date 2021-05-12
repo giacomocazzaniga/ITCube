@@ -53,6 +53,7 @@ import com.google.gson.GsonBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import itcube.consulting.monitoraggioClient.entities.Alert;
+import itcube.consulting.monitoraggioClient.entities.AlertConfigurazione;
 import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
@@ -65,6 +66,7 @@ import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzeDeep;
+import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -135,6 +137,9 @@ public class ClientController {
 	
 	@Autowired
 	private ElencoAlertRepository elencoAlertRepository;
+	
+	@Autowired
+	private AlertConfigurazioneRepository alertConfigurazioneRepository;
 	
 	@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -545,10 +550,19 @@ public class ClientController {
 						ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
 						elencoLicenze.add(licenza);
 						newClient.setElencoLicenze(elencoLicenze);
+						
+						//SetAlertMonitoraggio('WINDOWS_SERVICES',1)
+						//SetAlertMonitoraggio('WINDOWS_EVENTS',1) 
+						//SetAlertMonitoraggio('DRIVES',1)
+						
 //						System.out.println(newClient.getElencoLicenze().get(0).getId());
 						//sede
 						
-						elencoClientsRepository.save(newClient);
+						ElencoClients client = elencoClientsRepository.save(newClient);
+						
+						alertConfigurazioneRepository.save(new AlertConfigurazione("WINDOWS_SERVICES",client,true,2));
+						alertConfigurazioneRepository.save(new AlertConfigurazione("WINDOWS_EVENTS",client,true,3));
+						alertConfigurazioneRepository.save(new AlertConfigurazione("DRIVES",client,true,1));
 						
 						response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
 						response.setMessage("OK");

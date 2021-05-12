@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PopUp from "./PopUp";
-import { servicesList, serviziOverview, totalReset, updateCTWindowsServices, updateToken } from "../ActionCreator";
+import { resetClientTemplate, servicesList, serviziOverview, totalReset, updateCTWindowsServices, updateToken } from "../ActionCreator";
 import { defaultUpperBound } from "../Constants";
 import { _getServiziAll, _getServiziMonitorati, _getServiziOverview, _modificaMonitoraggioServizio } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
@@ -26,6 +26,9 @@ const mapDispatchToProps = dispatch => ({
     },
     UpdateToken: (token) => {
       dispatch(updateToken(token));
+    },
+    ClientTemplateReset: () => {
+      dispatch(resetClientTemplate());
     }
   }
 );
@@ -214,6 +217,7 @@ const WindowsServices = (props) => {
   }
 
   return (
+    
     <Box title="Lista dei servizi di Windows" type="primary" collapsable footer={<PopUp title="Gestione dei servizi di Windows" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList()}/>}>
       <Col md={12} xs={12}>
         <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Servizi monitorati: {props.services[0]}</h4>

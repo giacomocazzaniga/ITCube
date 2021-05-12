@@ -90,7 +90,7 @@ const LoginPage = (props) => {
         let chiaveRegistrazione = response.data.chiave_di_registrazione;
         _getShallowClients(id_company, token)
         .then(function (response) {
-          console.log(response.data.shallowClients)
+          // console.log(response.data.shallowClients)
           let elencoClients = response.data.shallowClients;
           _getPlaces(id_company, token)
           .then(function (response) {

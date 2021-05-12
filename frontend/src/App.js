@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminLTE, { Sidebar, Navbar } from 'adminlte-2-react';
+import AdminLTE, { Sidebar } from 'adminlte-2-react';
 import { connect } from 'react-redux';
 import Dashboard from './components/Dashboard';
 import LoginPage from './components/LoginPage';
@@ -10,6 +10,7 @@ import { searchClient, totalReset } from './ActionCreator';
 import { _FILTERS, _LICENZE } from './Constants';
 import { toaster } from './toastManager';
 import { idToNomeLicenza, idToNomeSede } from './Tools';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 /**
  * connect the actions to the component
@@ -110,17 +111,17 @@ const App = (props) => {
     let lastComponent = [];
     if(props.lista_id_sedi != undefined){ 
       props.lista_id_sedi.map((sede, j) => {
-      (client_list.filter(function(o) { return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
+      (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
       ? 
         lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { 
-          return o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)
+          return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede)
            }).length+")"}>
           {categories.map((category) => {
             return (client_list.filter(function(o) { 
-              return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) && o.classe_licenza.includes(category))}).length > 0 && client_list.filter(function(o) { return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
-            ? <Item icon="fa-users" text={idToNomeLicenza(category)+ " ("+client_list.filter(function(o) { return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) && o.classe_licenza.includes(category))}).length+")"}>
+              return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.classe_licenza.includes(category))}).length > 0 && client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
+            ? <Item icon="fa-users" text={idToNomeLicenza(category)+ " ("+client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.classe_licenza.includes(category))}).length+")"}>
             {props.client_list.map((client) => {
-              return ((client.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) && client.classe_licenza.includes(category)) || (client.sede == props.lista_nomi_sedi[j] && client.classe_licenza.includes(category)))
+              return (((client.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| client.sede == sede) && client.classe_licenza.includes(category)) || (client.sede == props.lista_nomi_sedi[j] && client.classe_licenza.includes(category)))
               ? (searched_client=="")
                 ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
                 : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
@@ -138,22 +139,21 @@ const App = (props) => {
   }
 
   return (
-      <div>
-        {toaster}
-          {props.logged==true 
-          ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}</>}>
-              <Navbar.Core>
-                <a id="logoutButton" onClick={() => props.TotalReset()}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> 
-              </Navbar.Core>
-              <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
-              {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
-            </AdminLTE>
-          : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
-              <div path="/accedi" title="Accedi"><LoginPage /></div>
-              <div path="/registrati" title="Registrati"><SignUpPage /></div>
-            </AdminLTE>
-          }
-      </div>
+
+    <div>
+    {toaster}
+      {props.logged==true 
+      ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}<a id="logoutButton" onClick={() => props.TotalReset()}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> </>}>
+          <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
+          {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
+        </AdminLTE>
+      : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
+          <div path="/accedi" title="Accedi"><LoginPage /></div>
+          <div path="/registrati" title="Registrati"><SignUpPage /></div>
+        </AdminLTE>
+      }
+  </div>
+      
   );
 }
 

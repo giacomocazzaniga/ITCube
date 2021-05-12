@@ -218,48 +218,6 @@ public final class Services {
 		return current;
 	}
 	
-	public int sendEmail (String oggetto, String corpo, String destinatario) {
-//		SMTP = smtp.gmail.com 
-//		Port = 587
-		
-		final String username = "itsentinelalert@gmail.com";
-        final String password = "itcubealert";
-
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
-        
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-
-        try {
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("itsentinelalert@gmail.com"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(destinatario)
-            );
-            message.setSubject(oggetto);
-            message.setText(corpo);
-
-            Transport.send(message);
-
-            System.out.println("Done");
-            return 0;
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return -1;
-        }
-	}
-	
 	public Map<String, String> getInfoFromHeader () {
 		String token = request.getHeader("token");
 	 	String id_client = request.getHeader("id_client");

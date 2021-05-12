@@ -1,3 +1,4 @@
+import { ActionType } from 'react-hot-toast';
 import * as types from './ActionTypes';
 
 export const login = (nome_company, id_company, email, emailNotify, client_list, token, lista_sedi, chiave_di_registrazione, listaNomiSedi, listaIdSedi) => ({
@@ -168,4 +169,14 @@ export const totalReset = () => ({
 export const updateToken = (token) => ({
   type: types.UPDATETOKEN,
   token: token
+})
+
+export const getConfigurazioneAlert = (list) => ({
+  type: types.GETCONFIGURAZIONEALERT,
+  operazioni: list
+})
+
+export const getLastDate = (date) => ({
+  type: types.GETLASTDATE,
+  date: date
 })

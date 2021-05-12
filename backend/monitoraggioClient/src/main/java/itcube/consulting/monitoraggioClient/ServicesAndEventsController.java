@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import itcube.consulting.monitoraggioClient.entities.Alert;
 import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
+import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
 import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
+import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -45,10 +48,12 @@ import itcube.consulting.monitoraggioClient.response.CompanyOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.EventiOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.EventiResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.MaxDateResponse;
 import itcube.consulting.monitoraggioClient.response.OperazioniOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziResponse;
+import itcube.consulting.monitoraggioClient.services.EmailService;
 import itcube.consulting.monitoraggioClient.services.Services;
 
 @RestController
@@ -94,6 +99,9 @@ public class ServicesAndEventsController {
 	@Autowired
 	private ElencoAlertRepository elencoAlertRepository;
 	
+	@Autowired
+	private AlertConfigurazioneRepository alertConfigurazioneRepository;
+	
 	@PostMapping(path="/inserimentoServizi",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<AgentResponse> inserimentoServizi (@RequestBody Map<String,Object> body)
@@ -119,6 +127,8 @@ public class ServicesAndEventsController {
 			id_client=Integer.parseInt((String)body.get("MyID"));
 			servizi=(List<ConfWindowsServices>)body.get("MyServices");
 			disco=(List<ConfTotalFreeDiscSpace>)body.get("MyDrives");
+			
+			//Check if license type 1 is valid
 			
 			if(servizi.size()!=0)
 				serviziNotNull=true;
@@ -188,6 +198,7 @@ public class ServicesAndEventsController {
 					}
 				}
 				
+				
 				for(int i=0; i < servizi.size(); i++)
 				{
 					nome_servizio=(String) ((Map<String, Object>) servizi.get(i)).get("ServiceName");
@@ -203,7 +214,6 @@ public class ServicesAndEventsController {
 					if(elencoAlertRepository.lastAlertStatus(id_client, nome_servizio) == null || (monitoraggioRepository.getMonitora(id_client, nome_servizio) && !elencoAlertRepository.lastAlertStatus(id_client, nome_servizio).equals(alert))) {
 							Alert newAlert=new Alert();		
 							newAlert.setDate_and_time_alert(timestamp);
-							newAlert.setDate_and_time_mail(timestamp);
 							newAlert.setId_client(id_client);
 							newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
 							newAlert.setCategoria(2);
@@ -215,7 +225,27 @@ public class ServicesAndEventsController {
 							else
 								newAlert.setCorpo_messaggio("Il servizio "+nome_servizio+" è in stato di warning");
 							
-							elencoAlertRepository.save(newAlert);
+							Alert insertedAlert = elencoAlertRepository.save(newAlert);
+							
+							//Se operazione services monitorata invio mail
+							
+							if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_SERVICES")) {
+								int id_company = elencoClientsRepository.getIdCompany(id_client);
+								ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+								EmailService service = new EmailService();
+								String tipo_alert;
+								if(stato == 1)
+									tipo_alert = "ERROR";
+								else if(stato==4)
+									tipo_alert = "OK";
+								else 
+									tipo_alert = "WARNING";
+								
+								InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_SERVICE", nome_servizio);
+								
+								EmailService.sendEmail("Alert windows service", service.getEmailContent(company, info) , company.getEmail_alert());
+								elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+							}
 					}
 				}
 			}
@@ -263,7 +293,7 @@ public class ServicesAndEventsController {
 						confTotalFreeDiscSpaceRepository.updateDisk(drive, id_client, total_size, total_free_disc_space, perc_free_disc_space, timestamp);
 					}
 					
-					AlertController.inserimentoAlertDischi(id_client, perc_free_disc_space, drive, elencoClientsRepository, elencoAlertRepository);
+					AlertController.inserimentoAlertDischi(id_client, perc_free_disc_space, drive, elencoClientsRepository, elencoAlertRepository, alertConfigurazioneRepository, elencoCompaniesRepository);
 				}
 			}
 
@@ -360,13 +390,28 @@ public class ServicesAndEventsController {
 					newAlert=new Alert();
 					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
 					newAlert.setDate_and_time_alert(timestamp);
-					newAlert.setDate_and_time_mail(timestamp);
+//					newAlert.setDate_and_time_mail(timestamp);
 					newAlert.setId_client(id_client);
 					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
 					newAlert.setTipo(alert);
 					newAlert.setCategoria(3);
 					
-					elencoAlertRepository.save(newAlert);
+					Alert insertedAlert = elencoAlertRepository.save(newAlert);
+					
+					//Se operazione events monitorata invio mail
+					
+					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						int id_company = elencoClientsRepository.getIdCompany(id_client);
+						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						EmailService service = new EmailService();
+						String tipo_alert;
+						tipo_alert = alert;
+						
+						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						
+						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
+						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+					}
 					
 				}
 			}
@@ -411,13 +456,26 @@ public class ServicesAndEventsController {
 					newAlert=new Alert();
 					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
 					newAlert.setDate_and_time_alert(timestamp);
-					newAlert.setDate_and_time_mail(timestamp);
+//					newAlert.setDate_and_time_mail(timestamp);
 					newAlert.setId_client(id_client);
 					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
 					newAlert.setTipo(alert);
 					newAlert.setCategoria(3);
 					
-					elencoAlertRepository.save(newAlert);
+					Alert insertedAlert = elencoAlertRepository.save(newAlert);
+					
+					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						int id_company = elencoClientsRepository.getIdCompany(id_client);
+						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						EmailService service = new EmailService();
+						String tipo_alert;
+						tipo_alert = alert;
+						
+						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						
+						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
+						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+					}
 					
 				}
 			}
@@ -462,14 +520,26 @@ public class ServicesAndEventsController {
 					newAlert=new Alert();
 					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
 					newAlert.setDate_and_time_alert(timestamp);
-					newAlert.setDate_and_time_mail(timestamp);
+//					newAlert.setDate_and_time_mail(timestamp);
 					newAlert.setId_client(id_client);
 					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
 					newAlert.setTipo(alert);
 					newAlert.setCategoria(3);
 					
-					elencoAlertRepository.save(newAlert);
+					Alert insertedAlert = elencoAlertRepository.save(newAlert);
 						
+					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						int id_company = elencoClientsRepository.getIdCompany(id_client);
+						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						EmailService service = new EmailService();
+						String tipo_alert;
+						tipo_alert = alert;
+						
+						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						
+						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
+						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+					}
 				}
 			}
 			
@@ -513,14 +583,26 @@ public class ServicesAndEventsController {
 					newAlert=new Alert();
 					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
 					newAlert.setDate_and_time_alert(timestamp);
-					newAlert.setDate_and_time_mail(timestamp);
+//					newAlert.setDate_and_time_mail(timestamp);
 					newAlert.setId_client(id_client);
 					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
 					newAlert.setTipo(alert);
 					newAlert.setCategoria(3);
 					
-					elencoAlertRepository.save(newAlert);
+					Alert insertedAlert = elencoAlertRepository.save(newAlert);
 						
+					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						int id_company = elencoClientsRepository.getIdCompany(id_client);
+						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						EmailService service = new EmailService();
+						String tipo_alert;
+						tipo_alert = alert;
+						
+						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						
+						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
+						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+					}
 				}
 			}
 			
@@ -556,7 +638,6 @@ public class ServicesAndEventsController {
 			id_company=elencoClientsRepository.getIdCompany(id_client);
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
-			System.out.println(validToken.getToken());
 			
 			if(validToken.isValid())
 			{
@@ -1092,4 +1173,74 @@ public class ServicesAndEventsController {
 			return ResponseEntity.badRequest().body(response);
 		}
 	}
+	
+	@PostMapping(path="/getLastDate",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<MaxDateResponse> getLastDate(@RequestBody Map<String,Object> body) {
+		MaxDateResponse response=new MaxDateResponse();
+		ValidToken validToken=new ValidToken();
+		int id_client;
+		int id_company;
+		String token;
+		LocalDateTime lastServicesDate;
+		LocalDateTime lastEventsDate;
+		LocalDateTime lastDrivesDate;
+		
+		try
+		{
+			id_client = Integer.parseInt( (String) body.get("id_client"));
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {	
+				
+				lastEventsDate = visualizzazioneEventiRepository.getMaxDateAndTimeEvents(id_client);
+				lastServicesDate = confWindowsServicesRepository.getMaxDateAndTimeServices(id_client);
+				lastDrivesDate = confTotalFreeDiscSpaceRepository.getMaxDateAndTimeDrives(id_client);
+				
+				if(lastDrivesDate == null)
+					lastDrivesDate = LocalDateTime.parse("0000-01-01T00:00:00");
+				
+				if(lastServicesDate == null)
+					lastServicesDate = LocalDateTime.parse("0000-01-01T00:00:00");
+				
+				if(lastEventsDate == null)
+					lastEventsDate = LocalDateTime.parse("0000-01-01T00:00:00");
+				
+				if(!lastDrivesDate.equals(LocalDateTime.parse("0000-01-01T00:00:00")) || !lastEventsDate.equals(LocalDateTime.parse("0000-01-01T00:00:00")) || !lastServicesDate.equals(LocalDateTime.parse("0000-01-01T00:00:00"))) {
+					if(lastEventsDate.isAfter(lastServicesDate) && lastEventsDate.isAfter(lastDrivesDate)) {
+						response.setMaxDate(lastEventsDate);
+					}
+					else if (lastDrivesDate.isAfter(lastEventsDate) && lastDrivesDate.isAfter(lastServicesDate)) {
+						response.setMaxDate(lastDrivesDate);
+					}
+					else {
+						response.setMaxDate(lastServicesDate);
+					}
+				}
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
+			response.setMessage("Autenticazione fallita");
+			response.setMessageCode(-2);
+			return ResponseEntity.ok(response);
+		
+		}
+		catch(Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
 }

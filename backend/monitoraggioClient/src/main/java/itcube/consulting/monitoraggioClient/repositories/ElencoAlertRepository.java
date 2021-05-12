@@ -1,7 +1,11 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -58,4 +62,13 @@ public interface ElencoAlertRepository extends CrudRepository<Alert,Integer> {
 			+ "AND date_and_time_alert <= CONCAT(curdate() - interval 10 * (:slot - 1) day, ' 23:59:59') "
 			+ "AND tipo <> 'OK'" , nativeQuery = true)
 	List<Alert> getAlertOfCompanyOfDay(@Param("id_company") int id_company, @Param("slot") int slot);
+	
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE alert SET date_and_time_mail = CURRENT_TIMESTAMP(6) WHERE id= :id_alert",nativeQuery=true)
+	public void updateMailTimestamp(@Param("id_alert") int id_alert);
+
+	@Query(value="SELECT * FROM alert WHERE date_and_time_mail IS NULL",nativeQuery=true)
+	public List<Alert> getAllAlertsWithoutMailDateTime();
 }

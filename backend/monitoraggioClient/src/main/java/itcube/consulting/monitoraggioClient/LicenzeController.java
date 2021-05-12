@@ -57,6 +57,7 @@ import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzeDeep;
+import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -114,6 +115,9 @@ public class LicenzeController {
 	
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
+	
+	@Autowired
+	private AlertConfigurazioneRepository alertConfigurazioneRepository;
 	
 	@PostMapping(path="/getLicenzeShallow",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -297,7 +301,7 @@ public class LicenzeController {
 				licenza.setTipologieLicenze(tipo);
 				
 				elencoLicenzeRepository.save(licenza);
-				
+								
 				String newToken=Services.checkThreshold(id_company, token);
 				
 				response.setCodice(codice);
@@ -331,8 +335,7 @@ public class LicenzeController {
 		ValidToken validToken=new ValidToken();
 		Integer id_company;
 		Integer id_client;
-		Integer id_tipo;
-		Integer id_licenza;
+		String codice;
 		String token;
 		
 		try
@@ -340,16 +343,36 @@ public class LicenzeController {
 			id_company=Integer.parseInt((String) body.get("id_company"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
-			id_tipo= Integer.parseInt((String)(body.get("id_tipo")));
+			codice= (String)(body.get("codice"));
 			id_client= Integer.parseInt((String)(body.get("id_client")));
 			
 			if(validToken.isValid())
 			{
 				
-				id_licenza = elencoLicenzeRepository.getIdLicenzaFromTipoAndCompany(id_company,id_tipo);
+				ElencoLicenze licenza = elencoLicenzeRepository.getLicenzaFromCodiceAndCompany(id_company,codice);
 				
-				elencoLicenzeRepository.assegnaLicenza(id_client, id_licenza);
+				elencoLicenzeRepository.assegnaLicenza(id_client, licenza.getId());
 				
+				switch(licenza.getTipologieLicenze().getId()) {
+				     case 1: 
+				    	 alertConfigurazioneRepository.insertAlertConfigurazione("WINDOWS_SERVICES",id_client,2);
+				    	 alertConfigurazioneRepository.insertAlertConfigurazione("WINDOWS_EVENTS",id_client,3);
+				    	 alertConfigurazioneRepository.insertAlertConfigurazione("DRIVES",id_client,1);
+				    	 break;
+//					case 2:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_BACKUP1",id_client);
+//						break;
+//					case 3:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_ANTIVIRUS1",id_client);
+//						break;
+//					case 4:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_RETE1",id_client);
+//						break;
+//					case 5:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_VULNERABILITA1",id_client);
+//						break;
+				}
+						
 				String newToken=Services.checkThreshold(id_company, token);
 				
 				generalResponse.setMessage("Licenza assegnata con successo");

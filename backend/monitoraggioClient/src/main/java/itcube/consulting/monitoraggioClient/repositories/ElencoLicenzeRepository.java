@@ -38,8 +38,8 @@ public interface ElencoLicenzeRepository extends CrudRepository<ElencoLicenze,In
 	@Transactional
 	Integer assegnaLicenza(@Param ("id_client") int id_client,@Param ("id_licenza") int id_licenza);
 	
-	@Query(value="SELECT id FROM elenco_licenze WHERE acquistato_da = :id_company AND id_tipo= :id_tipo", nativeQuery=true)
-	Integer getIdLicenzaFromTipoAndCompany(@Param ("id_company") int id_company, @Param ("id_tipo") int id_tipo);
+	@Query(value="SELECT * FROM elenco_licenze WHERE acquistato_da = :id_company AND codice= :codice", nativeQuery=true)
+	ElencoLicenze getLicenzaFromCodiceAndCompany(@Param ("id_company") int id_company, @Param ("codice") String codice);
 	
 }
 

@@ -120,9 +120,9 @@ code {
   transition: opacity 0.3s ease-in-out;
 }
 
-.content .box-primary {
+/* .content .box-primary {
   max-height: 310px !important;
-}
+} */
 
 .small-box-footer {
   z-index: 0 !important;
