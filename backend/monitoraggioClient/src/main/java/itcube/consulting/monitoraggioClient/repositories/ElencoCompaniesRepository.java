@@ -63,6 +63,4 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 			+ "	WHERE c.id_company = :id_company AND d.perc_free_disc_space >= 10 AND d.perc_free_disc_space <= 20",nativeQuery=true)
 	List<Integer> getIdsOfClientsWithDrivesWarning(@Param("id_company") int id_company);
 	
-	
-	
 }

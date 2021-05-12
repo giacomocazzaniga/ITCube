@@ -24,6 +24,7 @@ import itcube.consulting.monitoraggioClient.entities.AlertConfigurazione;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailDrives;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
@@ -79,24 +80,23 @@ public class AlertController {
 			Alert recentAlert = elencoAlertRepository.getRecentAlert(id_client, tmp_drive_label);
 			
 			if(recentAlert == null || !recentAlert.getTipo().equals(disc_state)) {
-				Alert newAlert = new Alert();
-				
-//					newAlert.setNome_disco(driveLabel);
-//					newAlert.setPerc_free_disc(perc_free_space);
-				newAlert.setCorpo_messaggio("Il disco " + driveLabel + " ha lo spazio disponibile pari al " + perc_free_space + "%");
-				newAlert.setDate_and_time_alert(java.time.LocalDateTime.now());
-//				newAlert.setDate_and_time_mail(java.time.LocalDateTime.now());
-				newAlert.setId_client(id_client);
-				newAlert.setId_company(id_company);
-				newAlert.setTipo(disc_state);
-				newAlert.setCategoria(1);
-				
-				Alert insertedAlert = elencoAlertRepository.save(newAlert);
-				
-				//Se operazione drives monitorata invio mail
-				
-				if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"DRIVES")) {
+				if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client, "DRIVES")) {
+					Alert newAlert = new Alert();
+					
+	//					newAlert.setNome_disco(driveLabel);
+	//					newAlert.setPerc_free_disc(perc_free_space);
+					newAlert.setCorpo_messaggio("Il disco " + driveLabel + " ha lo spazio disponibile pari al " + perc_free_space + "%");
+					newAlert.setDate_and_time_alert(java.time.LocalDateTime.now());
+	//				newAlert.setDate_and_time_mail(java.time.LocalDateTime.now());
+					newAlert.setId_client(id_client);
+					newAlert.setId_company(id_company);
+					newAlert.setTipo(disc_state);
+					newAlert.setCategoria(1);
+					
+					Alert insertedAlert = elencoAlertRepository.save(newAlert);
+					
 					ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+					ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
 					EmailService service = new EmailService();
 					String tipo_alert;
 					if(perc_free_space <= 10)
@@ -106,12 +106,11 @@ public class AlertController {
 					else 
 						tipo_alert = "OK";
 					
-					InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "DRIVE", driveLabel);
+					InfoOperazioneMailDrives info = new InfoOperazioneMailDrives("DRIVES", insertedAlert.getDate_and_time_alert().toString(),driveLabel,String.valueOf(perc_free_space)+"%",tipo_alert,client.getNome(),company.getRagione_sociale());
 					
 					EmailService.sendEmail("Alert drive", service.getEmailContent(company, info) , company.getEmail_alert());
 					elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
 				}
-				
 			}
 
 			return 0;

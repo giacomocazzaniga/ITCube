@@ -3,6 +3,7 @@ package itcube.consulting.monitoraggioClient.services;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -17,6 +18,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -28,6 +30,9 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailDrives;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailEvents;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailServices;
 
 @Service
 public class EmailService {
@@ -38,7 +43,7 @@ public class EmailService {
 		
 		final String username = "itsentinelalert@gmail.com";
         final String password = "itcubealert";
-
+        
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
         prop.put("mail.smtp.port", "587");
@@ -74,16 +79,78 @@ public class EmailService {
         }
 	}
 
-	    public String getEmailContent(ElencoCompanies company, InfoOperazioneMail info) throws IOException, TemplateException {
+	    public String getEmailContent(ElencoCompanies company, Object info) throws IOException, TemplateException {
 	        StringWriter stringWriter = new StringWriter();
 	        Map<String, Object> model = new HashMap<>();
 	        model.put("company", company);
 	        model.put("info", info);
 	        Configuration configuration = returnConfiguration();
+	        
+	        Template temp = null;
+	        
+	        if(InfoOperazioneMail.class.isInstance(info)) {
+	        	
+	        	String newDateString = ((InfoOperazioneMail) info).getDate_and_time_alert();
 
-	        Template temp = configuration.getTemplate("email.ftl");
-	        temp.process(model, stringWriter);
-	        return stringWriter.getBuffer().toString();
+	    		if(newDateString.indexOf(".") != -1){
+	    			newDateString = newDateString.substring(0,newDateString.indexOf("."));
+	    		}
+	    		if(newDateString.indexOf("T") != -1){
+    			  newDateString = newDateString.replace("T", " ");
+	    		}
+
+	        	((InfoOperazioneMail) info).setDate_and_time_alert(newDateString);
+
+	        	if(InfoOperazioneMailDrives.class.isInstance(info)) {
+	        		
+	        	    switch(((InfoOperazioneMailDrives) info).getTipologia_alert()){
+		  				case "ERROR":
+		  					((InfoOperazioneMailDrives) info).setTipologia_alert("errore");
+		  				break;
+		  				case "WARNING":
+		  					((InfoOperazioneMailDrives) info).setTipologia_alert("warning");
+		  				break;
+		  				case "OK":
+		  					((InfoOperazioneMailDrives) info).setTipologia_alert("ok");
+		  				break;
+	  				}
+	        		
+	        		temp = configuration.getTemplate("drives.ftl");
+	        	}
+	        	if(InfoOperazioneMailServices.class.isInstance(info)) {
+	        		
+	        		switch(((InfoOperazioneMailServices) info).getTipologia_alert()){
+		  				case "ERROR":
+		  					((InfoOperazioneMailServices) info).setTipologia_alert("errore");
+		  				break;
+		  				case "WARNING":
+		  					((InfoOperazioneMailServices) info).setTipologia_alert("warning");
+		  				break;
+		  				case "OK":
+		  					((InfoOperazioneMailServices) info).setTipologia_alert("ok");
+		  				break;
+	        		}
+	        		temp = configuration.getTemplate("services.ftl");
+	        	}
+	        	if(InfoOperazioneMailEvents.class.isInstance(info)) {
+	        		switch(((InfoOperazioneMailEvents) info).getTipologia_alert()){
+		  				case "ERROR":
+		  					((InfoOperazioneMailEvents) info).setTipologia_alert("errore");
+		  				break;
+		  				case "WARNING":
+		  					((InfoOperazioneMailEvents) info).setTipologia_alert("warning");
+		  				break;
+		  				case "OK":
+		  					((InfoOperazioneMailEvents) info).setTipologia_alert("ok");
+		  				break;
+		  			}
+	        		temp = configuration.getTemplate("events.ftl");
+	        	}
+
+		        temp.process(model, stringWriter);
+		        return stringWriter.getBuffer().toString();
+	        }
+	        return null;
 	    }
 	    
 	    Configuration returnConfiguration() throws IOException {

@@ -331,7 +331,9 @@ export function rootReducer(state = initialState, action) {
   if(action.type === types.CLIENTTEMPLATERESET) {
     return Object.assign({}, state, {
       ...state,
-      client_template: initialState.client_template
+      client_template: initialState.client_template,
+      services_list: initialState.services_list,
+      events_list: initialState.events_list
     });
   }
   if(action.type === types.COMPANYTEMPLATELICENZE) {

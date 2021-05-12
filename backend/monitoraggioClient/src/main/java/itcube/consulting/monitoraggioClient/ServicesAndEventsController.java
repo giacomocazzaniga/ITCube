@@ -20,10 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import itcube.consulting.monitoraggioClient.entities.Alert;
 import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
+import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
 import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailEvents;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailServices;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
@@ -212,6 +215,7 @@ public class ServicesAndEventsController {
 						alert = "WARNING";
 					
 					if(elencoAlertRepository.lastAlertStatus(id_client, nome_servizio) == null || (monitoraggioRepository.getMonitora(id_client, nome_servizio) && !elencoAlertRepository.lastAlertStatus(id_client, nome_servizio).equals(alert))) {
+						if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client, "WINDOWS_SERVICES")) {
 							Alert newAlert=new Alert();		
 							newAlert.setDate_and_time_alert(timestamp);
 							newAlert.setId_client(id_client);
@@ -227,25 +231,17 @@ public class ServicesAndEventsController {
 							
 							Alert insertedAlert = elencoAlertRepository.save(newAlert);
 							
-							//Se operazione services monitorata invio mail
+							int id_company = elencoClientsRepository.getIdCompany(id_client);
+							ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+							ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
+							EmailService service = new EmailService();
 							
-							if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_SERVICES")) {
-								int id_company = elencoClientsRepository.getIdCompany(id_client);
-								ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
-								EmailService service = new EmailService();
-								String tipo_alert;
-								if(stato == 1)
-									tipo_alert = "ERROR";
-								else if(stato==4)
-									tipo_alert = "OK";
-								else 
-									tipo_alert = "WARNING";
-								
-								InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_SERVICE", nome_servizio);
-								
-								EmailService.sendEmail("Alert windows service", service.getEmailContent(company, info) , company.getEmail_alert());
-								elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
-							}
+							InfoOperazioneMailServices info = new InfoOperazioneMailServices("WINDOWS_SERVICES",insertedAlert.getDate_and_time_alert().toString(),client.getNome(),company.getRagione_sociale(),nome_servizio, insertedAlert.getTipo());
+							
+							EmailService.sendEmail("Alert windows service", service.getEmailContent(company, info) , company.getEmail_alert());
+							elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+						
+						}
 					}
 				}
 			}
@@ -385,29 +381,31 @@ public class ServicesAndEventsController {
 
 					
 					nome=(String) ((Map<String, Object>) MyApplicationsLogs.get(i)).get("LogMessage");
-
-
-					newAlert=new Alert();
-					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
-					newAlert.setDate_and_time_alert(timestamp);
-//					newAlert.setDate_and_time_mail(timestamp);
-					newAlert.setId_client(id_client);
-					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
-					newAlert.setTipo(alert);
-					newAlert.setCategoria(3);
-					
-					Alert insertedAlert = elencoAlertRepository.save(newAlert);
-					
-					//Se operazione events monitorata invio mail
 					
 					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+
+						newAlert=new Alert();
+						newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+						newAlert.setDate_and_time_alert(timestamp);
+	//					newAlert.setDate_and_time_mail(timestamp);
+						newAlert.setId_client(id_client);
+						newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+						newAlert.setTipo(alert);
+						newAlert.setCategoria(3);
+						
+						Alert insertedAlert = elencoAlertRepository.save(newAlert);
+						
+						//Se operazione events monitorata invio mail
+					
+					
 						int id_company = elencoClientsRepository.getIdCompany(id_client);
 						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
 						EmailService service = new EmailService();
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo());
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -452,31 +450,32 @@ public class ServicesAndEventsController {
 					
 					nome=(String) ((Map<String, Object>) MyHardwareLogs.get(i)).get("LogMessage");
 
-
-					newAlert=new Alert();
-					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
-					newAlert.setDate_and_time_alert(timestamp);
-//					newAlert.setDate_and_time_mail(timestamp);
-					newAlert.setId_client(id_client);
-					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
-					newAlert.setTipo(alert);
-					newAlert.setCategoria(3);
-					
-					Alert insertedAlert = elencoAlertRepository.save(newAlert);
-					
 					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						
+						newAlert=new Alert();
+						newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+						newAlert.setDate_and_time_alert(timestamp);
+	//					newAlert.setDate_and_time_mail(timestamp);
+						newAlert.setId_client(id_client);
+						newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+						newAlert.setTipo(alert);
+						newAlert.setCategoria(3);
+						
+						Alert insertedAlert = elencoAlertRepository.save(newAlert);
+					
+					
 						int id_company = elencoClientsRepository.getIdCompany(id_client);
 						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
 						EmailService service = new EmailService();
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo());
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
 					}
-					
 				}
 			}
 			
@@ -516,26 +515,27 @@ public class ServicesAndEventsController {
 					
 					nome=(String) ((Map<String, Object>) MySystemLogs.get(i)).get("LogMessage");
 
-
-					newAlert=new Alert();
-					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
-					newAlert.setDate_and_time_alert(timestamp);
-//					newAlert.setDate_and_time_mail(timestamp);
-					newAlert.setId_client(id_client);
-					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
-					newAlert.setTipo(alert);
-					newAlert.setCategoria(3);
-					
-					Alert insertedAlert = elencoAlertRepository.save(newAlert);
-						
 					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						newAlert=new Alert();
+						newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+						newAlert.setDate_and_time_alert(timestamp);
+	//					newAlert.setDate_and_time_mail(timestamp);
+						newAlert.setId_client(id_client);
+						newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+						newAlert.setTipo(alert);
+						newAlert.setCategoria(3);
+						
+						Alert insertedAlert = elencoAlertRepository.save(newAlert);
+						
+					
 						int id_company = elencoClientsRepository.getIdCompany(id_client);
 						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
 						EmailService service = new EmailService();
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo());
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -579,26 +579,28 @@ public class ServicesAndEventsController {
 					
 					nome=(String) ((Map<String, Object>) MySecurityLogs.get(i)).get("LogMessage");
 
-
-					newAlert=new Alert();
-					newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
-					newAlert.setDate_and_time_alert(timestamp);
-//					newAlert.setDate_and_time_mail(timestamp);
-					newAlert.setId_client(id_client);
-					newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
-					newAlert.setTipo(alert);
-					newAlert.setCategoria(3);
-					
-					Alert insertedAlert = elencoAlertRepository.save(newAlert);
-						
 					if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client,"WINDOWS_EVENTS")) {
+						
+						newAlert=new Alert();
+						newAlert.setCorpo_messaggio("Si è verificato un "+ alertEmail +": " + nome);
+						newAlert.setDate_and_time_alert(timestamp);
+	//					newAlert.setDate_and_time_mail(timestamp);
+						newAlert.setId_client(id_client);
+						newAlert.setId_company(elencoClientsRepository.getIdCompany(id_client));
+						newAlert.setTipo(alert);
+						newAlert.setCategoria(3);
+						
+						Alert insertedAlert = elencoAlertRepository.save(newAlert);
+						
+					
 						int id_company = elencoClientsRepository.getIdCompany(id_client);
 						ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
+						ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
 						EmailService service = new EmailService();
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMail info = new InfoOperazioneMail(tipo_alert, "WINDOWS_EVENTS", nome);
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(),nome, insertedAlert.getTipo());
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
