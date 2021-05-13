@@ -26,7 +26,6 @@ const PopUp = (props) => {
     return () => {
       openModal();
       props.action();
-      console.log("errore")
       setTimeout(function(){ 
         try {
           let testModal = document.getElementsByClassName("modalWrapper")[0]
