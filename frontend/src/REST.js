@@ -1,5 +1,5 @@
 const port = "8080";
-const ip = "127.0.0.1" //"217.160.240.146";
+const ip = "217.160.240.146";
 const buildurl = "http://"+ip+":"+port+"/be/main/";
 export const url_login = buildurl+"login"; //V
 export const url_signup = buildurl+"registrazione"; //V

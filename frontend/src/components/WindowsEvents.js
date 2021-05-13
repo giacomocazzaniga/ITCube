@@ -50,7 +50,7 @@ const WindowsEvents = (props) => {
 
   const getEventsList = (currentSlot=[1,1,1,1]) => {
     let continueUpdating = true;
-    console.log(currentSlot)
+    // console.log(currentSlot)
     const loadingToast = getLoadingToast("Caricamento...");
     _getEventi(props.token, props.id_client, "A", currentSlot[0])
     .then(function (response) {
@@ -71,29 +71,36 @@ const WindowsEvents = (props) => {
         stopLoadingToast(loadingToast);
         //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'A' }).length)
         let listA = response.data.eventi;
-        sortResults("date_and_time_evento",false,listA)
+        if(listA.length != 0){
+          sortResults("date_and_time_evento",false,listA)
+        }
         _getEventi(token, props.id_client, "C", currentSlot[1])
         .then(function (response) {
           stopLoadingToast(loadingToast);
           //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'C' }).length)
           let listC = response.data.eventi;
-          sortResults("date_and_time_evento",false,listC)
+          if(listC.length != 0){
+            sortResults("date_and_time_evento",false,listC)
+          }
           _getEventi(token, props.id_client, "H", currentSlot[2])
           .then(function (response) {
             stopLoadingToast(loadingToast);
             //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'H' }).length)
             let listH = response.data.eventi;
-            sortResults("date_and_time_evento",false,listH)
+            if(listH.length != 0){
+              sortResults("date_and_time_evento",false,listH)
+            }
             _getEventi(token, props.id_client, "S", currentSlot[3])
             .then(function (response) {
               stopLoadingToast(loadingToast);
               //console.log(response.data.eventi.filter(function(o) { return o.sottocategoria == 'S' }).length)
               let listS = response.data.eventi;
-              sortResults("date_and_time_evento",false,listS)
+              if(listS.length != 0){
+                sortResults("date_and_time_evento",false,listS)
+              }
               let merged = [...listA, ...listC, ...listH, ...listS];
-              //console.log(merged)
-              let list = servicesListMaker(merged);
-              props.EventsList(list)
+                let list = servicesListMaker(merged);
+                props.EventsList(list)
             })
             .catch(function (error) {
               stopLoadingToast(loadingToast);
@@ -109,6 +116,7 @@ const WindowsEvents = (props) => {
           stopLoadingToast(loadingToast);
           getErrorToast(String(error));
         });
+        
       }
     })
     .catch(function (error) {
@@ -165,7 +173,9 @@ const WindowsEvents = (props) => {
   }
 
   const servicesListMaker = (services) => {
-    let returnList = [<><Col className="popminwidth col-md-12 col-xs-12">Ultimo aggiornamento: {Backend2FrontendDateConverter(services[0].date_and_time)}<hr/></Col></>];
+    let lastUpdate = "Nessun dato disponibile."
+    if(services.length != 0) lastUpdate = services[0].date_and_time
+    let returnList = [<><Col className="popminwidth col-md-12 col-xs-12">Ultimo aggiornamento: {Backend2FrontendDateConverter(lastUpdate)}<hr/></Col></>];
     let status = ["", "Error", "Warning", "", "Information", "", "", "", "SuccessAudit", "", "", "", "", "", "", "", "FailureAudit"]
     //order by category
     services.sort(function (a, b) {
@@ -190,6 +200,7 @@ const WindowsEvents = (props) => {
       if(j==3){
         n_sottocategoria = props.tot_per_sottocategoria.S
       }
+      if(n_sottocategoria==undefined) n_sottocategoria = 0;
       categoriesHeaderWasPrinted[j] = true
       switch(j){
         case 0:
