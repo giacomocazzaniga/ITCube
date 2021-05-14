@@ -36,6 +36,10 @@ export const url_modifica_monitoraggio_alert = buildurl + "modificaMonitoraggioA
 export const url_get_monitoraggio_alert = buildurl + "getMonitoraggioAlert";
 export const url_update_monitoraggio_alert = buildurl + "updateMonitoraggioAlert";
 export const url_get_last_date = buildurl + "getLastDate";
+export const url_get_all_services_of_company = buildurl + "getAllServicesOfCompany";
+export const url_get_all_nomi_alert_configurazione = buildurl + "getAllNomiAlertConfigurazione";
+export const url_update_monitora_all_services = buildurl + "updateMonitoraAllServices";
+export const url_update_monitora_all_alerts = buildurl + "updateMonitoraAllAlerts";
 
 
 

@@ -7,6 +7,7 @@ import TrafficLightButtons from './TrafficLightButtons';
 import History from './History';
 import LicensesList from './LicensesList';
 import UserData from './UserData';
+import ClientHandler from "./ClientHandler";
 import ToggleCategoryPlace from './ToggleCategoryPlace';
 import { _getCompanyHistory, _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
@@ -220,6 +221,9 @@ const DashboardHome = (props) => {
         </Col>
         <Col xs={12} md={6}>
           <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} chiave={props.chiave_di_registrazione}/>
+        </Col>
+        <Col xs={12} md={6}>
+          <ClientHandler />
         </Col>
         
         {/*<Col md={3} xs={6}>

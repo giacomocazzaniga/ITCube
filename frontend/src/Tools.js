@@ -67,6 +67,20 @@ export const renewToken = (oldToken, newToken) => {
   return false;
 }
 
-export const dataUltimoInserimento = () => {
-  
+export const Backend2FrontendAlertConverter = (backend_alert) => {
+    let frontend_alert;
+    switch(backend_alert) {
+      case "WINDOWS_SERVICES":
+        frontend_alert = "Servizi di Windows"
+        break;
+      case "WINDOWS_EVENTS":
+        frontend_alert = "Eventi di Windows"
+        break;
+      case "DRIVES":
+        frontend_alert = "Drives"
+        break;
+      default:
+        frontend_alert = backend_alert
+    }
+    return frontend_alert;
 }
