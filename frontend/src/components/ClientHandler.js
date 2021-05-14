@@ -98,9 +98,10 @@ const ClientHandler = (props) => {
     }
 
     return (
-        <Box title="Gestione di:" type="primary" collapsable footer={<PopUp title="Gestione dei client" linkClass={"clickable"} childs={childs} action={()=>getClientHandler()}/>}>
-            <h4 className="boxBody">-Alert</h4>
-            <h4 className="boxBody">-Monitoring dei servizi di Windows</h4>
+        <Box title="Gestione dei monitoraggi:" type="primary" collapsable footer={<PopUp title="Gestione dei client" linkClass={"clickable"} childs={childs} action={()=>getClientHandler()}/>}>
+            <h4>Abilita o disabilita per diversi gruppi il monitoraggio di:</h4>
+            <h4 className="boxBody"><strong>Alert</strong></h4>
+            <h4 className="boxBody"><strong>Servizi di Windows</strong></h4>
         </Box>
     )
 } 
