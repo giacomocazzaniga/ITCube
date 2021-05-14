@@ -9,7 +9,6 @@ import { getErrorToast, getLoadingToast, stopLoadingToast } from "../toastManage
 import { Row, Carousel } from "react-bootstrap";
 import ClientHandlerRowServices from "./ClientHandlerRowServices";
 import ClientHandlerRowAlert from "./ClientHandlerRowAlert";
-import sfondo from "../img/carousel.jpg";
 
 
 /**
@@ -31,12 +30,6 @@ const mapStateToProps = state => ({
 const ClientHandler = (props) => {
 
     const [childs, setChilds] = useState([]);
-
-    const [index, setIndex] = useState(0);
-
-    const handleSelect = (selectedIndex, e) => {
-        setIndex(selectedIndex);
-    };
 
 
     const openToggle = (id) => {
@@ -74,29 +67,31 @@ const ClientHandler = (props) => {
     }
 
     const renderChilds = (nomi_servizi, tipologie_alert) => {
-        const fields = ["Alert","Services"];
+        const fields = ["Alert","Servizi di Windows"];
         const intestazione = fields.map( (field,j) => {
             return (
-                <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {field} </h4></div>}>
-                    <Row>
-                        {(field=="Alert")
-                        ?   <Col xs={2} md={2}><strong><h5>ALERT</h5></strong></Col>
-                        :   <Col xs={2} md={2}><strong><h5>SERVICES</h5></strong></Col>
-                        }    
-                        <><Col xs={3} md={3}><strong><h5>TIPOLOGIA</h5></strong></Col><Col xs={3} md={3}><strong><h5>LICENZA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SEDE</h5></strong></Col></>
-                    </Row>
-                        {(field=="Services") 
-                        ?
-                            nomi_servizi.map( (nome_servizio,i) => {
-                                return <ClientHandlerRowServices nome_servizio={nome_servizio} index={i}/>
-                            })
-                        :
-                            tipologie_alert.map( (tipologia_alert,i) => {
-                                return <ClientHandlerRowAlert tipologia_alert={tipologia_alert} index={i}/>
-                            })
-                        }
-                        
-                </Collapsible>
+                <div className="popminwidth">
+                    <Collapsible onOpen={()=>openToggle(j)} onClose={()=>closeToggle(j)} trigger={<div className="clickable"><h4><span className={"arrowAccordion"+j}><FontAwesomeIcon icon={["fas", "chevron-right"]} /></span> {field} </h4></div>}>
+                        <Row>
+                            {(field=="Alert")
+                            ?   <Col xs={2} md={2}><strong><h5>ALERT</h5></strong></Col>
+                            :   <Col xs={2} md={2}><strong><h5>SERVIZIO</h5></strong></Col>
+                            }    
+                            <><Col xs={2} md={2}><strong><h5>TIPOLOGIA</h5></strong></Col><Col xs={2} md={2}><strong><h5>LICENZA</h5></strong></Col><Col xs={2} md={2}><strong><h5>SEDE</h5></strong></Col></>
+                        </Row>
+                            {(field=="Servizi di Windows") 
+                            ?
+                                nomi_servizi.map( (nome_servizio,i) => {
+                                    return <ClientHandlerRowServices nome_servizio={nome_servizio} index={i}/>
+                                })
+                            :
+                                tipologie_alert.map( (tipologia_alert,i) => {
+                                    return <ClientHandlerRowAlert tipologia_alert={tipologia_alert} index={i}/>
+                                })
+                            }
+                            
+                    </Collapsible>
+                </div>
             )
         })
         return intestazione
@@ -105,7 +100,7 @@ const ClientHandler = (props) => {
     return (
         <Box title="Gestione di:" type="primary" collapsable footer={<PopUp title="Gestione dei client" linkClass={"clickable"} childs={childs} action={()=>getClientHandler()}/>}>
             <h4 className="boxBody">-Alert</h4>
-            <h4 className="boxBody">-Monitoring servizi windows</h4>
+            <h4 className="boxBody">-Monitoring dei servizi di Windows</h4>
         </Box>
     )
 } 

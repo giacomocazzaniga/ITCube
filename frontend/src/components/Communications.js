@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Box } from 'adminlte-2-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Backend2FrontendDateConverter } from '../Tools';
+import { Backend2FrontendAlertConverter, Backend2FrontendDateConverter } from '../Tools';
 import { defaultSettimaneAlert, _ALERTCATEGORY } from '../Constants';
 import PopUp from './PopUp';
 import { _getLatestAlerts, _getMonitoraggioAlert, _updateMonitoraggioAlert } from '../callableRESTs';
@@ -72,7 +72,7 @@ const Communications = (props) => {
                   <input type="checkbox" defaultChecked="checked" onChange={(e) => toggleMonitora(e,operazione.operazione)}/>
                 </Col>
                 <Col className="oddColor vertical-aligner col-md-10 col-xs-10">
-                  <p>{operazione.operazione}</p>
+                  <p>{Backend2FrontendAlertConverter(operazione.operazione)}</p>
                 </Col>
               </>
             :
@@ -81,7 +81,7 @@ const Communications = (props) => {
                   <input type="checkbox" defaultChecked="checked" onChange={(e) => toggleMonitora(e,operazione.operazione)}/>
                 </Col>
                 <Col className="evenColor vertical-aligner col-md-10 col-xs-10">
-                  <p>{operazione.operazione}</p>
+                  <p>{Backend2FrontendAlertConverter(operazione.operazione)}</p>
                 </Col>
               </>
           :
@@ -92,7 +92,7 @@ const Communications = (props) => {
                   <input type="checkbox" autoComplete="off" onChange={(e) => toggleMonitora(e,operazione.operazione)}/>
                 </Col>
                 <Col className="oddColor vertical-aligner col-md-10 col-xs-10">
-                  <p>{operazione.operazione}</p>
+                  <p>{Backend2FrontendAlertConverter(operazione.operazione)}</p>
                 </Col>
               </>
             :
@@ -101,7 +101,7 @@ const Communications = (props) => {
                   <input type="checkbox" autoComplete="off" onChange={(e) => toggleMonitora(e,operazione.operazione)}/>
                 </Col>
                 <Col className="evenColor vertical-aligner col-md-10 col-xs-10">
-                  <p>{operazione.operazione}</p>
+                  <p>{Backend2FrontendAlertConverter(operazione.operazione)}</p>
                 </Col>
               </>
         )

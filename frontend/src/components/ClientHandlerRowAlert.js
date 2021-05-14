@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 import { _updateMonitoraAllAlerts, _updateMonitoraAllServices } from "../callableRESTs";
+import { Backend2FrontendAlertConverter } from "../Tools";
 
 /**
  * connect the actions to the component
@@ -106,14 +107,14 @@ const ClientHandlerRowAlert = (props) => {
         (isOdd(props.index))
         ?
             <>
-                <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><h5>{props.tipologia_alert}</h5></Col>
-                <Col className="oddColor vertical-aligner col-md-3 col-xs-3">
+                <Col className="oddColor vertical-aligner col-md-2 col-xs-2"><h5>{Backend2FrontendAlertConverter(props.tipologia_alert)}</h5></Col>
+                <Col className="oddColor noHorizontalPadding vertical-aligner col-md-2 col-xs-2">
                     <select onChange={tipologiaChange}>
                         <option selected hidden disabled>Seleziona tipologia</option>
                         {tipologie.map( tipologia => <option value={tipologia.id_tipologia}>{tipologia.tipologia}</option>)}
                     </select>
                 </Col>
-                <Col className="oddColor vertical-aligner col-md-3 col-xs-3">
+                <Col className="oddColor vertical-aligner col-md-2 col-xs-2">
                     <select onChange={licenzaChange}>
                         <option selected hidden disabled>Seleziona licenza</option>
                         {licenze.map( licenza => <option value={licenza.tipo}>{licenza.label}</option>)}
@@ -125,23 +126,23 @@ const ClientHandlerRowAlert = (props) => {
                         {props.lista_nomi_sedi.map( (nome_sede,i) => <option value={props.lista_id_sedi[i]}>{nome_sede}</option>)}
                     </select>
                 </Col>
-                <Col className="oddColor vertical-aligner col-md-1 col-xs-1">
-                    <button onClick={()=> updateMonitora(true)}><FontAwesomeIcon icon={["fas", "plus"]} /></button>    
+                <Col className="oddColor vertical-aligner col-md-2 col-xs-2">
+                    <button className="btn btn-primary" onClick={()=> updateMonitora(true)}>Aggiungi a tutti</button>    
                 </Col>
-                <Col className="oddColor vertical-aligner col-md-1 col-xs-1">
-                    <button onClick={()=> updateMonitora(false)}><FontAwesomeIcon icon={["fas", "minus"]} /></button>
+                <Col className="oddColor vertical-aligner col-md-2 col-xs-2">
+                    <button className="btn btn-primary" onClick={()=> updateMonitora(false)}>Rimuovi a tutti</button>
                 </Col>
             </>
         :
             <>
-                <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><h5>{props.tipologia_alert}</h5></Col>
-                <Col className="evenColor vertical-aligner col-md-3 col-xs-3">
+                <Col className="evenColor vertical-aligner col-md-2 col-xs-2"><h5>{Backend2FrontendAlertConverter(props.tipologia_alert)}</h5></Col>
+                <Col className="evenColor noHorizontalPadding vertical-aligner col-md-2 col-xs-2">
                     <select onChange={tipologiaChange}>
                         <option selected hidden disabled>Seleziona tipologia</option>
                         {tipologie.map( tipologia => <option value={tipologia.id_tipologia}>{tipologia.tipologia}</option>)}
                     </select>
                 </Col>
-                <Col className="evenColor vertical-aligner col-md-3 col-xs-3">
+                <Col className="evenColor vertical-aligner col-md-2 col-xs-2">
                     <select onChange={licenzaChange}>
                         <option selected hidden disabled>Seleziona licenza</option>
                         {licenze.map( licenza => <option value={licenza.tipo}>{licenza.label}</option>)}
@@ -153,11 +154,11 @@ const ClientHandlerRowAlert = (props) => {
                         {props.lista_nomi_sedi.map( (nome_sede,i) => <option value={props.lista_id_sedi[i]}>{nome_sede}</option>)}
                     </select>
                 </Col>
-                <Col className="evenColor vertical-aligner col-md-1 col-xs-1">
-                    <button onClick={()=> updateMonitora(true)}><FontAwesomeIcon icon={["fas", "plus"]} /></button>    
+                <Col className="evenColor vertical-aligner col-md-2 col-xs-2">
+                    <button className="btn btn-primary" onClick={()=> updateMonitora(true)}>Aggiungi a tutti</button>    
                 </Col>
-                <Col className="evenColor vertical-aligner col-md-1 col-xs-1">
-                    <button onClick={()=> updateMonitora(false)}><FontAwesomeIcon icon={["fas", "minus"]} /></button>
+                <Col className="evenColor vertical-aligner col-md-2 col-xs-2">
+                    <button className="btn btn-primary" onClick={()=> updateMonitora(false)}>Rimuovi a tutti</button>
                 </Col>
             </>
     )

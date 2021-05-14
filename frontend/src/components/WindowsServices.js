@@ -218,7 +218,7 @@ const WindowsServices = (props) => {
 
   return (
     
-    <Box title="Lista dei servizi di Windows" type="primary" collapsable footer={<PopUp title="Gestione dei servizi di Windows" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList()}/>}>
+    <Box title="Lista dei servizi di Windows" type="primary" collapsable footer={<PopUp  title="Gestione dei servizi di Windows" linkClass={"clickable"} childs={props.services_list} action={()=>getServicesList()}/>}>
       <Col md={12} xs={12}>
         <h4><FontAwesomeIcon icon={["fas", "check-circle"]} /> Servizi monitorati: {props.services[0]}</h4>
         <h4><FontAwesomeIcon icon={["fas", "play-circle"]} /> Servizi in esecuzione: {props.services[1]}</h4>
