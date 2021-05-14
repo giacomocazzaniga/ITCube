@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -51,6 +52,7 @@ import itcube.consulting.monitoraggioClient.response.CompanyOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.EventiOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.EventiResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.GetClientNameOfCompanyResponse;
 import itcube.consulting.monitoraggioClient.response.MaxDateResponse;
 import itcube.consulting.monitoraggioClient.response.OperazioniOverviewResponse;
 import itcube.consulting.monitoraggioClient.response.ServiziMonitoratiResponse;
@@ -1245,4 +1247,99 @@ public class ServicesAndEventsController {
 		}
 	}
 	
+	@PostMapping(path="/getAllServicesOfCompany",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GetClientNameOfCompanyResponse> getAllServicesOfCompany(@RequestBody Map<String,Object> body) {
+		GetClientNameOfCompanyResponse response=new GetClientNameOfCompanyResponse();
+		ValidToken validToken=new ValidToken();
+		int id_company;
+		String token;
+		List<String> allServices = new ArrayList<String>();
+		
+		try
+		{
+			id_company = Integer.parseInt( (String) body.get("id_company"));
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {	
+				
+				allServices= confWindowsServicesRepository.getAllServicesOfCompany(id_company);
+				
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setNomi_servizi(allServices);
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
+			response.setMessage("Autenticazione fallita");
+			response.setMessageCode(-2);
+			return ResponseEntity.ok(response);
+		
+		}
+		catch(Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+
+	@PostMapping(path="/updateMonitoraAllServices",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> updateMonitoraAllServices(@RequestBody Map<String,Object> body) {
+		GeneralResponse response=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		Integer tipologia;
+		Integer licenza;
+		Integer sede;
+		boolean monitora;
+		String nome_servizio;
+		
+		try
+		{
+			tipologia= ((String)body.get("tipologia")==null) ? -1 : Integer.parseInt((String)body.get("tipologia")); 
+			licenza= (body.get("licenza")==null) ? -1 : Integer.parseInt((String)body.get("licenza"));
+			sede= ((String)body.get("sede")==null) ? -1 : Integer.parseInt((String)body.get("sede"));
+			monitora=  (boolean) body.get("monitora");
+			nome_servizio = (String) body.get("nome_servizio");
+			id_company = Integer.parseInt( (String) body.get("id_company"));
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			
+			if(validToken.isValid()) {	
+
+				monitoraggioRepository.updateFilteredServices(monitora, nome_servizio, tipologia, licenza, sede, id_company);			
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
+			response.setMessage("Autenticazione fallita");
+			response.setMessageCode(-2);
+			return ResponseEntity.ok(response);
+		
+		}
+		catch(Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
 }

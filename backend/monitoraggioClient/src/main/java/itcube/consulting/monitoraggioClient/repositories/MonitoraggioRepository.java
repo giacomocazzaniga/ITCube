@@ -35,4 +35,28 @@ public interface MonitoraggioRepository extends CrudRepository<Monitoraggio,Inte
 	
 	@Query(value="Select monitora from monitoraggio where id_client= :id_client and nome_servizio= :nome_servizio", nativeQuery=true)
 	boolean getMonitora(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
+	
+	@Modifying
+	@Transactional
+	@Query(value="update monitoraggio set monitora = :monitora where nome_servizio= :nome_servizio", nativeQuery=true)
+	void updateAllClientsOfCompany(@Param("monitora") boolean monitora, @Param("nome_servizio") String nome_servizio);
+	
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE monitoraggio m "
+			+ "	SET m.monitora = :monitora "
+			+ "	WHERE m.id_client IN ( "
+			+ "		SELECT c.id "
+			+ "		FROM elenco_clients_elenco_licenze cl "
+			+ "		INNER JOIN elenco_clients c ON cl.id_client = c.id "
+			+ "	    INNER JOIN elenco_licenze l ON cl.id_licenza = l.id "
+			+ "		WHERE (:tipologia_client =-1 OR c.tipologia_client=:tipologia_client) "
+			+ "	    AND (:tipo_licenza =-1 OR l.id_tipo = :tipo_licenza) "
+			+ "	    AND (:sede =-1 OR c.sede = :sede) "
+			+ "	    AND c.id_company = :id_company "
+			+ "	)"
+			+ "AND m.nome_servizio = :nome_servizio", nativeQuery=true)
+	void updateFilteredServices(@Param("monitora") boolean monitora, @Param("nome_servizio") String nome_servizio,@Param("tipologia_client") int tipologia_client, @Param("tipo_licenza") int tipo_licenza, @Param("sede") int sede, @Param("id_company") int id_company);
+	
+	
 }

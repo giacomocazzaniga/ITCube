@@ -1,5 +1,5 @@
 const port = "8080";
-const ip = "217.160.240.146";
+const ip = "127.0.0.1";//"217.160.240.146";
 const buildurl = "http://"+ip+":"+port+"/be/main/";
 export const url_login = buildurl+"login"; //V
 export const url_signup = buildurl+"registrazione"; //V
@@ -36,6 +36,10 @@ export const url_modifica_monitoraggio_alert = buildurl + "modificaMonitoraggioA
 export const url_get_monitoraggio_alert = buildurl + "getMonitoraggioAlert";
 export const url_update_monitoraggio_alert = buildurl + "updateMonitoraggioAlert";
 export const url_get_last_date = buildurl + "getLastDate";
+export const url_get_all_services_of_company = buildurl + "getAllServicesOfCompany";
+export const url_get_all_nomi_alert_configurazione = buildurl + "getAllNomiAlertConfigurazione";
+export const url_update_monitora_all_services = buildurl + "updateMonitoraAllServices";
+export const url_update_monitora_all_alerts = buildurl + "updateMonitoraAllAlerts";
 
 
 

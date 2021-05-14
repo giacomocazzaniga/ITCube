@@ -250,3 +250,12 @@ code {
 .overview-popup-list li a svg {
   display: none;
 }
+
+.noHorizontalPadding {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.boxBody {
+  margin-left: 20px;
+}

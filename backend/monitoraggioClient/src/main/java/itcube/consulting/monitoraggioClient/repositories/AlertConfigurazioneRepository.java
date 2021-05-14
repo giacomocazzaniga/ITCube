@@ -30,4 +30,25 @@ public interface AlertConfigurazioneRepository extends CrudRepository<AlertConfi
 
 	@Query(value="SELECT monitora FROM alert_configurazione WHERE id_client = :id_client AND operazione = :operazione",nativeQuery=true)
 	public boolean isOperazioneMonitorata(@Param("id_client") int id_client, @Param("operazione") String operazione);
+	
+	@Query(value="SELECT DISTINCT operazione FROM alert_configurazione", nativeQuery = true)
+	public List<String> getAllNomiAlertConfigurazione();
+	
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE alert_configurazione a "
+			+ "SET a.monitora = :monitora "
+			+ "WHERE a.id_client IN ( "
+			+ "	SELECT c.id "
+			+ "	FROM elenco_clients_elenco_licenze cl "
+			+ "	INNER JOIN elenco_clients c ON cl.id_client = c.id "
+			+ "    INNER JOIN elenco_licenze l ON cl.id_licenza = l.id "
+			+ "	WHERE (:tipologia_client =-1 OR c.tipologia_client=:tipologia_client) "
+			+ "    AND (:tipo_licenza =-1 OR l.id_tipo = :tipo_licenza) "
+			+ "    AND (:sede =-1 OR c.sede = :sede) "
+			+ "    AND c.id_company = :id_company "
+			+ ") "
+			+ "AND a.operazione = :nome_operazione", nativeQuery=true)
+	void updateFilteredAlerts(@Param("monitora") boolean monitora, @Param("nome_operazione") String nome_operazione,@Param("tipologia_client") Integer tipologia_client, @Param("tipo_licenza") Integer tipo_licenza, @Param("sede") Integer sede, @Param("id_company") Integer id_company);
+	
 }

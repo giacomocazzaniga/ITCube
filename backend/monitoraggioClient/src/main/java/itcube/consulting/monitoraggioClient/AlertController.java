@@ -2,6 +2,7 @@ package itcube.consulting.monitoraggioClient;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesReposito
 import itcube.consulting.monitoraggioClient.response.AlertConfigurazioneResponse;
 import itcube.consulting.monitoraggioClient.response.AlertResponse;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.GetAllNomiAlertConfigurazioneResponse;
 import itcube.consulting.monitoraggioClient.response.NumAlertResponse;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.services.EmailService;
@@ -349,54 +351,36 @@ public class AlertController {
 		}
 	}
 	
-	/*@PostMapping(path="/getNumAlert",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path="/getAllNomiAlertConfigurazione",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
-	public ResponseEntity<GeneralResponse> getNumAlert(@RequestBody Map<String,Object> body) {
-		NumAlertResponse response=new NumAlertResponse();
+	public ResponseEntity<GetAllNomiAlertConfigurazioneResponse> getAllNomiAlertConfigurazione(@RequestBody Map<String,Object> body) {
+		GetAllNomiAlertConfigurazioneResponse response = new GetAllNomiAlertConfigurazioneResponse();
 		ValidToken validToken=new ValidToken();
-		Integer id_client;
-		Integer id_company;
 		String token;
-		Integer n_giorni;
-		int error;
-		int warning;
+		int id_company;
+		List<String> tipologie_alert = new ArrayList<String>();
 		
 		try
 		{
-			id_client=Integer.parseInt((String)body.get("id_client"));
-			id_company=elencoClientsRepository.getIdCompany(id_client);
 			token=(String)body.get("token");
-			n_giorni=Integer.parseInt((String)body.get("n_giorni"));
+			id_company=Integer.parseInt((String) body.get("id_company"));
 			validToken= Services.checkToken(id_company, token);
 			
 			if(validToken.isValid())
 			{
-				if(n_giorni==null)
-					n_giorni=1;
-					
-				if(id_client==-1)
-				{
-					error=elencoAlertRepository.countErrorCompany(id_company, n_giorni);
-					warning=elencoAlertRepository.countWarningCompany(id_company, n_giorni);
-				}
-				else
-				{
-					error=elencoAlertRepository.countErrorClient(id_client, n_giorni);
-					warning=elencoAlertRepository.countWarningClient(id_client, n_giorni);
-				}
-				
-				response.setError(error);
-				response.setWarning(warning);
-				response.setMessage("Operazione effettuata con successo");
+				tipologie_alert = alertConfigurazioneRepository.getAllNomiAlertConfigurazione();
+
+				response.setTipologie_alert(tipologie_alert);
+				response.setMessage("OK");
 				response.setMessageCode(0);
-				response.setToken(validToken.getToken());
+				response.setToken(null);
 				
 				return ResponseEntity.ok(response); 
 				
 			} else {
 				response.setMessage("Autenticazione fallita");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 			
 		}
@@ -407,5 +391,57 @@ public class AlertController {
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(response);
 		}
-	}*/
+	}
+	
+	@PostMapping(path="/updateMonitoraAllAlerts",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> updateMonitoraAllAlerts(@RequestBody Map<String,Object> body) {
+		GeneralResponse response=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		Integer tipologia;
+		Integer licenza;
+		Integer sede;
+		boolean monitora;
+		String nome_operazione;
+		
+		try
+		{
+			tipologia= ((String)body.get("tipologia")==null) ? -1 : Integer.parseInt((String)body.get("tipologia")); 
+			licenza= (body.get("licenza")==null) ? -1 : Integer.parseInt((String)body.get("licenza"));
+			sede= ((String)body.get("sede")==null) ? -1 : Integer.parseInt((String)body.get("sede"));
+			monitora=  (boolean) body.get("monitora");
+			nome_operazione = (String) body.get("nome_operazione");
+			id_company = Integer.parseInt( (String) body.get("id_company"));
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			
+			
+			if(validToken.isValid()) {	
+				
+				alertConfigurazioneRepository.updateFilteredAlerts(monitora, nome_operazione, tipologia, licenza, sede, id_company);			
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
+			response.setMessage("Autenticazione fallita");
+			response.setMessageCode(-2);
+			return ResponseEntity.ok(response);
+		
+		}
+		catch(Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
 }

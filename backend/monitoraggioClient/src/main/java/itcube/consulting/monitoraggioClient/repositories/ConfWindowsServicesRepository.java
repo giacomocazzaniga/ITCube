@@ -65,4 +65,10 @@ public interface ConfWindowsServicesRepository extends CrudRepository<ConfWindow
 	
 	@Query(value="SELECT max(date_and_time) FROM conf_windows_services WHERE id_client = :id_client",nativeQuery=true)
 	public LocalDateTime getMaxDateAndTimeServices(@Param("id_client") int id_client);
+	
+	@Query(value="SELECT DISTINCT s.nome_servizio "
+			+ "FROM elenco_clients "
+			+ "INNER JOIN conf_windows_services s ON s.id_client=elenco_clients.id "
+			+ "WHERE elenco_clients.id_company= :id_company ", nativeQuery = true)
+	public List<String> getAllServicesOfCompany(@Param("id_company") int id_company);
 }
