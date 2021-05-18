@@ -15,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import itcube.consulting.monitoraggioClient.entities.Alert;
@@ -80,7 +82,7 @@ public class AlertController {
 				
 			
 			Alert recentAlert = elencoAlertRepository.getRecentAlert(id_client, tmp_drive_label);
-			
+
 			if(recentAlert == null || !recentAlert.getTipo().equals(disc_state)) {
 				if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client, "DRIVES")) {
 					Alert newAlert = new Alert();
@@ -108,7 +110,9 @@ public class AlertController {
 					else 
 						tipo_alert = "OK";
 					
-					InfoOperazioneMailDrives info = new InfoOperazioneMailDrives("DRIVES", insertedAlert.getDate_and_time_alert().toString(),driveLabel,String.valueOf(perc_free_space)+"%",tipo_alert,client.getNome(),company.getRagione_sociale());
+					String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
+			
+					InfoOperazioneMailDrives info = new InfoOperazioneMailDrives("DRIVES", insertedAlert.getDate_and_time_alert().toString(),driveLabel,String.valueOf(perc_free_space)+"%",tipo_alert,token_mail,id_client,client.getNome(),company.getRagione_sociale(), Services.address);
 					
 					EmailService.sendEmail("Alert drive", service.getEmailContent(company, info) , company.getEmail_alert());
 					elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -442,6 +446,42 @@ public class AlertController {
 			response.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@GetMapping(path="/unsubscribeAlert",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> unsubscribeAlert(@RequestParam Map<String,Object> body) {
+		
+		GeneralResponse response = new GeneralResponse();
+		String token_mail;
+		String tipologia_alert;
+		int id_client;
+		
+		try
+		{
+			token_mail = (String) body.get("token");
+			tipologia_alert = (String) body.get("tipologia_alert");
+			id_client = Integer.parseInt((String) body.get("id_client"));
+			
+			System.out.println(tipologia_alert);
+			
+			if(Services.getAuthenticationMail().keySet().contains(token_mail) && Services.getAuthenticationMail().get(token_mail)==id_client) {	
+				alertConfigurazioneRepository.updateAlertConfigurazione(false,id_client,tipologia_alert);
+				Services.removeTokenToAuthenticationMail(token_mail);
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+			} else {
+				response.setMessage("Error: token non presente o già utilizzato");
+				response.setMessageCode(-1);
+			}
+			
+			return ResponseEntity.ok(response);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return ResponseEntity.badRequest().body(null);
 		}
 	}
 }

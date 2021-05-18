@@ -40,6 +40,7 @@ export const url_get_all_services_of_company = buildurl + "getAllServicesOfCompa
 export const url_get_all_nomi_alert_configurazione = buildurl + "getAllNomiAlertConfigurazione";
 export const url_update_monitora_all_services = buildurl + "updateMonitoraAllServices";
 export const url_update_monitora_all_alerts = buildurl + "updateMonitoraAllAlerts";
+export const url_unsubscribe_alert = buildurl + "unsubscribeAlert";
 
 
 

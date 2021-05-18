@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8" />
     <title>Simple Call To Action</title>
     <style>
         /* -------------------------------------
@@ -383,7 +384,7 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <!--<br>Non vuoi ricevere aggiornamenti sui servizi di Windows? <a href="#">Rimuovi sottoscrizione</a>.-->
+                   	<br>Non vuoi ricevere aggiornamenti sui servizi di Windows? <a href="${info.server_address}unsubscribeAlert?token=${info.token_mail}&tipologia_alert=WINDOWS_SERVICES&id_client=${info.id_client}">Rimuovi sottoscrizione</a>.
                   </td>
                 </tr>
               </table>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AdminLTE, { Sidebar } from 'adminlte-2-react';
 import { connect } from 'react-redux';
 import Dashboard from './components/Dashboard';
@@ -11,6 +11,7 @@ import { _FILTERS, _LICENZE } from './Constants';
 import { toaster } from './toastManager';
 import { idToNomeLicenza, idToNomeSede } from './Tools';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import UnsubscribeAlertMessage from './components/UnsubscribeAlertMessage';
 
 /**
  * connect the actions to the component
@@ -141,16 +142,23 @@ const App = (props) => {
   return (
 
     <div>
-    {toaster}
-      {props.logged==true 
-      ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}<a id="logoutButton" onClick={() => props.TotalReset()}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> </>}>
-          <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
-          {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
-        </AdminLTE>
-      : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
-          <div path="/accedi" title="Accedi"><LoginPage /></div>
-          <div path="/registrati" title="Registrati"><SignUpPage /></div>
-        </AdminLTE>
+      {(window.location.pathname=="/unsubscribeAlert")
+      ?
+        <UnsubscribeAlertMessage path="/unsubscribeAlert" />
+      :
+        <>
+          {toaster}
+          {props.logged==true 
+          ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}<a id="logoutButton" onClick={() => props.TotalReset()}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> </>}>
+              <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
+              {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
+            </AdminLTE>
+          : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
+              <div path="/accedi" title="Accedi"><LoginPage /></div>
+              <div path="/registrati" title="Registrati"><SignUpPage /></div>
+            </AdminLTE>
+          }
+        </>
       }
   </div>
       

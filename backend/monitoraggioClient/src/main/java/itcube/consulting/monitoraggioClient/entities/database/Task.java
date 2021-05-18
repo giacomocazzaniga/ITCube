@@ -56,18 +56,24 @@ public class Task extends TimerTask{
 				if(alert.getCorpo_messaggio().contains("funziona"))
 					nome_servizio = alert.getCorpo_messaggio().substring(alert.getCorpo_messaggio().indexOf("servizio")+"servizio".length()+1, alert.getCorpo_messaggio().indexOf("funziona"));
 					
-				info = new InfoOperazioneMailServices("WINDOWS_SERVICES", alert.getDate_and_time_alert().toString(), client.getNome(), company.getRagione_sociale(), nome_servizio, alert.getTipo());
+				String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),alert.getId_client());
+				
+				info = new InfoOperazioneMailServices("WINDOWS_SERVICES", alert.getDate_and_time_alert().toString(), client.getNome(), company.getRagione_sociale(), nome_servizio, alert.getTipo(), token_mail, alert.getId_client(), Services.address);
 			} else if (alert.getCategoria()==3){
 				categoria_alert = "windows events";
 				String descrizione_evento = alert.getCorpo_messaggio().substring(alert.getCorpo_messaggio().indexOf(":")+2, alert.getCorpo_messaggio().length());
 				
-				info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", alert.getDate_and_time_alert().toString(), client.getNome(), company.getRagione_sociale(), descrizione_evento, alert.getTipo());
+				String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(), alert.getId_client());
+				
+				info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", alert.getDate_and_time_alert().toString(), client.getNome(), company.getRagione_sociale(), descrizione_evento, alert.getTipo(), token_mail, alert.getId_client(),Services.address);
 			} else if (alert.getCategoria()==1) {
 				categoria_alert = "drives";
 				String nome_disco = alert.getCorpo_messaggio().substring(alert.getCorpo_messaggio().indexOf("disco")+"disco".length()+1, alert.getCorpo_messaggio().indexOf("ha lo spazio"));
 				String spazio_disponibile = alert.getCorpo_messaggio().substring(alert.getCorpo_messaggio().indexOf("pari al")+"pari al".length()+1, alert.getCorpo_messaggio().length());
 				
-				info = new InfoOperazioneMailDrives("DRIVES", alert.getDate_and_time_alert().toString(), nome_disco, spazio_disponibile, alert.getTipo(), client.getNome(), company.getRagione_sociale());
+				String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(), alert.getId_client());
+				
+				info = new InfoOperazioneMailDrives("DRIVES", alert.getDate_and_time_alert().toString(), nome_disco, spazio_disponibile, alert.getTipo(), token_mail, alert.getId_client(), client.getNome(), company.getRagione_sociale(), Services.address);
 			}
 			
 			try {

@@ -238,8 +238,10 @@ public class ServicesAndEventsController {
 							ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
 							EmailService service = new EmailService();
 							
-							InfoOperazioneMailServices info = new InfoOperazioneMailServices("WINDOWS_SERVICES",insertedAlert.getDate_and_time_alert().toString(),client.getNome(),company.getRagione_sociale(),nome_servizio, insertedAlert.getTipo());
+							String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
 							
+							InfoOperazioneMailServices info = new InfoOperazioneMailServices("WINDOWS_SERVICES",insertedAlert.getDate_and_time_alert().toString(),client.getNome(),company.getRagione_sociale(),nome_servizio, insertedAlert.getTipo(), token_mail, id_client, Services.address);
+
 							EmailService.sendEmail("Alert windows service", service.getEmailContent(company, info) , company.getEmail_alert());
 							elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
 						
@@ -407,7 +409,9 @@ public class ServicesAndEventsController {
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo());
+						String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
+						
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo(), token_mail, id_client,Services.address);
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -473,7 +477,9 @@ public class ServicesAndEventsController {
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo());
+						String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
+						
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo(), token_mail, id_client, Services.address);
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -537,7 +543,9 @@ public class ServicesAndEventsController {
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo());
+						String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
+						
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(), nome, insertedAlert.getTipo(), token_mail, id_client,Services.address);
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -602,7 +610,9 @@ public class ServicesAndEventsController {
 						String tipo_alert;
 						tipo_alert = alert;
 						
-						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(),nome, insertedAlert.getTipo());
+						String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
+						
+						InfoOperazioneMailEvents info = new InfoOperazioneMailEvents("WINDOWS_EVENTS", insertedAlert.getDate_and_time_alert().toString() , client.getNome(), company.getRagione_sociale(),nome, insertedAlert.getTipo(), token_mail, id_client,Services.address);
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
@@ -1317,7 +1327,7 @@ public class ServicesAndEventsController {
 			
 			
 			if(validToken.isValid()) {	
-
+				
 				monitoraggioRepository.updateFilteredServices(monitora, nome_servizio, tipologia, licenza, sede, id_company);			
 				
 				String newToken=Services.checkThreshold(id_company, token);

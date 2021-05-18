@@ -8,11 +8,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -41,8 +43,14 @@ public final class Services {
     private HttpServletRequest request;
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
+	private static Map<String,Integer> AuthenticationMail = new HashMap<>();
 	private static int milliSecLenghtToken=900000;
 	private static double threshold=0.1*milliSecLenghtToken;
+	public static String address = "http://127.0.0.1:3000/";
+
+	public static String getAddress() {
+		return address;
+	}
 
 	//Metodo token
 	public static String getJWTToken(String ragione_sociale) {
@@ -235,5 +243,24 @@ public final class Services {
 //        }
 //
         return map;
+	}
+	
+	public static String addTokenToAuthenticationMail (String ragione_sociale, int id_client) {
+		
+		String token = Services.getJWTToken(ragione_sociale);
+		
+		AuthenticationMail.put(token, id_client);
+		
+		return token;
+		
+	}
+	
+	public static void removeTokenToAuthenticationMail (String token) {
+		AuthenticationMail.remove(token);
+		
+	}
+	
+	public static Map<String, Integer> getAuthenticationMail() {
+		return AuthenticationMail;
 	}
 }

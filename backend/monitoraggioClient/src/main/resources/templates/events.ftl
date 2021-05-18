@@ -347,7 +347,7 @@
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-                        <center><p>Si è verificato un evento di tipo <strong>${info.tipologia_alert}</strong>!<br/>Descrizione dell'evento: ${info.descrizione_evento}.</p></center>
+                        <center><p>Si &eacute; verificato un evento di tipo <strong>${info.tipologia_alert}</strong>!<br/>Descrizione dell'evento: ${info.descrizione_evento}.</p></center>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -383,7 +383,7 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <!--<br>Non vuoi ricevere aggiornamenti sugli eventi di Windows? <a href="#">Rimuovi sottoscrizione</a>.-->
+                    <br>Non vuoi ricevere aggiornamenti sugli eventi di Windows? <a href="${info.server_address}unsubscribeAlert?token=${info.token_mail}&tipologia_alert=WINDOWS_EVENTS&id_client=${info.id_client}">Rimuovi sottoscrizione</a>.
                   </td>
                 </tr>
               </table>

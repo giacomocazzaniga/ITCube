@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
     <title>Simple Call To Action</title>
     <style>
         /* -------------------------------------
@@ -348,7 +348,7 @@
                     <tr>
                       <td>
                         <center><p>Il disco <strong>${info.nome_disco}</strong> risulta essere in uno stato di <strong>${info.tipologia_alert}</strong>!</p></center>
-                        <center><p>Lo spazio disponibile è pari al <strong>${info.spazio_disponibile}</strong></p></center>
+                        <center><p>Lo spazio disponibile &eacute; pari al <strong>${info.spazio_disponibile}</strong></p></center>
                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                           <tbody>
                             <tr>
@@ -384,7 +384,7 @@
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">
-                    <!--<br>Non vuoi ricevere aggiornamenti sui dischi? <a href="#">Rimuovi sottoscrizione</a>.-->
+                    <br>Non vuoi ricevere aggiornamenti sui dischi? <a href="${info.server_address}unsubscribeAlert?token=${info.token_mail}&tipologia_alert=DRIVES&id_client=${info.id_client}">Rimuovi sottoscrizione</a>.
                   </td>
                 </tr>
               </table>
