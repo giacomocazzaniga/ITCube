@@ -26,6 +26,7 @@ import itcube.consulting.monitoraggioClient.entities.Alert;
 import itcube.consulting.monitoraggioClient.entities.AlertConfigurazione;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
+import itcube.consulting.monitoraggioClient.entities.database.EmailResocontoHandler;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailDrives;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
@@ -84,7 +85,7 @@ public class AlertController {
 			Alert recentAlert = elencoAlertRepository.getRecentAlert(id_client, tmp_drive_label);
 
 			if(recentAlert == null || !recentAlert.getTipo().equals(disc_state)) {
-				if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client, "DRIVES")) {
+				if(alertConfigurazioneRepository.isOperazioneMonitorata(id_client, "DRIVES")) { // VERIFICA MONITORAGGIO E OTTIENI DATA
 					Alert newAlert = new Alert();
 					
 	//					newAlert.setNome_disco(driveLabel);
@@ -116,6 +117,14 @@ public class AlertController {
 					
 					EmailService.sendEmail("Alert drive", service.getEmailContent(company, info) , company.getEmail_alert());
 					elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+					
+					if(EmailResocontoHandler.alerts.containsKey(id_company)) {
+						EmailResocontoHandler.alerts.get(id_company).add(insertedAlert);
+					} else {
+						List<Alert> newAlertList = new ArrayList<Alert>();
+						newAlertList.add(insertedAlert);
+						EmailResocontoHandler.alerts.put(id_company, newAlertList);
+					}
 				}
 			}
 

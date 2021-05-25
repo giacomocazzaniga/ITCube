@@ -30,6 +30,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailAggregata;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailDrives;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailEvents;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailServices;
@@ -88,8 +89,13 @@ public class EmailService {
 	        
 	        Template temp = null;
 	        
-	        if(InfoOperazioneMail.class.isInstance(info)) {
-	        	
+        	if(InfoOperazioneMailAggregata.class.isInstance(info)) {
+        		temp = configuration.getTemplate("aggregate1.ftl");
+    		    temp.process(model, stringWriter);
+   		       
+  		        return stringWriter.getBuffer().toString();
+        	}
+        	else if(InfoOperazioneMail.class.isInstance(info)) {
 	        	String newDateString = ((InfoOperazioneMail) info).getDate_and_time_alert();
 
 	    		if(newDateString.indexOf(".") != -1){
@@ -102,7 +108,6 @@ public class EmailService {
 	        	((InfoOperazioneMail) info).setDate_and_time_alert(newDateString);
 
 	        	if(InfoOperazioneMailDrives.class.isInstance(info)) {
-	        		
 	        	    switch(((InfoOperazioneMailDrives) info).getTipologia_alert()){
 		  				case "ERROR":
 		  					((InfoOperazioneMailDrives) info).setTipologia_alert("errore");
@@ -147,7 +152,9 @@ public class EmailService {
 	        		temp = configuration.getTemplate("events.ftl");
 	        	}
 
+
 		        temp.process(model, stringWriter);
+		       
 		        return stringWriter.getBuffer().toString();
 	        }
 	        return null;

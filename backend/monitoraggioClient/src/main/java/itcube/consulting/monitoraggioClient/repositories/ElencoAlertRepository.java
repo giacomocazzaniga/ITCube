@@ -71,4 +71,9 @@ public interface ElencoAlertRepository extends CrudRepository<Alert,Integer> {
 
 	@Query(value="SELECT * FROM alert WHERE date_and_time_mail IS NULL",nativeQuery=true)
 	public List<Alert> getAllAlertsWithoutMailDateTime();
+	
+	@Query(value="SELECT datediff(now(),max(date_and_time_mail)) "
+			+ "	FROM alert "
+			+ "	WHERE id_client = :id_client",nativeQuery=true)
+	public Integer getDaysFromLastMail(@Param("id_client") int id_client);
 }

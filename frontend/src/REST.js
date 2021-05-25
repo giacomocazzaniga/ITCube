@@ -41,6 +41,8 @@ export const url_get_all_nomi_alert_configurazione = buildurl + "getAllNomiAlert
 export const url_update_monitora_all_services = buildurl + "updateMonitoraAllServices";
 export const url_update_monitora_all_alerts = buildurl + "updateMonitoraAllAlerts";
 export const url_unsubscribe_alert = buildurl + "unsubscribeAlert";
+export const url_change_mail_interval = buildurl + "changeMailInterval";
+export const url_get_mail_interval = buildurl + "getMailInterval";
 
 
 

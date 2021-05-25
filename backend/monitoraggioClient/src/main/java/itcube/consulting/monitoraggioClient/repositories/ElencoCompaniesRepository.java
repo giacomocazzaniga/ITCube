@@ -2,6 +2,9 @@ package itcube.consulting.monitoraggioClient.repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -63,4 +66,11 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 			+ "	WHERE c.id_company = :id_company AND d.perc_free_disc_space >= 10 AND d.perc_free_disc_space <= 20",nativeQuery=true)
 	List<Integer> getIdsOfClientsWithDrivesWarning(@Param("id_company") int id_company);
 	
+	@Query(value="UPDATE elenco_companies SET intervallo_mail = :interval WHERE id = :id_company",nativeQuery=true)
+	@Modifying
+	@Transactional
+	void updateMailInterval(@Param("id_company") int id_company,@Param("interval") Long interval);
+	
+	@Query(value="SELECT intervallo_mail FROM elenco_companies WHERE id = :id_company", nativeQuery = true)
+	Long getMailInterval(@Param("id_company") int id_company);
 }

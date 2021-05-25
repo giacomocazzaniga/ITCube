@@ -25,7 +25,9 @@ import itcube.consulting.monitoraggioClient.entities.ElencoClients;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 import itcube.consulting.monitoraggioClient.entities.Monitoraggio;
 import itcube.consulting.monitoraggioClient.entities.VisualizzazioneEventi;
+import itcube.consulting.monitoraggioClient.entities.database.EmailResocontoHandler;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
+import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailAggregata;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailEvents;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailServices;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
@@ -116,7 +118,7 @@ public class ServicesAndEventsController {
 		List<ConfWindowsServices> servizi=new ArrayList<ConfWindowsServices>();
 		List<Monitoraggio> monitoraggio=new ArrayList<Monitoraggio>();
 		ConfWindowsServices confWindowsServices=new ConfWindowsServices();
-		LocalDateTime timestamp=java.time.LocalDateTime.now();
+		LocalDateTime timestamp=java.time.LocalDateTime.now(); //DATA E ORA DELL'EVENTO
 		List<ConfTotalFreeDiscSpace> disco=new ArrayList<ConfTotalFreeDiscSpace>();
 		boolean serviziNotNull;
 		boolean dischiNotNull;
@@ -126,6 +128,10 @@ public class ServicesAndEventsController {
 		boolean monitora=false;
 		Integer idMonitoraggio;
 		String tipo=null;
+		List<ConfWindowsServices> lista_mail = new ArrayList<ConfWindowsServices>();
+		List<Alert> lista_alert = new ArrayList<Alert>();
+		int intervallo_giorni_mail = 0;
+		
 		
 		try
 		{
@@ -236,6 +242,8 @@ public class ServicesAndEventsController {
 							int id_company = elencoClientsRepository.getIdCompany(id_client);
 							ElencoCompanies company = elencoCompaniesRepository.getInfoCompany(id_company);
 							ElencoClients client = elencoClientsRepository.getClientFromId(id_client);
+							
+
 							EmailService service = new EmailService();
 							
 							String token_mail = Services.addTokenToAuthenticationMail(company.getRagione_sociale(),id_client);
@@ -244,10 +252,20 @@ public class ServicesAndEventsController {
 
 							EmailService.sendEmail("Alert windows service", service.getEmailContent(company, info) , company.getEmail_alert());
 							elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
-						
+							
+							
+
+							if(EmailResocontoHandler.alerts.containsKey(id_company)) {
+								EmailResocontoHandler.alerts.get(id_company).add(insertedAlert);
+							} else {
+								List<Alert> newAlertList = new ArrayList<Alert>();
+								newAlertList.add(insertedAlert);
+								EmailResocontoHandler.alerts.put(id_company, newAlertList);
+							}
 						}
 					}
 				}
+				
 			}
 			
 			if(dischiNotNull)
@@ -415,6 +433,14 @@ public class ServicesAndEventsController {
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+						
+						if(EmailResocontoHandler.alerts.containsKey(id_company)) {
+							EmailResocontoHandler.alerts.get(id_company).add(insertedAlert);
+						} else {
+							List<Alert> newAlertList = new ArrayList<Alert>();
+							newAlertList.add(insertedAlert);
+							EmailResocontoHandler.alerts.put(id_company, newAlertList);
+						}
 					}
 					
 				}
@@ -483,6 +509,14 @@ public class ServicesAndEventsController {
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+						
+						if(EmailResocontoHandler.alerts.containsKey(id_company)) {
+							EmailResocontoHandler.alerts.get(id_company).add(insertedAlert);
+						} else {
+							List<Alert> newAlertList = new ArrayList<Alert>();
+							newAlertList.add(insertedAlert);
+							EmailResocontoHandler.alerts.put(id_company, newAlertList);
+						}
 					}
 				}
 			}
@@ -549,6 +583,14 @@ public class ServicesAndEventsController {
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+						
+						if(EmailResocontoHandler.alerts.containsKey(id_company)) {
+							EmailResocontoHandler.alerts.get(id_company).add(insertedAlert);
+						} else {
+							List<Alert> newAlertList = new ArrayList<Alert>();
+							newAlertList.add(insertedAlert);
+							EmailResocontoHandler.alerts.put(id_company, newAlertList);
+						}
 					}
 				}
 			}
@@ -616,6 +658,14 @@ public class ServicesAndEventsController {
 						
 						EmailService.sendEmail("Alert windows events", service.getEmailContent(company, info) , company.getEmail_alert());
 						elencoAlertRepository.updateMailTimestamp(insertedAlert.getId());
+						
+						if(EmailResocontoHandler.alerts.containsKey(id_company)) {
+							EmailResocontoHandler.alerts.get(id_company).add(insertedAlert);
+						} else {
+							List<Alert> newAlertList = new ArrayList<Alert>();
+							newAlertList.add(insertedAlert);
+							EmailResocontoHandler.alerts.put(id_company, newAlertList);
+						}
 					}
 				}
 			}

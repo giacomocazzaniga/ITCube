@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Timer;
@@ -46,7 +47,5 @@ public class MonitoraggioClientApplication {
 				.anyRequest().authenticated();*/
 				.anyRequest().permitAll();
 		}
-		
 	}
-
 }
