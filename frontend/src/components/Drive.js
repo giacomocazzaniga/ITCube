@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
-import Knob from 'react-canvas-knob';
 import { CircularProgressbar, buildStyles  } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Backend2FrontendDateConverter } from '../Tools';

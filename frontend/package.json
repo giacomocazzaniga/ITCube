@@ -53,7 +53,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start_on_server": "set PORT=8080&& react-scripts start",
-    "deploy_on_surge": "npm run build && cp build/index.html build/200.html && surge build https://baitapp1.surge.sh",
+    "deploy_on_surge": "npm run build && cp build/index.html build/200.html && surge build https://itsentineltest.surge.sh",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
