@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient.entities.database;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,17 +25,17 @@ import itcube.consulting.monitoraggioClient.services.Services;
 @Component
 public class EmailResocontoHandler {
 	
-	Map<Integer,Timer> timers = new HashMap<Integer,Timer>();
+	public static Map<Integer,Timer> timers = new HashMap<Integer,Timer>();
 	public static Map<Integer,List<Alert>> alerts = new HashMap<Integer,List<Alert>>();
 
-	public void scheduledEmail (ElencoCompanies company, long fixedRate, boolean stopTimer, ElencoClientsRepository elencoClientsRepository) {
+	public void scheduledEmail (ElencoCompanies company, long fixedRate, boolean stopTimer, ElencoClientsRepository elencoClientsRepository,  ElencoCompaniesRepository elencoCompaniesRepository) {
 		if(!stopTimer) {
 			Timer oldTimer = timers.get(company.getId());
 			if(oldTimer!=null)
 				oldTimer.cancel();
 			
 			Timer timer = new Timer();
-			timer.scheduleAtFixedRate(new Task(company,elencoClientsRepository), 0l, fixedRate);
+			timer.scheduleAtFixedRate(new Task(company,elencoClientsRepository, elencoCompaniesRepository), fixedRate, fixedRate);
 			timers.put(company.getId(), timer);
 		} else {
 			Timer t = timers.get(company.getId());
@@ -44,13 +45,15 @@ public class EmailResocontoHandler {
 	}	
 	
 	public class Task extends TimerTask {
-		
+
+		ElencoCompaniesRepository elencoCompaniesRepository;		
 		ElencoClientsRepository elencoClientsRepository;
 		private ElencoCompanies company;
 		
-		public Task(ElencoCompanies company, ElencoClientsRepository elencoClientsRepository) {
+		public Task(ElencoCompanies company, ElencoClientsRepository elencoClientsRepository,ElencoCompaniesRepository elencoCompaniesRepository) {
 			this.company = company;
 			this.elencoClientsRepository = elencoClientsRepository;
+			this.elencoCompaniesRepository = elencoCompaniesRepository;
 		}
 
 
@@ -67,8 +70,9 @@ public class EmailResocontoHandler {
 			if(alertOfCompany != null) {
 				alertOfCompany.forEach( alert -> {
 					Integer tipoClient = elencoClientsRepository.getTipoFromIdClient(alert.getId_client());
+					
 					if(tipoClient == 1) {
-						
+
 						if(alert.getTipo()=="ERROR" && alert.getCorpo_messaggio().contains("servizio"))
 							resocontoClient.setErrori_servizi(resocontoClient.getErrori_servizi()+1);
 						if(alert.getTipo()=="WARNING" && alert.getCorpo_messaggio().contains("servizio"))
@@ -104,6 +108,8 @@ public class EmailResocontoHandler {
 			InfoOperazioneMailAggregata info = new InfoOperazioneMailAggregata(alertOfCompany, Services.address, resocontoClient, resocontoServer, company.getRagione_sociale());
 			try {
 				EmailService.sendEmail("Resoconto " + company.getRagione_sociale(), mail.getEmailContent(company, info),company.getEmail_alert());
+				LocalDateTime timestamp = java.time.LocalDateTime.now();
+				elencoCompaniesRepository.updateLastMailTimestamp(company.getId(), timestamp);
 				System.out.println("Invio mail resoconto della company: " + company.getRagione_sociale());
 				alerts.clear();
 			} catch (IOException | TemplateException e) {

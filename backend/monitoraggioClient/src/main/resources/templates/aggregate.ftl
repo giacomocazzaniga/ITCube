@@ -328,7 +328,40 @@
           border-color: #d5075d !important; 
         } 
       }
+
+      .table-container {
+          padding: 20px;
+          background-color: white;
+      }
+      thead {
+      	display: table-header-group;
+    	vertical-align: middle;
+    	border-color: inherit;
+    	color: #fff;
+    	background-color: #343a40;
+      }
+      th {
+          padding: 10px 20px;
+      }
+      h4 {
+        margin-bottom: 10px;
+      }
+      td table td{
+          text-align: center;
+          margin-bottom: 0;
+          vertical-align: inherit;
+      }
+      tr {
+          border-bottom: #06090f 1px solid;
+      }
+      table {
+          border-spacing: 0ch;
+      }
+      td table td, td table th {
+        border-bottom: 1px #0000003b solid;
+      }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
   </head>
   <body class="">
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
@@ -339,220 +372,224 @@
                 <h1>ITSentinel</h1>
    
             <!-- START CENTERED WHITE CONTAINER -->
-            <table role="presentation" class="main">
-				
-				<tr>
-                  <td class="content-block">
-                    <br/>
-		            <h1>Nome Company</h1>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h2>Client:</h2>
-                    <h3>Servizi:</h3>
-                    <h4>Si sono verificati 
-                    	<#list info?keys as key>
-                    		<#if key == "client_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "errori_servizi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      problemi legati ai servizi</h4>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "client_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "warning_servizi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      warning legati ai servizi</h4>  
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h3>Eventi:</h3>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "client_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "errori_eventi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      problemi legati agli eventi</h4>
-                    <h4>Si sono verificati 
-                    	<#list info?keys as key>
-                    		<#if key == "client_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "warning_eventi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      warning legati agli eventi</h4>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h3>Dischi:</h3>
-                    <h4>Si sono verificati
-                    <#list info?keys as key>
-                    		<#if key == "client_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "errori_drives">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      problemi legati ai dischi</h4>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "client_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "warning_drives">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                    warning legati ai dischi</h4>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <h2>Server:</h2>
-                    <h3>Servizi:</h3>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "server_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "errori_servizi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      problemi legati ai servizi</h4>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "server_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "warning_servizi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      warning legati ai servizi</h4>  
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h3>Eventi:</h3>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "server_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "errori_eventi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      problemi legati agli eventi</h4>
-                    <h4>Si sono verificati
-                    <#list info?keys as key>
-                    		<#if key == "server_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "warning_eventi">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      warning legati agli eventi</h4>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h3>Dischi:</h3>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "server_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "errori_drives">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      problemi legati ai dischi</h4>
-                    <h4>Si sono verificati 
-                    <#list info?keys as key>
-                    		<#if key == "server_data">
-                    			<#if info[key]??>
-                    				<#assign clientData = info[key]>
-                    				<#list clientData?keys as clientKey>
-                    					<#if clientKey == "warning_drives">
-                    						${clientData[clientKey]}
-                    					</#if>
-                    				</#list>
-                    			</#if>
-                    		</#if>
-                    	</#list>
-                      warning legati ai dischi</h4>
-                  </td>
-                </tr>
                 
-              <!-- START MAIN CONTENT AREA -->
-              	
-            <!-- END MAIN CONTENT AREA -->
-            </table>
+                <!-- START MAIN CONTENT AREA -->
+                <div style="margin-top: 30px;"><h4>Resoconto ${info.nome_company}</h4></div>
+
+                <div class="table-container">
+                    <div><h4>Servers table</h4></div>
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col"><i class="fas fa-exclamation-circle"></i>Errori</th>
+                            <th scope="col"><i class="fas fa-exclamation-triangle"></i>Warning</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">Servizi</th>
+                            <td>
+	                        	<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "errori_servizi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "warning_servizi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Eventi</th>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "errori_eventi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                            <td>
+								<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "warning_eventi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>                            
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Drives</th>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "errori_drives">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "warning_drives">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top:20px"><h4>Clients table</h4></div>
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col"><i class="fas fa-exclamation-circle"></i>Errori</th>
+                            <th scope="col"><i class="fas fa-exclamation-triangle"></i>Warning</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">Servizi</th>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "client_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "errori_servizi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "client_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "warning_servizi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Eventi</th>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "client_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "errori_eventi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "client_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "warning_eventi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Drives</th>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "client_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "warning_drives">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                            </td>
+                            <td>
+                            	<#list info?keys as key>
+		                    		<#if key == "server_data">
+		                    			<#if info[key]??>
+		                    				<#assign clientData = info[key]>
+		                    				<#list clientData?keys as clientKey>
+		                    					<#if clientKey == "errori_servizi">
+		                    						${clientData[clientKey]}
+		                    					</#if>
+		                    				</#list>
+		                    			</#if>
+		                    		</#if>
+		                    	</#list>
+                    		</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>  
+                <!-- END MAIN CONTENT AREA -->
 
           <!-- END CENTERED WHITE CONTAINER -->
           </div>

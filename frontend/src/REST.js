@@ -43,6 +43,10 @@ export const url_update_monitora_all_alerts = buildurl + "updateMonitoraAllAlert
 export const url_unsubscribe_alert = buildurl + "unsubscribeAlert";
 export const url_change_mail_interval = buildurl + "changeMailInterval";
 export const url_get_mail_interval = buildurl + "getMailInterval";
+export const url_richiedi_password = buildurl + "richiediPassword";
+export const url_cambio_password = buildurl + "changePassword";
+export const url_is_token_valid = buildurl + "isTokenValid";
+export const url_get_last_mail_date_and_time = buildurl + "getLastMailDate";
 
 
 

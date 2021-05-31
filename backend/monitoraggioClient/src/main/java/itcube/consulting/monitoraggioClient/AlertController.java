@@ -473,8 +473,6 @@ public class AlertController {
 			tipologia_alert = (String) body.get("tipologia_alert");
 			id_client = Integer.parseInt((String) body.get("id_client"));
 			
-			System.out.println(tipologia_alert);
-			
 			if(Services.getAuthenticationMail().keySet().contains(token_mail) && Services.getAuthenticationMail().get(token_mail)==id_client) {	
 				alertConfigurazioneRepository.updateAlertConfigurazione(false,id_client,tipologia_alert);
 				Services.removeTokenToAuthenticationMail(token_mail);

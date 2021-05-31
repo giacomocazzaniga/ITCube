@@ -29,6 +29,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
+import itcube.consulting.monitoraggioClient.entities.database.InfoMailRecuperaPassword;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMail;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailAggregata;
 import itcube.consulting.monitoraggioClient.entities.database.InfoOperazioneMailDrives;
@@ -89,70 +90,75 @@ public class EmailService {
 	        
 	        Template temp = null;
 	        
+
+	        if(InfoMailRecuperaPassword.class.isInstance(info)) {
+	        	temp = configuration.getTemplate("recuperaPassword.ftl");
+	        	temp.process(model, stringWriter);
+	        	
+	        	return stringWriter.getBuffer().toString();
+	        }
         	if(InfoOperazioneMailAggregata.class.isInstance(info)) {
-        		temp = configuration.getTemplate("aggregate1.ftl");
+        		temp = configuration.getTemplate("aggregate.ftl");
     		    temp.process(model, stringWriter);
    		       
   		        return stringWriter.getBuffer().toString();
         	}
-        	else if(InfoOperazioneMail.class.isInstance(info)) {
+    		if(InfoOperazioneMail.class.isInstance(info)) {
 	        	String newDateString = ((InfoOperazioneMail) info).getDate_and_time_alert();
 
-	    		if(newDateString.indexOf(".") != -1){
-	    			newDateString = newDateString.substring(0,newDateString.indexOf("."));
-	    		}
-	    		if(newDateString.indexOf("T") != -1){
-    			  newDateString = newDateString.replace("T", " ");
-	    		}
+    		if(newDateString.indexOf(".") != -1){
+    			newDateString = newDateString.substring(0,newDateString.indexOf("."));
+    		}
+    		if(newDateString.indexOf("T") != -1){
+			  newDateString = newDateString.replace("T", " ");
+    		}
 
-	        	((InfoOperazioneMail) info).setDate_and_time_alert(newDateString);
+        	((InfoOperazioneMail) info).setDate_and_time_alert(newDateString);
 
-	        	if(InfoOperazioneMailDrives.class.isInstance(info)) {
-	        	    switch(((InfoOperazioneMailDrives) info).getTipologia_alert()){
-		  				case "ERROR":
-		  					((InfoOperazioneMailDrives) info).setTipologia_alert("errore");
-		  				break;
-		  				case "WARNING":
-		  					((InfoOperazioneMailDrives) info).setTipologia_alert("warning");
-		  				break;
-		  				case "OK":
-		  					((InfoOperazioneMailDrives) info).setTipologia_alert("ok");
-		  				break;
-	  				}
-	        		
-	        		temp = configuration.getTemplate("drives.ftl");
-	        	}
-	        	if(InfoOperazioneMailServices.class.isInstance(info)) {
-	        		
-	        		switch(((InfoOperazioneMailServices) info).getTipologia_alert()){
-		  				case "ERROR":
-		  					((InfoOperazioneMailServices) info).setTipologia_alert("errore");
-		  				break;
-		  				case "WARNING":
-		  					((InfoOperazioneMailServices) info).setTipologia_alert("warning");
-		  				break;
-		  				case "OK":
-		  					((InfoOperazioneMailServices) info).setTipologia_alert("ok");
-		  				break;
-	        		}
-	        		temp = configuration.getTemplate("services.ftl");
-	        	}
-	        	if(InfoOperazioneMailEvents.class.isInstance(info)) {
-	        		switch(((InfoOperazioneMailEvents) info).getTipologia_alert()){
-		  				case "ERROR":
-		  					((InfoOperazioneMailEvents) info).setTipologia_alert("errore");
-		  				break;
-		  				case "WARNING":
-		  					((InfoOperazioneMailEvents) info).setTipologia_alert("warning");
-		  				break;
-		  				case "OK":
-		  					((InfoOperazioneMailEvents) info).setTipologia_alert("ok");
-		  				break;
-		  			}
+        	if(InfoOperazioneMailDrives.class.isInstance(info)) {
+        	    switch(((InfoOperazioneMailDrives) info).getTipologia_alert()){
+	  				case "ERROR":
+	  					((InfoOperazioneMailDrives) info).setTipologia_alert("errore");
+	  				break;
+	  				case "WARNING":
+	  					((InfoOperazioneMailDrives) info).setTipologia_alert("warning");
+	  				break;
+	  				case "OK":
+	  					((InfoOperazioneMailDrives) info).setTipologia_alert("ok");
+	  				break;
+  				}
+        		
+        		temp = configuration.getTemplate("drives.ftl");
+        	}
+        	if(InfoOperazioneMailServices.class.isInstance(info)) {
+        		
+        		switch(((InfoOperazioneMailServices) info).getTipologia_alert()){
+	  				case "ERROR":
+	  					((InfoOperazioneMailServices) info).setTipologia_alert("errore");
+	  				break;
+	  				case "WARNING":
+	  					((InfoOperazioneMailServices) info).setTipologia_alert("warning");
+	  				break;
+	  				case "OK":
+	  					((InfoOperazioneMailServices) info).setTipologia_alert("ok");
+	  				break;
+        		}
+        		temp = configuration.getTemplate("services.ftl");
+        	}
+        	if(InfoOperazioneMailEvents.class.isInstance(info)) {
+        		switch(((InfoOperazioneMailEvents) info).getTipologia_alert()){
+	  				case "ERROR":
+	  					((InfoOperazioneMailEvents) info).setTipologia_alert("errore");
+	  				break;
+	  				case "WARNING":
+	  					((InfoOperazioneMailEvents) info).setTipologia_alert("warning");
+	  				break;
+	  				case "OK":
+	  					((InfoOperazioneMailEvents) info).setTipologia_alert("ok");
+	  				break;
+	  			}
 	        		temp = configuration.getTemplate("events.ftl");
-	        	}
-
-
+        	}
 		        temp.process(model, stringWriter);
 		       
 		        return stringWriter.getBuffer().toString();

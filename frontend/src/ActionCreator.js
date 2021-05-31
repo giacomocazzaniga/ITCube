@@ -180,3 +180,8 @@ export const getLastDate = (date) => ({
   type: types.GETLASTDATE,
   date: date
 })
+
+export const getLastMailDate = (last_mail_date) => ({
+  type: types.GETLASTMAILDATE,
+  last_mail_date: last_mail_date
+})

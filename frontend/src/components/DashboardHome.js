@@ -9,10 +9,10 @@ import LicensesList from './LicensesList';
 import UserData from './UserData';
 import ClientHandler from "./ClientHandler";
 import ToggleCategoryPlace from './ToggleCategoryPlace';
-import { _getCompanyHistory, _getCompanyOverview, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
+import { _getCompanyHistory, _getCompanyOverview, _getLastMailDateAndTime, _getLicenzeShallow, _getNomiSedi } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 import { defaultUpdateInterval } from '../Constants';
-import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory, updateToken, totalReset } from '../ActionCreator';
+import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory, updateToken, totalReset, getLastMailDate } from '../ActionCreator';
 import { autenticazione_fallita, renewToken } from '../Tools';
 
 document.body.classList.add('fixed');
@@ -35,7 +35,10 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateToken(token));
   },
   TotalReset: () => {
-    dispatch(totalReset())
+    dispatch(totalReset());
+  },
+  GetLastMailDateAndTime: (last_mail_date) => {
+    dispatch(getLastMailDate(last_mail_date));
   },
   FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
     let tmp_list = client_list;
@@ -74,6 +77,7 @@ const mapStateToProps = state => ({
     company_template: state.company_template,
     lista_nomi_sedi: state.lista_nomi_sedi,
     lista_id_sedi: state.lista_id_sedi,
+    last_mail_date: state.company_template.last_mail_date
   }
 
 );
@@ -109,11 +113,14 @@ const DashboardHome = (props) => {
             }
           })
         })
-          props.CompanyTemplateLicenze(response.data.licenzeShallow)
+        props.CompanyTemplateLicenze(response.data.licenzeShallow)
 
-          _getCompanyHistory(token,props.id_company)
+        _getCompanyHistory(token,props.id_company)
+        .then( response => {
+          props.UpdateCompanyHistory(response)
+          _getLastMailDateAndTime(token,props.id_company) 
           .then( response => {
-            props.UpdateCompanyHistory(response)
+            props.GetLastMailDateAndTime(response.data.last_mail_date_and_time)
             _getCompanyOverview(token, props.id_company)
             .then(function (response) {
               let myPromise = new Promise(function (myResolve,myReject) {
@@ -139,11 +146,12 @@ const DashboardHome = (props) => {
               )
               stopLoadingToast(loadingToast);
             })
-          })
-          .catch(function (error) {
-            stopLoadingToast(loadingToast);
-            getErrorToast(String(error));
-          })
+            .catch(function (error) {
+              stopLoadingToast(loadingToast);
+              getErrorToast(String(error));
+            }) 
+          })          
+        })
         .catch(function (error) {
           stopLoadingToast(loadingToast);
           getErrorToast(String(error));
@@ -223,7 +231,7 @@ const DashboardHome = (props) => {
           <UserData email={props.email} emailNotify={props.emailNotify} ragioneSociale={props.nome_company} chiave={props.chiave_di_registrazione}/>
         </Col>
         <Col xs={12} md={6}>
-          <ClientHandler />
+          <ClientHandler last_mail_date={props.last_mail_date} />
         </Col>
         
         {/*<Col md={3} xs={6}>

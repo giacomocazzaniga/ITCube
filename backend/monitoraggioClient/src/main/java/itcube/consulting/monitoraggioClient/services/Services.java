@@ -44,6 +44,7 @@ public final class Services {
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
 	private static Map<String,Integer> AuthenticationMail = new HashMap<>();
+	private static Map<String,Integer> AuthenticationRecuperaPassword = new HashMap<String, Integer>();
 	private static int milliSecLenghtToken=900000;
 	private static double threshold=0.1*milliSecLenghtToken;
 	public static String address = "http://127.0.0.1:3000/";
@@ -245,6 +246,8 @@ public final class Services {
         return map;
 	}
 	
+	
+	
 	public static String addTokenToAuthenticationMail (String ragione_sociale, int id_client) {
 		
 		String token = Services.getJWTToken(ragione_sociale);
@@ -264,5 +267,22 @@ public final class Services {
 		return AuthenticationMail;
 	}
 	
+	public static String addTokenToAuthenticationRecuperaPassword (String ragione_sociale, int id_company) {
+		
+		String token = Services.getJWTToken(ragione_sociale);
+		
+		AuthenticationMail.put(token, id_company);
+		
+		return token;
+		
+	}
 	
+	public static void removeTokenFromAuthenticationRecuperaPassword (String token) {
+		AuthenticationMail.remove(token);
+		
+	}
+	
+	public static Map<String, Integer> getAuthenticationRecuperaPassword() {
+		return AuthenticationMail;
+	}
 }

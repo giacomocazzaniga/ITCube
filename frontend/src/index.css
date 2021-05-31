@@ -259,3 +259,17 @@ code {
 .boxBody {
   margin-left: 20px;
 }
+
+.password-dimenticata {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #337ab7;
+}
+
+.password-dimenticata:hover {
+  color: #2f6594;
+}
+
+.password-dimenticata {
+  margin-top: 20px;
+}

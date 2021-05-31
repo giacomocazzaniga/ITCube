@@ -98,6 +98,7 @@ const initialState = {
     ]
   },
   company_template: {
+    last_mail_date: "",
     client_overview: {
       n_errori: [],
       n_warnings: [],
@@ -455,6 +456,15 @@ export function rootReducer(state = initialState, action) {
   if(action.type === types.GETCONFIGURAZIONEALERT) {
     return Object.assign({}, state, {
       configurazione_alert: action.operazioni
+    });
+  }
+  if(action.type === types.GETLASTMAILDATE) {
+    console.log(action.last_mail_date)
+    return Object.assign({}, state, {
+      company_template : {
+        ...state.company_template,
+        last_mail_date: action.last_mail_date
+      }
     });
   }
   //returning the state

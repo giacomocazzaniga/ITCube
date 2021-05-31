@@ -10,6 +10,7 @@ import { Row } from "react-bootstrap";
 import ClientHandlerRowServices from "./ClientHandlerRowServices";
 import ClientHandlerRowAlert from "./ClientHandlerRowAlert";
 import SelectMailInterval from "./SelectMailInterval";
+import { Backend2FrontendDateConverter } from "../Tools";
 
 
 /**
@@ -107,10 +108,11 @@ const ClientHandler = (props) => {
     }
 
     return (
-        <Box title="Gestione dei monitoraggi:" type="primary" collapsable footer={<PopUp title="Gestione dei client" linkClass={"clickable"} childs={childs} action={()=>getClientHandler()}/>}>
+        <Box title="Gestione dei monitoraggi:" type="primary" collapsable footer={<PopUp title="Gestione dei monitoraggi" linkClass={"clickable"} childs={childs} action={()=>getClientHandler()}/>}>
             <h4>Abilita o disabilita per diversi gruppi il monitoraggio di:</h4>
             <h4 className="boxBody"><strong>Alert</strong></h4>
             <h4 className="boxBody"><strong>Servizi di Windows</strong></h4>
+            <h4>Ultimo aggiornamento mail: {Backend2FrontendDateConverter(props.last_mail_date)}</h4>
         </Box>
     )
 } 

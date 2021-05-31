@@ -1,5 +1,6 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -73,4 +74,21 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 	
 	@Query(value="SELECT intervallo_mail FROM elenco_companies WHERE id = :id_company", nativeQuery = true)
 	Long getMailInterval(@Param("id_company") int id_company);
+	
+	@Query(value="UPDATE elenco_companies SET password= :password WHERE id = :id_company",nativeQuery=true)
+	@Modifying
+	@Transactional
+	void updatePassword(@Param("id_company") int id_company,@Param("password") String password);
+	
+	@Query(value="SELECT * FROM elenco_companies", nativeQuery = true)
+	List<ElencoCompanies> getAllCompanies();
+	
+	@Query(value="UPDATE elenco_companies SET last_mail_date_and_time = :last_mail_date_and_time WHERE id = :id_company",nativeQuery=true)
+	@Modifying
+	@Transactional
+	void updateLastMailTimestamp(@Param("id_company") int id_company, @Param("last_mail_date_and_time") LocalDateTime last_mail_date_and_time);
+	
+	@Query(value="SELECT last_mail_date_and_time FROM elenco_companies WHERE id= :id_company", nativeQuery = true)
+	LocalDateTime getLastMailDateAndTime(@Param("id_company") int id_company);
+	
 }

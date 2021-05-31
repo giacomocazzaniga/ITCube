@@ -60,7 +60,7 @@ const SelectMailInterval = (props) => {
         
     }
 
-    //TODO: AGGIUNGERE COLONNA INTERVALLO MAIL A DB 
+    //TODO: AGGIUNGERE COLONNE INTERVALLO_MAIL E LAST_MAIL_DATE_AND_TIME A DB 
 
     return (    
         <Col xs={6} md={6}>
