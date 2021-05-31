@@ -49,7 +49,7 @@ const ClientHandler = (props) => {
     }
 
     const getClientHandler = () => {
-        const loadingToast = getLoadingToast("Modifica monitoraggio servizi...");
+        const loadingToast = getLoadingToast("Caricamento...");
         _getAllServicesOfCompany(props.id_company, props.token)
         .then( response1 => {
             _getAllNomiAlertConfigurazione(props.id_company, props.token)

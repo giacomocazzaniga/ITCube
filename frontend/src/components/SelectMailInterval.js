@@ -25,7 +25,7 @@ const SelectMailInterval = (props) => {
     const [state,setState] = useState();
 
     useEffect(() => {
-        const loadingToast = getLoadingToast("Modifica intervallo mail...");
+        const loadingToast = getLoadingToast("Caricamento...");
         _getMailInterval(props.token,props.id_company)
         .then( response => {
             setState(response.data.mailInterval);
@@ -70,7 +70,7 @@ const SelectMailInterval = (props) => {
                     <label for="noMail">Non desidero ricevere mail</label>
                 </div>
                 <div>
-                    <input type="radio" value={60000} id="1gg" name="interval" checked={state==60000} onChange={(e) => {setState(e.target.value)}}/>
+                    <input type="radio" value={60000*60*24} id="1gg" name="interval" checked={state==60000*60*24} onChange={(e) => {setState(e.target.value)}}/>
                     <label for="1gg">1 giorno</label>
                 </div>
                 <div>
