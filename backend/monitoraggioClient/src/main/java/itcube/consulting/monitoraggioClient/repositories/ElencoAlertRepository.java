@@ -1,7 +1,11 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -42,30 +46,34 @@ public interface ElencoAlertRepository extends CrudRepository<Alert,Integer> {
 			+ "order by date_and_time_alert desc "
 			+ "limit 1", nativeQuery=true)
 	String lastAlertStatus(@Param("id_client") int id_client, @Param("nome_servizio") String nome_servizio);
+
+	@Query(value="SELECT * "
+			+ "FROM alert "
+			+ "WHERE id_client = :id_client "
+			+ "AND date_and_time_alert >= CONCAT(curdate() - interval 10 * :slot day, ' 00:00:00') "
+			+ "AND date_and_time_alert <= CONCAT(curdate() - interval 10 * (:slot - 1) day, ' 23:59:59') "
+			+ "AND tipo <> 'OK'" , nativeQuery = true)
+	List<Alert> getAlertOfDay(@Param("id_client") int id_client, @Param("slot") int slot);
 	
+	@Query(value="SELECT * "
+			+ "FROM alert "
+			+ "WHERE id_company = :id_company "
+			+ "AND date_and_time_alert >= CONCAT(curdate() - interval 10 * :slot day, ' 00:00:00') "
+			+ "AND date_and_time_alert <= CONCAT(curdate() - interval 10 * (:slot - 1) day, ' 23:59:59') "
+			+ "AND tipo <> 'OK'" , nativeQuery = true)
+	List<Alert> getAlertOfCompanyOfDay(@Param("id_company") int id_company, @Param("slot") int slot);
 	
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE alert SET date_and_time_mail = CURRENT_TIMESTAMP(6) WHERE id= :id_alert",nativeQuery=true)
+	public void updateMailTimestamp(@Param("id_alert") int id_alert);
+
+	@Query(value="SELECT * FROM alert WHERE date_and_time_mail IS NULL",nativeQuery=true)
+	public List<Alert> getAllAlertsWithoutMailDateTime();
 	
-	/*@Query(value="Select count(*) from alert where id_client= :id_client and tipo='ERROR' and AND date_and_time_alert between date_sub(now(),INTERVAL :n_giorni DAY) and now()", nativeQuery=true)
-	int countErrorClient(@Param("id_client") int id_client, @Param("n_giorni") int n_giorni);
-	
-	@Query(value="Select count(*) from alert where id_company= :id_company and tipo='ERROR' and AND date_and_time_alert between date_sub(now(),INTERVAL :n_giorni DAY) and now()",nativeQuery=true)
-	int countErrorCompany(@Param("id_company") int id_company, @Param("n_giorni") int n_giorni);
-	
-	@Query(value="Select count(*) from alert where id_client= :id_client and tipo='WARNING' and AND date_and_time_alert between date_sub(now(),INTERVAL :n_giorni DAY) and now()", nativeQuery=true)
-	int countWarningClient(@Param("id_client") int id_client, @Param("n_giorni") int n_giorni);
-	
-	@Query(value="Select count(*) from alert where id_company= :id_company and tipo='WARNING' and AND date_and_time_alert between date_sub(now(),INTERVAL :n_giorni DAY) and now()",nativeQuery=true)
-	int countWarningCompany(@Param("id_company") int id_company, @Param("n_giorni") int n_giorni);
-	
-	@Query(value="Select count(*)\n"
-			+ "from alert\n"
-			+ "where tipo='OK' and categoria=1 and id_client=3 and date_and_time_alert>=any (\n"
-			+ "	select max(date_and_time_alert)\n"
-			+ "    from alert\n"
-			+ "    where categoria=1 and id_client=3\n"
-			+ ")", nativeQuery=true)
-	int countOkClient();
-	
-	@Query(value="", nativeQuery=true)
-	int countOkCompany();*/
+	@Query(value="SELECT datediff(now(),max(date_and_time_mail)) "
+			+ "	FROM alert "
+			+ "	WHERE id_client = :id_client",nativeQuery=true)
+	public Integer getDaysFromLastMail(@Param("id_client") int id_client);
 }

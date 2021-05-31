@@ -1,6 +1,7 @@
 package itcube.consulting.monitoraggioClient.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -29,6 +30,8 @@ public class ElencoCompanies {
 	private String email;
 	private String email_alert;
 	private String chiave_di_registrazione;
+	private Long intervallo_mail;
+	private LocalDateTime last_mail_date_and_time;
 
 	public ElencoCompanies() {
 	}
@@ -102,6 +105,22 @@ public class ElencoCompanies {
 		return "ElencoCompanies [id=" + id + ", elencoLicenze=" + elencoLicenze + ", elencoClients=" + elencoClients
 				+ ", ragione_sociale=" + ragione_sociale + ", password=" + password + ", email=" + email
 				+ ", email_alert=" + email_alert + "]";
+	}
+
+	public Long getIntervallo_mail() {
+		return intervallo_mail;
+	}
+
+	public void setIntervallo_mail(Long intervallo_mail) {
+		this.intervallo_mail = intervallo_mail;
+	}
+
+	public LocalDateTime getLast_mail_date_and_time() {
+		return last_mail_date_and_time;
+	}
+
+	public void setLast_mail_date_and_time(LocalDateTime last_mail_date_and_time) {
+		this.last_mail_date_and_time = last_mail_date_and_time;
 	}
 	
 	

@@ -3,6 +3,8 @@ package itcube.consulting.monitoraggioClient.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -20,8 +22,8 @@ public class ElencoLicenze {
 	private int id;
 
 	@ManyToMany(mappedBy = "elencoLicenze", fetch = FetchType.LAZY)
-	private List<ElencoClients> elencoClients;
-	
+	private Set<ElencoClients> elencoClients;
+
 	/*
 	@OneToMany(mappedBy = "elencoLicenze")
 	private List<ElencoClients> elencoClients; */
@@ -42,12 +44,12 @@ public class ElencoLicenze {
 	public ElencoLicenze() {
 
 	}
-
-	public List<ElencoClients> getElencoClients() {
+	
+	public Set<ElencoClients> getElencoClients() {
 		return elencoClients;
 	}
 
-	public void setElencoClients(List<ElencoClients> elencoClients) {
+	public void setElencoClients(Set<ElencoClients> elencoClients) {
 		this.elencoClients = elencoClients;
 	}
 

@@ -1,5 +1,5 @@
 import { defaultDaysAlert, defaultSettimaneAlert, defaultSlot, defaultUpperBound } from "./Constants.js";
-const { url_login, url_get_nomi_sedi, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio, url_get_eventi, url_get_eventi_overview, url_lista_sedi, url_lista_gruppi, url_deep_client, url_shallow_clients, url_modifica_sede, url_get_drives, url_get_n_sediFake, url_get_n_sedi, url_inserimento_sede, url_cancellazione_sede, url_get_latest_alert, url_compra_licenza, url_get_client_overview, url_get_client_overview_drives, url_get_client_overview_services, url_get_client_overview_events, url_get_company_overview, url_get_client_history, url_get_company_history, url_assign_license, url_modifica_monitoraggio_alert, url_get_monitoraggio_alert, url_update_monitoraggio_alert, url_get_last_date, url_get_all_services_of_company, url_get_all_nomi_alert_configurazione, url_update_monitora_all_services, url_update_monitora_all_alerts } = require('./REST');
+const { url_login, url_get_nomi_sedi, url_lista_sediFake, url_lista_gruppiFake, url_signup, url_deep_clientFake, url_loginFake, url_edit_company_dataFake, url_edit_company_data, url_shallow_licenze, url_get_servizi_monitoratiFake, url_get_servizi_allFake, url_get_servizi_overviewFake, url_get_eventi_overviewFake, url_get_eventiFake, url_get_servizi_overview, url_shallow_licenzeFake, url_get_servizi_allFake2, url_get_servizi_monitoratiFake2, url_get_servizi_all, url_get_servizi_monitorati, url_modifica_monitoraggio_servizio, url_get_eventi, url_get_eventi_overview, url_lista_sedi, url_lista_gruppi, url_deep_client, url_shallow_clients, url_modifica_sede, url_get_drives, url_get_n_sediFake, url_get_n_sedi, url_inserimento_sede, url_cancellazione_sede, url_get_latest_alert, url_compra_licenza, url_get_client_overview, url_get_client_overview_drives, url_get_client_overview_services, url_get_client_overview_events, url_get_company_overview, url_get_client_history, url_get_company_history, url_assign_license, url_modifica_monitoraggio_alert, url_get_monitoraggio_alert, url_update_monitoraggio_alert, url_get_last_date, url_get_all_services_of_company, url_get_all_nomi_alert_configurazione, url_update_monitora_all_services, url_update_monitora_all_alerts, url_unsubscribe_alert, url_change_mail_interval, url_get_mail_interval, url_richiedi_password, url_cambio_password, url_is_token_valid, url_get_last_mail_date_and_time } = require('./REST');
 const axios = require('axios');
 var md5 = require('md5');
 
@@ -325,5 +325,52 @@ export const _updateMonitoraAllAlerts = (id_company,token,tipologia,licenza,sede
     sede: sede,
     nome_operazione: nome_operazione,
     monitora: monitora
+  })
+}
+
+export const _unsubscribeAlert = (token,tipologia_alert,id_client) => {
+  return axios.get(url_unsubscribe_alert + "?token=" + token + "&tipologia_alert=" + tipologia_alert + "&id_client=" + id_client)
+}
+
+export const _changeMailInterval = (token,fixedRate, id_company, stopTimer) => {
+  return axios.post(url_change_mail_interval, {
+    id_company: String(id_company),
+    token: token,
+    fixedRate: fixedRate,
+    stopTimer: stopTimer
+  })
+}
+
+export const _getMailInterval = (token, id_company) => {
+  return axios.post(url_get_mail_interval, {
+    id_company: String(id_company),
+    token: token
+  })
+}
+
+export const _richiediPassword = (email) => {
+  return axios.post(url_richiedi_password, {
+    email: email
+  })
+}
+
+export const _cambioPassword = (token, id_company, password) => {
+  return axios.post(url_cambio_password, {
+    token: token,
+    password: md5(password),
+    id_company: String(id_company)
+  })
+}
+
+export const _isTokenValid = (token) => {
+  return axios.post(url_is_token_valid, {
+    token: token
+  })
+}
+
+export const _getLastMailDateAndTime = (token, id_company) => {
+  return axios.post(url_get_last_mail_date_and_time, {
+    token: token,
+    id_company: String(id_company)
   })
 }

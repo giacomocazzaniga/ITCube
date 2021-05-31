@@ -56,9 +56,14 @@ public class LicenzeDeep {
 		this.classe = licenza.getTipologieLicenze().getClasse();
 		this.nome_tipologia = licenza.getTipologieLicenze().getNome_tipologia();
 		this.listClients = new ArrayList<>();
-		for (int i = 0; i < licenza.getElencoClients().size(); i++) {
-			this.listClients.add(new ClientIdNome(licenza.getElencoClients().get(i).getNome(),licenza.getElencoClients().get(i).getId()));
-		}
+		
+		licenza.getElencoClients().forEach( client -> {
+			this.listClients.add(new ClientIdNome(client.getNome(), client.getId()));
+		});
+		
+//		for (int i = 0; i < licenza.getElencoClients().size(); i++) {
+//			this.listClients.add(new ClientIdNome(licenza.getElencoClients().get(i).getNome(),licenza.getElencoClients().get(i).getId()));
+//		}
 	}
 
 	public class ClientIdNome {

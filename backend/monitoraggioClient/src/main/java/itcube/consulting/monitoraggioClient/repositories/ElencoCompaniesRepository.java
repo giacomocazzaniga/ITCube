@@ -1,7 +1,11 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +33,62 @@ public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanie
 	
 	@Query(value="SELECT id FROM agentwindows.sedi WHERE nome = 'Senza sede' AND id_company = :id_company",nativeQuery=true)
 	Integer getSenzaSedeOfCompany(@Param("id_company") int id_company);
+	
+	@Query(value="SELECT id FROM agentwindows.elenco_clients WHERE id_company = :id_company",nativeQuery=true)
+	List<Integer> getIdsClientOfCompany(@Param("id_company") int id_company);
+
+	@Query(value="SELECT DISTINCT c.id"
+			+ "	FROM conf_windows_services s INNER JOIN elenco_clients c ON s.id_client = c.id"
+			+ "	WHERE c.id_company = :id_company AND s.stato = 1 ",nativeQuery=true)
+	List<Integer> getIdsOfClientsWithServicesErrors(@Param("id_company") int id_company);
+	
+	@Query(value="SELECT DISTINCT c.id "
+			+ "	FROM visualizzazione_eventi e INNER JOIN elenco_clients c ON e.id_client = c.id "
+			+ "	WHERE c.id_company = :id_company AND e.level = 1 ",nativeQuery=true)
+	List<Integer> getIdsOfClientsWithEventsErrors(@Param("id_company") int id_company);
+	
+	@Query(value="SELECT DISTINCT c.id "
+			+ "	FROM conf_total_free_disc_space d INNER JOIN elenco_clients c ON d.id_client = c.id "
+			+ "	WHERE c.id_company = :id_company AND d.perc_free_disc_space <= 10 ",nativeQuery=true)
+	List<Integer> getIdsOfClientsWithDrivesErrors(@Param("id_company") int id_company);
+	
+	@Query(value="SELECT DISTINCT c.id"
+			+ "	FROM conf_windows_services s INNER JOIN elenco_clients c ON s.id_client = c.id"
+			+ "	WHERE c.id_company = :id_company AND (s.stato=2 OR s.stato=3 OR s.stato=5 OR s.stato=6) ",nativeQuery=true)
+	List<Integer> getIdsOfClientsWithServicesWarning(@Param("id_company") int id_company);
+	
+	@Query(value="SELECT DISTINCT c.id "
+			+ "	FROM visualizzazione_eventi e INNER JOIN elenco_clients c ON e.id_client = c.id "
+			+ "	WHERE c.id_company = :id_company AND e.level = 2 ",nativeQuery=true)
+	List<Integer> getIdsOfClientsWithEventsWarning(@Param("id_company") int id_company);
+	
+	@Query(value="SELECT DISTINCT c.id "
+			+ "	FROM conf_total_free_disc_space d INNER JOIN elenco_clients c ON d.id_client = c.id "
+			+ "	WHERE c.id_company = :id_company AND d.perc_free_disc_space >= 10 AND d.perc_free_disc_space <= 20",nativeQuery=true)
+	List<Integer> getIdsOfClientsWithDrivesWarning(@Param("id_company") int id_company);
+	
+	@Query(value="UPDATE elenco_companies SET intervallo_mail = :interval WHERE id = :id_company",nativeQuery=true)
+	@Modifying
+	@Transactional
+	void updateMailInterval(@Param("id_company") int id_company,@Param("interval") Long interval);
+	
+	@Query(value="SELECT intervallo_mail FROM elenco_companies WHERE id = :id_company", nativeQuery = true)
+	Long getMailInterval(@Param("id_company") int id_company);
+	
+	@Query(value="UPDATE elenco_companies SET password= :password WHERE id = :id_company",nativeQuery=true)
+	@Modifying
+	@Transactional
+	void updatePassword(@Param("id_company") int id_company,@Param("password") String password);
+	
+	@Query(value="SELECT * FROM elenco_companies", nativeQuery = true)
+	List<ElencoCompanies> getAllCompanies();
+	
+	@Query(value="UPDATE elenco_companies SET last_mail_date_and_time = :last_mail_date_and_time WHERE id = :id_company",nativeQuery=true)
+	@Modifying
+	@Transactional
+	void updateLastMailTimestamp(@Param("id_company") int id_company, @Param("last_mail_date_and_time") LocalDateTime last_mail_date_and_time);
+	
+	@Query(value="SELECT last_mail_date_and_time FROM elenco_companies WHERE id= :id_company", nativeQuery = true)
+	LocalDateTime getLastMailDateAndTime(@Param("id_company") int id_company);
 	
 }

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import AdminLTE, { Sidebar } from 'adminlte-2-react';
 import toast from 'react-hot-toast';
 import { login, placesList, categoriesList } from '../ActionCreator';
 import Dashboard from './Dashboard';
@@ -36,6 +37,9 @@ const mapStateToProps = state => ({
     logged: state.logged
   }
 );
+
+
+const { Item } = Sidebar;
 
 /**
  * sign in/sign up form
@@ -114,6 +118,8 @@ const LoginPage = (props) => {
                         listaSedi.push(sede.substring(0,sede.indexOf(",")));
                       })
                       props.LoginWithPlacesCategories(ragione_sociale, id_company, email, emailNotify, elencoClients, token, sedi, categories, n_sedi, chiaveRegistrazione, listaNomi, listaSedi);
+                      // window.location.href = id_company;
+                      document.getElementsByClassName("sidebar-menu")[0].getElementsByTagName("li")[0].getElementsByTagName("a")[0].click();
                     })
                   .catch(function (error) {
                     getErrorToast(String(error));
@@ -165,6 +171,9 @@ const LoginPage = (props) => {
               </div>
             </form>
             <button className="btn btn-primary" onClick={() => LoginController(state.emailLogin, state.pswLogin)}>Accedi</button>
+            <div className="overview-popup-list password-dimenticata">
+              <Item to="/richiediPassword" text="Password dimenticata" />             
+            </div>
           </div>
         </div>
       </div>

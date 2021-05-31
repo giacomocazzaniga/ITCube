@@ -1,5 +1,7 @@
 package itcube.consulting.monitoraggioClient.repositories;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -51,4 +53,10 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 	
 	@Query(value="Select id from elenco_clients where sede= :sede and id_company= :id_company", nativeQuery=true)
 	List<Integer> getClientsInSede(@Param("sede") int sede,@Param("id_company") int id_company );
+	
+	@Query(value="SELECT tipologia_client "
+			+ "FROM elenco_clients "
+			+ "WHERE id= :id_client", nativeQuery=true)
+	Integer getTipoFromIdClient(@Param("id_client") int id_client);
+
 }

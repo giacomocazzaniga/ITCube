@@ -57,6 +57,7 @@ import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzeDeep;
+import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
@@ -115,6 +116,9 @@ public class LicenzeController {
 	@Autowired
 	private TipologieClientRepository tipologieClientRepository;
 	
+	@Autowired
+	private AlertConfigurazioneRepository alertConfigurazioneRepository;
+	
 	@PostMapping(path="/getLicenzeShallow",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<GeneralResponse> getLicenzeShallow (@RequestBody Map<String,Object> body) {
@@ -128,6 +132,7 @@ public class LicenzeController {
 		{
 			id_company= (Integer) body.get("id_company");    //Integer.parseInt((String)(body.get("id_company")));
 			token=(String)body.get("token");
+			System.out.println(token);
 			validToken= Services.checkToken(id_company, token);
 			
 			if(validToken.isValid())
@@ -149,7 +154,7 @@ public class LicenzeController {
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
 			System.out.println(Services.getCurrentDate()+" /getLicenzeShallow FAILED ");
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch (Exception e)
 		{
@@ -296,7 +301,7 @@ public class LicenzeController {
 				licenza.setTipologieLicenze(tipo);
 				
 				elencoLicenzeRepository.save(licenza);
-				
+								
 				String newToken=Services.checkThreshold(id_company, token);
 				
 				response.setCodice(codice);
@@ -310,7 +315,7 @@ public class LicenzeController {
 			{
 				generalResponse.setMessage("Autenticazione fallita");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -321,4 +326,75 @@ public class LicenzeController {
 			return ResponseEntity.badRequest().body(generalResponse);
 		}
 	}
+	
+	@PostMapping(path="/assegnaLicenza",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> assegnaLicenza (@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse generalResponse=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		Integer id_client;
+		String codice;
+		String token;
+		
+		try
+		{
+			id_company=Integer.parseInt((String) body.get("id_company"));
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			codice= (String)(body.get("codice"));
+			id_client= Integer.parseInt((String)(body.get("id_client")));
+			
+			if(validToken.isValid())
+			{
+				
+				ElencoLicenze licenza = elencoLicenzeRepository.getLicenzaFromCodiceAndCompany(id_company,codice);
+				
+				elencoLicenzeRepository.assegnaLicenza(id_client, licenza.getId());
+				
+				switch(licenza.getTipologieLicenze().getId()) {
+				     case 1: 
+				    	 alertConfigurazioneRepository.insertAlertConfigurazione("WINDOWS_SERVICES",id_client,2);
+				    	 alertConfigurazioneRepository.insertAlertConfigurazione("WINDOWS_EVENTS",id_client,3);
+				    	 alertConfigurazioneRepository.insertAlertConfigurazione("DRIVES",id_client,1);
+				    	 break;
+//					case 2:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_BACKUP1",id_client);
+//						break;
+//					case 3:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_ANTIVIRUS1",id_client);
+//						break;
+//					case 4:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_RETE1",id_client);
+//						break;
+//					case 5:
+//						alertConfigurazioneRepository.insertAlertConfigurazione("OPERAZIONE_VULNERABILITA1",id_client);
+//						break;
+				}
+						
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				generalResponse.setMessage("Licenza assegnata con successo");
+				generalResponse.setMessageCode(0);
+				generalResponse.setToken(newToken);
+				
+				return ResponseEntity.ok(generalResponse);
+			}
+			else
+			{
+				generalResponse.setMessage("Autenticazione fallita");
+				generalResponse.setMessageCode(-2);
+				return ResponseEntity.ok(generalResponse);
+			}
+		}
+		catch (Exception e)
+		{
+			generalResponse.setMessage(e.getMessage());
+			generalResponse.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
 }

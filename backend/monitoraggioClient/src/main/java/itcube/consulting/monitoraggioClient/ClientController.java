@@ -4,13 +4,18 @@ import java.io.File;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -47,6 +52,8 @@ import com.google.gson.GsonBuilder;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import itcube.consulting.monitoraggioClient.entities.Alert;
+import itcube.consulting.monitoraggioClient.entities.AlertConfigurazione;
 import itcube.consulting.monitoraggioClient.entities.ConfTotalFreeDiscSpace;
 import itcube.consulting.monitoraggioClient.entities.ConfWindowsServices;
 import itcube.consulting.monitoraggioClient.entities.ElencoClients;
@@ -59,9 +66,11 @@ import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzeDeep;
+import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfTotalFreeDiscSpaceRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfWindowsServicesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ConfigRepository;
+import itcube.consulting.monitoraggioClient.repositories.ElencoAlertRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoClientsRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoCompaniesRepository;
 import itcube.consulting.monitoraggioClient.repositories.ElencoLicenzeRepository;
@@ -80,10 +89,14 @@ import itcube.consulting.monitoraggioClient.response.LicenzeDeepResponse;
 import itcube.consulting.monitoraggioClient.response.DeepClientResponse;
 import itcube.consulting.monitoraggioClient.services.Services;
 import itcube.consulting.monitoraggioClient.response.AgentResponse;
+import itcube.consulting.monitoraggioClient.response.ClientHistoryResponse;
+import itcube.consulting.monitoraggioClient.response.ClientHistoryResponseSub;
 import itcube.consulting.monitoraggioClient.response.ClientLicenseListResponse;
+import itcube.consulting.monitoraggioClient.response.ClientOverviewResponseSub;
 import itcube.consulting.monitoraggioClient.response.ConfTotalFreeDiscSpaceResponse;
 import net.minidev.json.JSONArray;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.tomcat.jni.Local;
 
 @RestController
 @RequestMapping(path="/be/main")
@@ -121,6 +134,12 @@ public class ClientController {
 	
 	@Autowired
 	private SediRepository sediRepository;
+	
+	@Autowired
+	private ElencoAlertRepository elencoAlertRepository;
+	
+	@Autowired
+	private AlertConfigurazioneRepository alertConfigurazioneRepository;
 	
 	@PostMapping(path="/shallowClients",produces=MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
@@ -210,7 +229,7 @@ public class ClientController {
 				//deepClientResponse.setServizi_esecuzione(confWindowsServicesRepository.countEsecuzione(true));
 				
 				String newToken=Services.checkThreshold(id_company, token);
-				
+
 				deepClientResponse.setMessage("Operazione effettuata con successo");
 				deepClientResponse.setMessageCode(0);
 				deepClientResponse.setToken(newToken);
@@ -219,7 +238,7 @@ public class ClientController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch (Exception e)
 		{
@@ -279,7 +298,7 @@ public class ClientController {
 			{
 				generalResponse.setMessage("Autenticazione fallita ");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -338,7 +357,7 @@ public class ClientController {
 			{
 				generalResponse.setMessage("Autenticazione fallita ");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -357,7 +376,7 @@ public class ClientController {
 	{
 		GeneralResponse generalResponse=new GeneralResponse();
 		ElencoLicenze licenza;
-		List<ElencoLicenze> el=new ArrayList();
+		Set<ElencoLicenze> el=new HashSet<ElencoLicenze>();
 		try
 		{
 			//token agent
@@ -468,7 +487,7 @@ public class ClientController {
 			{
 				generalResponse.setMessage("Autenticazione fallita ");
 				generalResponse.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(generalResponse);
+				return ResponseEntity.ok(generalResponse);
 			}
 		}
 		catch (Exception e)
@@ -526,15 +545,24 @@ public class ClientController {
 						company=elencoCompaniesRepository.getInfoCompany(id_company);
 						newClient.setElencoCompanies(company);
 						//licenza in uso
-						List<ElencoLicenze> elencoLicenze=new ArrayList<ElencoLicenze>();
+						Set<ElencoLicenze> elencoLicenze=new HashSet<ElencoLicenze>();
 						
 						ElencoLicenze licenza = elencoLicenzeRepository.getLicenze(company).get(0);
 						elencoLicenze.add(licenza);
 						newClient.setElencoLicenze(elencoLicenze);
-						System.out.println(newClient.getElencoLicenze().get(0).getId());
+						
+						//SetAlertMonitoraggio('WINDOWS_SERVICES',1)
+						//SetAlertMonitoraggio('WINDOWS_EVENTS',1) 
+						//SetAlertMonitoraggio('DRIVES',1)
+						
+//						System.out.println(newClient.getElencoLicenze().get(0).getId());
 						//sede
 						
-						elencoClientsRepository.save(newClient);
+						ElencoClients client = elencoClientsRepository.save(newClient);
+						
+						alertConfigurazioneRepository.save(new AlertConfigurazione("WINDOWS_SERVICES",client,true,2));
+						alertConfigurazioneRepository.save(new AlertConfigurazione("WINDOWS_EVENTS",client,true,3));
+						alertConfigurazioneRepository.save(new AlertConfigurazione("DRIVES",client,true,1));
 						
 						response.setMyID(elencoClientsRepository.getIdFromInfo(nome, mac_address));
 						response.setMessage("OK");
@@ -657,7 +685,7 @@ public class ClientController {
 			} else {
 				response.setMessage("Autenticazione fallita ");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 			
 			response.setToken(validToken.getToken());
@@ -672,4 +700,145 @@ public class ClientController {
 			return ResponseEntity.badRequest().body(response);
 		}
 	}
+	
+	
+	@PostMapping(path="/getClientHistory",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<ClientHistoryResponse> getClientHistory(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_client;
+		Integer id_company;
+		String token;
+		ClientHistoryResponse response = new ClientHistoryResponse();
+		LocalDate date;
+		List<Alert> alerts = new ArrayList<Alert>();
+		ClientHistoryResponseSub responseItem;
+		List<ClientHistoryResponseSub> responseList = new ArrayList<ClientHistoryResponseSub>();
+		int days;
+		
+		try {
+			id_client = Integer.parseInt((String) body.get("id_client"));
+			token = (String)body.get("token");
+			id_company=elencoClientsRepository.getIdCompany(id_client);
+			validToken = Services.checkToken(id_company, token);
+			days = Integer.parseInt((String) body.get("slot"));
+			
+			if(validToken.isValid()) {
+				
+				LocalDate today = LocalDate.now();
+			
+				alerts = elencoAlertRepository.getAlertOfDay(id_client, 1);
+				
+				for(int i=9; i>=0; i--) {
+					date = today.minusDays(i);
+					int n_errori= 0; 
+					int n_warnings= 0;
+					for(Alert alert: alerts) {
+						if(alert.getDate_and_time_alert().toLocalDate().equals(date)) {
+							if(alert.getTipo().equals("ERROR")) 
+								n_errori++;
+							else	
+								n_warnings++;
+						}
+					}
+						
+					responseItem = new ClientHistoryResponseSub(date, n_errori, n_warnings);
+					responseList.add(responseItem);
+				}
+				
+				response.setHistory(responseList);
+				response.setLast_update(LocalDateTime.now().withNano(0).toString().replace("T", " "));
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.ok(response);
+			}
+			
+			response.setToken(validToken.getToken());
+			response.setMessage("OK");
+			response.setMessageCode(0);
+			return ResponseEntity.ok(response);
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/getCompanyHistory",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<ClientHistoryResponse> getCompanyHistory(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		ClientHistoryResponse response = new ClientHistoryResponse();
+		LocalDate date;
+		List<Alert> alerts = new ArrayList<Alert>();
+		ClientHistoryResponseSub responseItem;
+		List<ClientHistoryResponseSub> responseList = new ArrayList<ClientHistoryResponseSub>();
+		int days;
+		
+		try {
+			token = (String)body.get("token");
+			id_company=Integer.parseInt( (String) body.get("id_company"));
+			validToken = Services.checkToken(id_company, token);
+			days = Integer.parseInt((String) body.get("slot"));
+			
+			if(validToken.isValid()) {
+				
+				LocalDate today = LocalDate.now();
+			
+				alerts = elencoAlertRepository.getAlertOfCompanyOfDay(id_company, 1);
+				
+				for(int i=9; i>=0; i--) {
+					date = today.minusDays(i);
+					int n_client_errori= 0; 
+					int n_client_warnings= 0;
+					List<Integer> list_id_client_warning = new ArrayList<Integer>();
+					List<Integer> list_id_client_error = new ArrayList<Integer>();
+					for(Alert alert: alerts) {
+						if(alert.getDate_and_time_alert().toLocalDate().equals(date)) {
+							if(alert.getTipo().equals("ERROR") && !list_id_client_error.contains(alert.getId_client())) {
+								n_client_errori++;
+								list_id_client_error.add(alert.getId_client());
+							}
+								
+							if(alert.getTipo().equals("WARNING") && !list_id_client_warning.contains(alert.getId_client())) {
+								n_client_warnings++;
+								list_id_client_warning.add(alert.getId_client());
+							}
+						}
+					}
+						
+					responseItem = new ClientHistoryResponseSub(date, n_client_errori, n_client_warnings);
+					responseList.add(responseItem);
+				}
+			
+				response.setHistory(responseList);
+				response.setLast_update(LocalDateTime.now().withNano(0).toString().replace("T", " "));
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.ok(response);
+			}
+			
+			response.setToken(validToken.getToken());
+			response.setMessage("OK");
+			response.setMessageCode(0);
+			return ResponseEntity.ok(response);
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
 }

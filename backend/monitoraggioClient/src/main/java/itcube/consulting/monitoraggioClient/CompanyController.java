@@ -175,7 +175,7 @@ public class CompanyController {
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
 			System.out.println(Services.getCurrentDate()+" /editCompanyData SUCCESS "+ragione_sociale);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch (Exception e)
 		{
@@ -217,7 +217,7 @@ public class CompanyController {
 			} else {
 				response.setMessage("Autenticazione fallita");
 				response.setMessageCode(-2);
-				return ResponseEntity.badRequest().body(response);
+				return ResponseEntity.ok(response);
 			}
 
 		} catch (Exception e) {
@@ -275,7 +275,7 @@ public class CompanyController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -319,7 +319,7 @@ public class CompanyController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -423,7 +423,7 @@ public class CompanyController {
 			}
 			generalResponse.setMessage("Autenticazione fallita");
 			generalResponse.setMessageCode(-2);
-			return ResponseEntity.badRequest().body(generalResponse);
+			return ResponseEntity.ok(generalResponse);
 		}
 		catch(Exception e)
 		{
@@ -431,6 +431,52 @@ public class CompanyController {
 			generalResponse.setMessageCode(-1);
 			System.out.println(e.getMessage());
 			return ResponseEntity.badRequest().body(generalResponse);
+		}
+	}
+	
+	@PostMapping(path="/changePassword",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> changePassword(@RequestBody Map<String,Object> body)
+	{
+		GeneralResponse response=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		String nuova_password;
+		
+		try
+		{
+			id_company= Integer.parseInt( (String) body.get("id_company") );
+			token = (String) body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			nuova_password= (String) body.get("password");
+			
+			if(Services.getAuthenticationRecuperaPassword().containsKey(token) ) {
+				
+				//QUERY
+				elencoCompaniesRepository.updatePassword(id_company, nuova_password);
+				
+				Services.removeTokenFromAuthenticationRecuperaPassword(token);
+				
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				response.setToken(validToken.getToken());
+				return ResponseEntity.ok(response);
+			} else {
+				response.setMessage("Token già utilizzato o non esistente");
+				response.setMessageCode(-2);
+				response.setToken(validToken.getToken());
+				return ResponseEntity.ok(response);
+			}
+
+		}
+
+		catch(Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
 		}
 	}
 }

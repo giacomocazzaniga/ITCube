@@ -8,11 +8,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -41,8 +43,15 @@ public final class Services {
     private HttpServletRequest request;
 
 	private static HashMap<Integer, HashMap<String, Date>> AuthenticationManager= new HashMap<Integer,HashMap<String, Date>>();
-	private static int milliSecLenghtToken=10000000;
+	private static Map<String,Integer> AuthenticationMail = new HashMap<>();
+	private static Map<String,Integer> AuthenticationRecuperaPassword = new HashMap<String, Integer>();
+	private static int milliSecLenghtToken=900000;
 	private static double threshold=0.1*milliSecLenghtToken;
+	public static String address = "http://127.0.0.1:3000/";
+
+	public static String getAddress() {
+		return address;
+	}
 
 	//Metodo token
 	public static String getJWTToken(String ragione_sociale) {
@@ -83,9 +92,9 @@ public final class Services {
 
 	public static String tokenCompany(Integer id_company)
 	{
-		if(AuthenticationManager.containsKey(id_company))
+		if(AuthenticationManager.containsKey(id_company) && AuthenticationManager.get(id_company).keySet().toArray().length > 0)
 		{
-			return (String) AuthenticationManager.get(id_company).keySet().toArray()[0];
+			return (String) AuthenticationManager.get(id_company).keySet().toArray()[0];			
 		}
 		else
 		{
@@ -116,15 +125,16 @@ public final class Services {
 	
 	public static String checkThreshold(int id_company, String token)
 	{
-		if((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(id_company).get(token)), TimeUnit.MILLISECONDS))<threshold)
-		{
-			System.out.println((getDateDiff(new Date(System.currentTimeMillis()),((Date)AuthenticationManager.get(id_company).get(token)), TimeUnit.MILLISECONDS)));
-			System.out.println(threshold);
-			String newToken=getJWTToken(token.substring(0,10));
-			AuthenticationManager.get(id_company).remove(token);
-			AuthenticationManager.get(id_company).put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
-			return newToken;
-		}
+		if(((AuthenticationManager.get(id_company).get(token).getTime())-new Date(System.currentTimeMillis()).getTime())<threshold)
+			{
+				String newToken=getJWTToken(token.substring(0,10));
+				AuthenticationManager.remove(id_company);
+				HashMap<String, Date> tmp = new HashMap<String, Date>();
+				tmp.put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
+				AuthenticationManager.put(id_company, tmp);
+//				AuthenticationManager.get(id_company).put(newToken,new Date(System.currentTimeMillis() + milliSecLenghtToken));
+				return new String(newToken);
+			}
 		return null;
 	}
 	
@@ -135,14 +145,10 @@ public final class Services {
 		
 		if(Services.isValid(id_company, token))
 		{
-			
-			String newToken=Services.checkThreshold(id_company, token);
-			validToken.setToken(newToken);
 			validToken.setValid(true);
 		}
 		else
 		{
-			validToken.setToken(null);
 			validToken.setValid(false);
 		}
 		return validToken;
@@ -189,6 +195,7 @@ public final class Services {
 	} 
 	
 	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+		System.out.println(date2);
 	    long diffInMillies = date2.getTime() - date1.getTime();
 	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
 	}
@@ -220,48 +227,6 @@ public final class Services {
 		return current;
 	}
 	
-	public int sendEmail (String oggetto, String corpo, String destinatario) {
-//		SMTP = smtp.gmail.com 
-//		Port = 587
-		
-		final String username = "itsentinelalert@gmail.com";
-        final String password = "itcubealert";
-
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
-        
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-
-        try {
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("itsentinelalert@gmail.com"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(destinatario)
-            );
-            message.setSubject(oggetto);
-            message.setText(corpo);
-
-            Transport.send(message);
-
-            System.out.println("Done");
-            return 0;
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return -1;
-        }
-	}
-	
 	public Map<String, String> getInfoFromHeader () {
 		String token = request.getHeader("token");
 	 	String id_client = request.getHeader("id_client");
@@ -279,5 +244,45 @@ public final class Services {
 //        }
 //
         return map;
+	}
+	
+	
+	
+	public static String addTokenToAuthenticationMail (String ragione_sociale, int id_client) {
+		
+		String token = Services.getJWTToken(ragione_sociale);
+		
+		AuthenticationMail.put(token, id_client);
+		
+		return token;
+		
+	}
+	
+	public static void removeTokenToAuthenticationMail (String token) {
+		AuthenticationMail.remove(token);
+		
+	}
+	
+	public static Map<String, Integer> getAuthenticationMail() {
+		return AuthenticationMail;
+	}
+	
+	public static String addTokenToAuthenticationRecuperaPassword (String ragione_sociale, int id_company) {
+		
+		String token = Services.getJWTToken(ragione_sociale);
+		
+		AuthenticationMail.put(token, id_company);
+		
+		return token;
+		
+	}
+	
+	public static void removeTokenFromAuthenticationRecuperaPassword (String token) {
+		AuthenticationMail.remove(token);
+		
+	}
+	
+	public static Map<String, Integer> getAuthenticationRecuperaPassword() {
+		return AuthenticationMail;
 	}
 }
