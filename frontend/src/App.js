@@ -65,7 +65,8 @@ const App = (props) => {
   }
 
   useEffect(() => {
-    document.getElementsByClassName("sidebar-menu")[0].getElementsByTagName("li")[0].getElementsByTagName("a")[0].click();
+    if(window.location.pathname != "/changePassword")
+      document.getElementsByClassName("sidebar-menu")[0].getElementsByTagName("li")[0].getElementsByTagName("a")[0].click();
   },[])
 
   const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
