@@ -563,7 +563,7 @@
 		                    			<#if info[key]??>
 		                    				<#assign clientData = info[key]>
 		                    				<#list clientData?keys as clientKey>
-		                    					<#if clientKey == "warning_drives">
+		                    					<#if clientKey == "errori_drives">
 		                    						${clientData[clientKey]}
 		                    					</#if>
 		                    				</#list>
@@ -577,7 +577,7 @@
 		                    			<#if info[key]??>
 		                    				<#assign clientData = info[key]>
 		                    				<#list clientData?keys as clientKey>
-		                    					<#if clientKey == "errori_servizi">
+		                    					<#if clientKey == "warning_drives">
 		                    						${clientData[clientKey]}
 		                    					</#if>
 		                    				</#list>

@@ -491,4 +491,50 @@ public class AlertController {
 			return ResponseEntity.badRequest().body(null);
 		}
 	}
+	
+	@PostMapping(path="/changeMonitoraClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> changeMonitoraClient(@RequestBody Map<String,Object> body) {
+		GeneralResponse response=new GeneralResponse();
+		ValidToken validToken=new ValidToken();
+		Integer id_client;
+		Integer id_company;
+		String token;
+		boolean monitora;
+		
+		try
+		{
+
+			id_client = Integer.parseInt( (String) body.get("id_client"));
+			id_company = elencoClientsRepository.getIdCompany(id_client);
+			token=(String)body.get("token");
+			validToken= Services.checkToken(id_company, token);
+			monitora=  (boolean) body.get("monitora");
+
+			if(validToken.isValid()) {	
+				
+				alertConfigurazioneRepository.changeMonitoraAlertClient(monitora, id_client);
+				
+				String newToken=Services.checkThreshold(id_company, token);
+				
+				response.setMessage("Operazione effettuata con successo");
+				response.setMessageCode(0);
+				response.setToken(newToken);
+				
+				return ResponseEntity.ok(response); 
+			}
+			
+			response.setMessage("Autenticazione fallita");
+			response.setMessageCode(-2);
+			return ResponseEntity.ok(response);
+		
+		}
+		catch(Exception e)
+		{
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
 }

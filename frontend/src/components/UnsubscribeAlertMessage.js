@@ -56,7 +56,7 @@ const UnsubscribeAlertMessage = (props) => {
                                         <table style={{"margin": "0 auto;"}} role="presentation" border="0" cellpadding="0" cellspacing="0">
                                         <tbody>
                                             <tr>
-                                            <td> <center><a href="http://217.160.240.146:3000/" target="_blank" style={{"color":"white"}}>Vai alla dashboard</a></center> </td>
+                                            <td> <center><a href="http://217.160.240.146/" target="_blank" style={{"color":"white"}}>Vai alla dashboard</a></center> </td>
                                             </tr>
                                         </tbody>
                                         </table>

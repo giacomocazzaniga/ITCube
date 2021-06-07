@@ -1,8 +1,29 @@
 import React, { useEffect, useState } from "react"
+import { propTypes } from "react-bootstrap/esm/Image";
+import { connect } from "react-redux";
+import { totalReset } from "../ActionCreator";
 import { _cambioPassword, _isTokenValid } from "../callableRESTs";
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from "../toastManager";
 
-const ChangePassword = () => {
+/**
+ * connect the actions to the component
+ * @param {*} dispatch 
+ */
+ const mapDispatchToProps = dispatch => ({
+    TotalReset: () => {
+        dispatch(totalReset())
+    }
+ });
+
+/**
+ * connect the redux state to the component
+ * @param {*} state 
+ */
+const mapStateToProps = state => ({
+    logged: state.logged
+});
+
+const ChangePassword = (props) => {
     
     let parameters = window.location.search;
     let token = parameters.substring(parameters.indexOf("token=")+"token=".length, parameters.indexOf("&id_company"));
@@ -24,6 +45,7 @@ const ChangePassword = () => {
     }
 
     useEffect(() => {
+        props.TotalReset();
         _isTokenValid(token)
         .then( response => {
             if(response.data.messageCode == 0) {
@@ -78,4 +100,7 @@ const ChangePassword = () => {
     )
 }
 
-export default ChangePassword;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(ChangePassword);

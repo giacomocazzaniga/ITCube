@@ -47,6 +47,7 @@ export const url_richiedi_password = buildurl + "richiediPassword";
 export const url_cambio_password = buildurl + "changePassword";
 export const url_is_token_valid = buildurl + "isTokenValid";
 export const url_get_last_mail_date_and_time = buildurl + "getLastMailDate";
+export const url_change_monitora_client = buildurl + "changeMonitoraClient";
 
 
 

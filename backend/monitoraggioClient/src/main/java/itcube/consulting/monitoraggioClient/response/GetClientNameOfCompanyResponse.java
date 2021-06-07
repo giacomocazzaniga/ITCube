@@ -4,7 +4,16 @@ import java.util.List;
 
 public class GetClientNameOfCompanyResponse extends GeneralResponse{
 
-	List<String> nomi_servizi;
+	private List<String> nomi_servizi;
+	private int servizi_length;
+
+	public int getServizi_length() {
+		return servizi_length;
+	}
+
+	public void setServizi_length(int servizi_length) {
+		this.servizi_length = servizi_length;
+	}
 
 	public List<String> getNomi_servizi() {
 		return nomi_servizi;

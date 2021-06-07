@@ -1315,9 +1315,14 @@ public class ServicesAndEventsController {
 		int id_company;
 		String token;
 		List<String> allServices = new ArrayList<String>();
+		List<String> allServicesOfPage = new ArrayList<String>();
+		int page;
+		int defaultUpperBound;
 		
 		try
 		{
+			page = Integer.parseInt( (String) body.get("page"));
+			defaultUpperBound = Integer.parseInt( (String) body.get("defaultUpperBound"));
 			id_company = Integer.parseInt( (String) body.get("id_company"));
 			token=(String)body.get("token");
 			validToken= Services.checkToken(id_company, token);
@@ -1326,10 +1331,14 @@ public class ServicesAndEventsController {
 				
 				allServices= confWindowsServicesRepository.getAllServicesOfCompany(id_company);
 				
+				for(int i=page*defaultUpperBound; i<allServices.size() && i<page*defaultUpperBound+defaultUpperBound; i++) {
+					allServicesOfPage.add(allServices.get(i));
+				}
 				
 				String newToken=Services.checkThreshold(id_company, token);
 				
-				response.setNomi_servizi(allServices);
+				response.setNomi_servizi(allServicesOfPage);
+				response.setServizi_length(allServices.size());
 				response.setMessage("Operazione effettuata con successo");
 				response.setMessageCode(0);
 				response.setToken(newToken);

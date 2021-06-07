@@ -355,7 +355,7 @@
                                 <table style="margin: 0 auto;" role="presentation" border="0" cellpadding="0" cellspacing="0">
                                   <tbody>
                                     <tr>
-                                      <td > <a href="http://217.160.240.146:3000/" target="_blank">Vai alla dashboard</a> </td>
+                                      <td > <a href="${info.server_address}" target="_blank">Vai alla dashboard</a> </td>
                                     </tr>
                                   </tbody>
                                 </table>

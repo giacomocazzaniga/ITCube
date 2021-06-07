@@ -51,4 +51,8 @@ public interface AlertConfigurazioneRepository extends CrudRepository<AlertConfi
 			+ "AND a.operazione = :nome_operazione", nativeQuery=true)
 	void updateFilteredAlerts(@Param("monitora") boolean monitora, @Param("nome_operazione") String nome_operazione,@Param("tipologia_client") Integer tipologia_client, @Param("tipo_licenza") Integer tipo_licenza, @Param("sede") Integer sede, @Param("id_company") Integer id_company);
 	
+	@Query(value="UPDATE alert_configurazione SET monitora= :monitora WHERE id_client= :id_client", nativeQuery=true)
+	@Modifying
+	@Transactional
+	void changeMonitoraAlertClient(@Param("monitora") boolean monitora, @Param("id_client") int id_client);
 }

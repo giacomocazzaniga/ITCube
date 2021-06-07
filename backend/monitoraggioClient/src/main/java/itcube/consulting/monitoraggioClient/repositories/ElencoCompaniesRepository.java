@@ -13,8 +13,8 @@ import org.springframework.data.repository.query.Param;
 import itcube.consulting.monitoraggioClient.entities.ElencoCompanies;
 
 public interface ElencoCompaniesRepository extends CrudRepository<ElencoCompanies,Integer>{
-	@Query(value="Select email, ragione_sociale from elenco_companies where email= :email or ragione_sociale= :ragione_sociale", nativeQuery=true)
-	List<String> getCompanies(@Param("email") String email, @Param("ragione_sociale") String ragione_sociale);
+	@Query(value="Select email, ragione_sociale from elenco_companies where email= :email", nativeQuery=true)
+	List<String> getCompanies(@Param("email") String email);
 	
 	@Query(value="select count(*) from elenco_companies where elenco_companies.email= :email and elenco_companies.password= :password", nativeQuery=true)
 	int Login(@Param("email") String email, @Param("password") String password);

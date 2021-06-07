@@ -150,7 +150,7 @@ public class LoginController {
 			System.out.println(email_alert);
 			System.out.println(ragione_sociale);
 			
-			elencoCompanies=elencoCompaniesRepository.getCompanies(email, ragione_sociale);
+			elencoCompanies=elencoCompaniesRepository.getCompanies(email);
 	
 			if(elencoCompanies.isEmpty())
 			{
@@ -226,6 +226,7 @@ public class LoginController {
 			password=body.get("password").toString();
 			
 			numCompany=elencoCompaniesRepository.Login(email, password);
+			System.out.println(numCompany);
 			
 			if(numCompany<1)
 			{

@@ -47,7 +47,7 @@ public final class Services {
 	private static Map<String,Integer> AuthenticationRecuperaPassword = new HashMap<String, Integer>();
 	private static int milliSecLenghtToken=900000;
 	private static double threshold=0.1*milliSecLenghtToken;
-	public static String address = "http://127.0.0.1:3000/";
+	public static String address = "http://217.160.240.146:3000/";
 
 	public static String getAddress() {
 		return address;

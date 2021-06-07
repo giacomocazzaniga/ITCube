@@ -16,6 +16,7 @@ import { updateClientHistory, resetClientTemplate, serviziOverview, updateClient
 import { defaultUpdateInterval } from "../Constants";
 import { Container } from "react-bootstrap";
 import { autenticazione_fallita, renewToken } from "../Tools";
+import NotifyToggle from "./NotifyToggle";
 
 document.body.classList.add('fixed');
 
@@ -284,7 +285,10 @@ const Dashboard = (props) => {
   <Content title={props.title} subTitle={props.last_insert_date && "Ultimo inserimento: " + props.last_insert_date.replace("T"," ").substring(0,19)} browserTitle={props.title}>  
     <Row>
       <ModalProvider>
-        <TrafficLightButtons size={4} titles={["Problemi", "Warnings", "Problemi e warning risolti"]} problems={(props.client_template.overview.problemi.map(p => p).reduce((sum, current) => sum + current, 0 ))} warnings={(props.client_template.overview.warnings.map(p => p).reduce((sum, current) => sum + current, 0 ))} running={(props.client_template.overview.ok.map(p => p).reduce((sum, current) => sum + current, 0 ))} popUpChildsWarnings={getChilds(props.client_template.overview.warnings,"warnings")} popUpChildsProblemi={getChilds(props.client_template.overview.problemi,"problemi")} idClientsWarnings={[]} idClientsProblemi={[]} isHome={false}/>
+        <TrafficLightButtons size={3} titles={["Problemi", "Warnings", "Problemi e warning risolti"]} problems={(props.client_template.overview.problemi.map(p => p).reduce((sum, current) => sum + current, 0 ))} warnings={(props.client_template.overview.warnings.map(p => p).reduce((sum, current) => sum + current, 0 ))} running={(props.client_template.overview.ok.map(p => p).reduce((sum, current) => sum + current, 0 ))} popUpChildsWarnings={getChilds(props.client_template.overview.warnings,"warnings")} popUpChildsProblemi={getChilds(props.client_template.overview.problemi,"problemi")} idClientsWarnings={[]} idClientsProblemi={[]} isHome={false}/>
+        <Col md={3} xs={3}>
+          <NotifyToggle id_client={props.id_client} />
+        </Col>
         <Col md={8} xs={12}>
           <Communications id_client={props.id_client}/>
           <History apex={props.client_template.history}/>
