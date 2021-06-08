@@ -1,5 +1,5 @@
 const port = "8080";
-const ip = "217.160.240.146";
+const ip = "127.0.0.1" //"217.160.240.146";
 const buildurl = "http://"+ip+":"+port+"/be/main/";
 export const url_login = buildurl+"login"; //V
 export const url_signup = buildurl+"registrazione"; //V
@@ -47,6 +47,10 @@ export const url_richiedi_password = buildurl + "richiediPassword";
 export const url_cambio_password = buildurl + "changePassword";
 export const url_is_token_valid = buildurl + "isTokenValid";
 export const url_get_last_mail_date_and_time = buildurl + "getLastMailDate";
+export const url_add_tier = buildurl + "addTier";
+export const url_remove_tier = buildurl + "removeTier";
+export const url_get_type_from_client = buildurl + "getTierFromClient";
+export const url_update_tier = buildurl + "updateTier";
 
 
 

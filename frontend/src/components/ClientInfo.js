@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Box, Col } from 'adminlte-2-react';
 import { _LICENZE } from '../Constants';
 import PopUp from './PopUp';
-import { _getNomiSedi, _getPlaces, _getShallowClients, _modificaSedeClient } from '../callableRESTs';
+import { _getNomiSedi, _getPlaces, _getShallowClients, _getTypeFromClient, _modificaSedeClient, _updateTier } from '../callableRESTs';
 import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManager';
 import Dropdown from 'react-dropdown';
 import { autenticazione_fallita, idToNomeSede, nomeToIdSede, renewToken } from '../Tools';
-import { totalReset, updateCTInfo, updateSidebar } from '../ActionCreator';
+import { changeTipoClient, totalReset, updateCTInfo, updateSidebar } from '../ActionCreator';
 
 /**
  * connect the actions to the component
@@ -22,6 +22,9 @@ const mapDispatchToProps = dispatch => ({
   },
   TotalReset: () => {
     dispatch(totalReset())
+  },
+  ChangeTipoClient: (tier,id_client) => {
+    dispatch(changeTipoClient(tier,id_client))
   }
 });
 
@@ -34,7 +37,8 @@ const mapStateToProps = state => ({
   token: state.token, 
   lista_id_sedi: state.lista_id_sedi,
   lista_nomi_sedi: state.lista_nomi_sedi,
-  client_template: state.client_template
+  client_template: state.client_template,
+  categories_list: state.categories_list
 });
 
 const ClientInfo = (props) => {
@@ -42,7 +46,10 @@ const ClientInfo = (props) => {
   const [state, setState] = React.useState({
     vecchiaSede: "",
     nuovaSede: "",
-    sedi: []
+    sedi: [],
+    oldTier: "",
+    allTiers: [],
+    changeTiers: ""
   })
 
   useEffect(() => {
@@ -71,6 +78,14 @@ const ClientInfo = (props) => {
         setState((previousState) => {
           return { ...previousState, sedi: listaNomi };
         });
+        _getTypeFromClient(token, props.id_client)
+        .then( response => {
+          setState( (state) => {
+            return (
+              {...state,oldTier: response.data.nome_tipologia}
+            )
+          })
+        })
       }
     })
     .catch(function (error) {
@@ -141,6 +156,7 @@ const ClientInfo = (props) => {
                   listaSedi.push(sede.substring(0,sede.indexOf(",")));
                 })
                 props.UpdateSidebar(elencoClients,sedi, token, listaNomi, listaSedi);
+
               })
             .catch(function (error) {
               stopLoadingToast(loadingToast);
@@ -153,10 +169,6 @@ const ClientInfo = (props) => {
           })
         })
       }
-
-
-
-
 
         stopLoadingToast(loadingToast);
         let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
@@ -202,6 +214,54 @@ const ClientInfo = (props) => {
     return label;
   }
 
+  const handleChangeTier = (evt) => {
+    setState({
+      ...state,
+      changeTiers: evt.value
+    })
+  }
+
+  const changeTier = () => {
+    const loadingToast = getLoadingToast("Modificando i dati...");
+    _updateTier(props.token,state.changeTiers,props.id_client)
+    .then( response => {
+      props.ChangeTipoClient(state.changeTiers, props.id_client);
+      stopLoadingToast(loadingToast);
+    })
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    });
+  }
+
+  const changeTierChilds = () => {
+
+    const options = [];
+    props.categories_list.forEach( category => {
+      options.push(category.nome_categoria)
+    })
+
+    return (
+      [
+        <>
+          <div className="col-md-12 col-xs-12">
+            <form>
+              <div className="form-group">
+                <label htmlFor="LoginEmail1">Vecchio tier</label>
+                <input type="text" value={state.oldTier} class="form-control" id="VecchioTier" placeholder={state.oldTier} disabled/>
+              </div>
+              <div class="form-group">
+                <label htmlFor="NuovaSede">Nuovo Tier</label>
+                <Dropdown options={options} placeholder="Seleziona un Tier" onChange={handleChangeTier}/>
+              </div>
+            </form>
+            <center><button className="btn btn-primary" onClick={changeTier}>Modifica</button></center>
+          </div>
+        </>
+      ]
+    )
+  }
+
   return (
     <Box title="Informazioni sul client" type="primary" collapsable>
       <Col md={12} xs={12}>
@@ -217,6 +277,10 @@ const ClientInfo = (props) => {
         })}
         {/*<h4><b>Gruppo di lavoro: </b>{props.client.category}</h4>*/}
         <h4><b>Sede di lavoro: </b>{idToNomeSede(props.client.sede, props.lista_nomi_sedi, props.lista_id_sedi)} <PopUp title="Modifica sede" messageLink={"modifica"} linkClass={"clickable"} childs={getChilds(props.client.sede)} action={()=>(null)}/></h4>
+        <div className={"btns-container"}>
+          <PopUp title="Sposta Client" messageLink={"Cambia Tier per il client"} linkClass={"clickable"} childs={changeTierChilds()} action={()=>(null)}/>
+        </div>
+        
       </Col>
     </Box>
   );

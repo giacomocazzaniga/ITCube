@@ -459,13 +459,33 @@ export function rootReducer(state = initialState, action) {
     });
   }
   if(action.type === types.GETLASTMAILDATE) {
-    console.log(action.last_mail_date)
     return Object.assign({}, state, {
       company_template : {
         ...state.company_template,
         last_mail_date: action.last_mail_date
       }
     });
+  }
+  if(action.type === types.ADDTIER) {
+    return Object.assign({}, state, {
+      categories_list: [...state.categories_list, {nome_categoria: action.tier, count_categoria: 0}]
+    });
+  }
+  if(action.type === types.REMOVETIER) {
+    state.categories_list.forEach( (category,i) => {
+      if(category.nome_categoria === action.tier) {
+        state.categories_list.splice(i,1);
+      }
+    })
+    return Object.assign({}, state);
+  }
+  if(action.type === types.CHANGETIPOCLIENT) {
+    state.client_list.forEach(client => {
+      if(client.id_client == action.id_client) {
+        client.tipo_client = action.tier_name
+      }
+    })
+    return Object.assign({}, state);
   }
   //returning the state
   return state;

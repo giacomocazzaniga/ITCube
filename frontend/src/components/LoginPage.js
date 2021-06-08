@@ -9,6 +9,7 @@ import {_getClientTypes, _getNomiSedi, _getNSedi, _getPlaces, _getShallowClients
 import { _MSGCODE } from '../Constants';
 import { fake_shallowClientList } from '../fakeData';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
+import { categoryObjectToArray } from '../Tools';
 
 /**
  * connect the actions to the component
