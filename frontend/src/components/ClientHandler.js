@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Col, Slider } from "adminlte-2-react";
 import { connect } from "react-redux";
 import PopUp from "./PopUp";
@@ -10,7 +10,8 @@ import { Row } from "react-bootstrap";
 import ClientHandlerRowServices from "./ClientHandlerRowServices";
 import ClientHandlerRowAlert from "./ClientHandlerRowAlert";
 import SelectMailInterval from "./SelectMailInterval";
-import { Backend2FrontendDateConverter } from "../Tools";
+import { Backend2FrontendDateConverter, renewToken } from "../Tools";
+import { defaultUpperBound } from "../Constants";
 
 
 /**
@@ -33,6 +34,10 @@ const ClientHandler = (props) => {
 
     const [childs, setChilds] = useState([]);
     const [interval, setInterval] = useState({interval:-1})
+    const [page, setPage] = useState(0);
+    const [servicesSize, setServicesSize] = useState(0);
+    const [services, setServices] = useState([]);
+    const [alerts, setAlerts] = useState([]);
 
     const openToggle = (id) => {
         var elem = document.getElementsByClassName("arrowAccordion"+id)[0];
@@ -48,13 +53,50 @@ const ClientHandler = (props) => {
         elem.style.display = "inline-block";
     }
 
+    useEffect(() => {
+        setChilds(renderChilds(services,alerts));
+    },[services, alerts])
+
+    const newPage = (action) => {
+        if(action === "prec" && page>0) {
+            const loadingToast = getLoadingToast("Caricamento...");
+            _getAllServicesOfCompany(props.id_company, props.token, page-1, defaultUpperBound)
+            .then( response => {
+                setServicesSize(response.data.servizi_length);
+                setServices(response.data.nomi_servizi);
+                stopLoadingToast(loadingToast);
+            })
+            .catch( error => {
+                stopLoadingToast(loadingToast);
+                getErrorToast(String(error));
+            })
+            setPage(page-1);
+        } else if (action === "succ" && page+1<Math.ceil(servicesSize/defaultUpperBound)) {
+            const loadingToast = getLoadingToast("Caricamento...");
+            _getAllServicesOfCompany(props.id_company, props.token, page+1, defaultUpperBound)
+            .then( response => {
+                setServicesSize(response.data.servizi_length);
+                setServices(response.data.nomi_servizi);
+                stopLoadingToast(loadingToast);
+            })
+            .catch( error => {
+                stopLoadingToast(loadingToast);
+                getErrorToast(String(error));
+            })
+            setPage(page+1);
+        }
+    }
+
     const getClientHandler = () => {
         const loadingToast = getLoadingToast("Caricamento...");
-        _getAllServicesOfCompany(props.id_company, props.token)
+        _getAllServicesOfCompany(props.id_company, props.token, page, defaultUpperBound)
         .then( response1 => {
+            setServicesSize(response1.data.servizi_length)
+            setServices(response1.data.nomi_servizi)
             _getAllNomiAlertConfigurazione(props.id_company, props.token)
             .then( response2 => {
-                setChilds(renderChilds(response1.data.nomi_servizi,response2.data.tipologie_alert));
+                // setChilds(renderChilds(response1.data.nomi_servizi,response2.data.tipologie_alert));
+                setAlerts(response2.data.tipologie_alert);
                 stopLoadingToast(loadingToast);
             })
             .catch( error => {
@@ -98,6 +140,17 @@ const ClientHandler = (props) => {
                                 tipologie_alert.map( (tipologia_alert,i) => {
                                     return <ClientHandlerRowAlert tipologia_alert={tipologia_alert} index={i}/>
                                 })
+                            }
+                            {(field=="Servizi di Windows") 
+                            ?
+                                <Col className="col-xs-12 col-md-12 reactPaginate"><br/>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-secondary" onClick={() => newPage("prec")} >← Precedente</button>
+                                        <button type="button" class="btn btn-secondary">{page+1}/{Math.ceil(servicesSize/defaultUpperBound)}</button>
+                                        <button type="button" class="btn btn-secondary" onClick={() => newPage("succ")}>Successivo →</button>
+                                    </div>
+                                </Col>
+                            :   <></>
                             }
                             
                     </Collapsible>

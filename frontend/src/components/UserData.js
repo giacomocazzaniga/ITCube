@@ -3,12 +3,15 @@ import { connect } from 'react-redux';
 import { Col, Box } from 'adminlte-2-react';
 import Dropdown from 'react-dropdown';
 import PopUp from './PopUp';
-import { _cancellazioneSede, _editCompanyData, _getNomiSedi, _inserimentoSede } from '../callableRESTs';
-import { fixSedi, listaNomiSedi, totalReset, updateCompanyData, updateToken } from '../ActionCreator';
+import { _addTier, _cancellazioneSede, _editCompanyData, _getClientTypes, _getNomiSedi, _inserimentoSede, _removeTier } from '../callableRESTs';
+import { addTier, categoriesList, fixSedi, listaNomiSedi, removeTier, totalReset, updateCompanyData, updateToken } from '../ActionCreator';
 import { getErrorToast, getLoadingToast, getSuccessToast, stopLoadingToast } from '../toastManager';
 import { dispatch } from 'react-hot-toast';
 import { _MSGCODE } from '../Constants';
 import { autenticazione_fallita, renewToken } from '../Tools';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { OverlayTrigger } from 'react-bootstrap';
+import { Tooltip } from 'bootstrap';
 
 /**
  * connect the actions to the component
@@ -26,6 +29,12 @@ const mapDispatchToProps = dispatch => ({
     },
     TotalReset: () => {
       dispatch(totalReset())
+    },
+    AddTier: (tier) => {
+      dispatch(addTier(tier))
+    },
+    RemoveTier: (tierToRemove) => {
+      dispatch(removeTier(tierToRemove))
     },
     FixSedi: (client_list, lista_nomi_sedi, lista_id_sedi) => {
       let tmp_list = client_list;
@@ -57,7 +66,8 @@ const mapStateToProps = state => ({
     email: state.company_template.company_data.email,
     lista_sedi: state.company_template.company_data.n_sedi,
     listaNomiSedi: state.lista_nomi_sedi,
-    lista_id_sedi: state.lista_id_sedi
+    lista_id_sedi: state.lista_id_sedi,
+    categories_list: state.categories_list
   }
 );
 
@@ -71,7 +81,9 @@ const UserData = (props) => {
     emailLogin2: "",
     pswLogin: "",
     nuovaSede: "",
-    sedeDaCancellare: ""
+    sedeDaCancellare: "",
+    tier: "",
+    tierToRemove: ""
   })
 
   const clickService = () => {
@@ -395,6 +407,88 @@ const UserData = (props) => {
     ]
     return childList;
   }
+
+  const handleAddTier = (evt) => {
+    setState((previousState) => {
+      return { ...previousState, tier: evt.target.value };
+    });
+  }
+
+  const addTierChilds = () => {
+   return (
+      [
+      <>
+        <div className="col-md-12 col-xs-12">
+          <form>
+            <div className="form-group">
+              <label htmlFor="LoginEmail1">Inserisci il nome del tier:</label>
+              <input type="email" value={state.tier} className="form-control" id="LoginEmail1" aria-describedby="emailHelp" placeholder={"Server Tier 1"} onChange={handleAddTier}/>
+            </div>
+            
+          </form>
+          <center><button className="btn btn-primary" onClick={() => addTierClick()}>Aggiungi</button></center>
+        </div>
+      </>
+      ]
+   )
+  }
+
+  const addTierClick = () => {
+    const loadingToast = getLoadingToast("Aggiungendo il tier...");
+    _addTier(props.token, props.id_company, state.tier)
+    .then( response => {
+      props.AddTier(state.tier)
+      stopLoadingToast(loadingToast)
+    })
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    });
+  }
+
+  const handleRemoveTier = (evt) => {
+    setState((previousState) => {
+      return { ...previousState, tierToRemove: evt.value };
+    });
+  }
+
+  const removeTierChilds = () => {
+
+    const options = [];
+    props.categories_list.forEach( category => {
+      options.push(category.nome_categoria)
+    })
+
+    return (
+       [
+       <>
+         <div className="col-md-12 col-xs-12">
+           <form>
+             <div className="form-group">
+               <label htmlFor="LoginEmail1">Seleziona il tier da eliminare</label> 
+               <Dropdown options={options} placeholder="Seleziona tier" onChange={handleRemoveTier}/>
+             </div>
+           </form>
+           <center><button className="btn btn-primary" onClick={removeTierClick}>Rimuovi</button></center>
+         </div>
+       </>
+       ]
+    )
+  }
+
+  const removeTierClick = () => {
+    const loadingToast = getLoadingToast("Rimuovendo il tier...");
+    _removeTier(props.token, props.id_company, state.tierToRemove)
+    .then( response => {
+      props.RemoveTier(state.tierToRemove)
+      stopLoadingToast(loadingToast)
+    })
+    .catch(function (error) {
+      stopLoadingToast(loadingToast);
+      getErrorToast(String(error));
+    });
+  }
+
   return (
     <Box title="Dati aziendali" type="primary" collapsable footer={<span href="#" className="small-box-footer"><PopUp title="Modifica dati aziendali" linkClass={"clickable"} childs={getChilds()} action={()=>(console.log("action"))}/></span>}>
       <Col md={12} xs={12}>
@@ -403,6 +497,10 @@ const UserData = (props) => {
         <h4><b>Ragione sociale: </b>{props.ragioneSociale}</h4>
         <h4><b>Sedi registrate: </b>{props.lista_sedi - 1}</h4>
         <h4><b>Chiave di registrazione: </b>{props.chiave}</h4>
+        <div className="btns-container">
+          <PopUp title="Aggiungi Tier" messageLink={"Aggiungi Tier"} linkClass={"clickable"} childs={addTierChilds()} action={()=>(null)}/>
+          <PopUp title="Rimuovi Tier" messageLink={"Rimuovi Tier"} linkClass={"clickable"} childs={removeTierChilds()} action={()=>(null)}/>
+        </div>
       </Col>
     </Box>
   );
