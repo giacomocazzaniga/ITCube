@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class ElencoCompanies {
 
@@ -24,6 +26,10 @@ public class ElencoCompanies {
 	//Chiave esterna 
 	@OneToMany(mappedBy = "elencoCompanies")
 	private List<ElencoClients> elencoClients;
+	
+	@OneToMany(mappedBy = "company")
+	@JsonIgnore
+	private List<TipologiaClient> tipologiaClient;
 	
 	private String ragione_sociale;
 	private String password;

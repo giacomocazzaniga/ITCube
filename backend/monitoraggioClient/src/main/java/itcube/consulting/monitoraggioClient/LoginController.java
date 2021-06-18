@@ -226,7 +226,6 @@ public class LoginController {
 			password=body.get("password").toString();
 			
 			numCompany=elencoCompaniesRepository.Login(email, password);
-			System.out.println(numCompany);
 			
 			if(numCompany<1)
 			{
@@ -257,7 +256,6 @@ public class LoginController {
 				responseLogin.setChiave_di_registrazione(company.getChiave_di_registrazione());
 				
 				System.out.println(Services.getCurrentDate()+" /login SUCCESS "+email);
-				
 				return ResponseEntity.ok(responseLogin);
 			}
 		}

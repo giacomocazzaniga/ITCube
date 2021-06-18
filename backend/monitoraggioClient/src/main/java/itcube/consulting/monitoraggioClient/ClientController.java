@@ -64,6 +64,7 @@ import itcube.consulting.monitoraggioClient.entities.TipologiaClient;
 import itcube.consulting.monitoraggioClient.entities.TipologieLicenze;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzaShallow;
 import itcube.consulting.monitoraggioClient.entities.database.ShallowClient;
+import itcube.consulting.monitoraggioClient.entities.database.TipologiaClientCount;
 import itcube.consulting.monitoraggioClient.entities.database.ValidToken;
 import itcube.consulting.monitoraggioClient.entities.database.LicenzeDeep;
 import itcube.consulting.monitoraggioClient.repositories.AlertConfigurazioneRepository;
@@ -80,7 +81,9 @@ import itcube.consulting.monitoraggioClient.repositories.SediRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieClientRepository;
 import itcube.consulting.monitoraggioClient.repositories.TipologieLicenzeRepository;
 import itcube.consulting.monitoraggioClient.response.GeneralResponse;
+import itcube.consulting.monitoraggioClient.response.GetAllClientOfTierResponse;
 import itcube.consulting.monitoraggioClient.response.GetClientTypesResponse;
+import itcube.consulting.monitoraggioClient.response.GetTypesFromClientResponse;
 import itcube.consulting.monitoraggioClient.response.ResponseLogin;
 import itcube.consulting.monitoraggioClient.response.ShallowClientsResponse;
 import itcube.consulting.monitoraggioClient.response.ConfTotalFreeDiscSpaceResponse.ConfTotalFreeDiscSpaceDTO;
@@ -319,12 +322,14 @@ public class ClientController {
 		ValidToken validToken=new ValidToken();
 		int id_company;
 		String token;
-		HashMap<String, Integer> map=new HashMap<String, Integer>();
-		List<ElencoClients> elencoClients=new ArrayList();
+		List<TipologiaClientCount> categories_list=new ArrayList<>();
+		List<ElencoClients> elencoClients=new ArrayList<>();
 		ElencoCompanies company;
 		String nome;
 		int num;
 		GetClientTypesResponse response=new GetClientTypesResponse();
+		List<TipologiaClient> types; 
+		int idx;
 		
 		try 
 		{
@@ -336,18 +341,31 @@ public class ClientController {
 			{
 				company=elencoCompaniesRepository.getInfoCompany(id_company);
 				elencoClients=elencoClientsRepository.getElencoClients(company);
-				map.put("Client", 0);
-				map.put("Server", 0);
-				for(ElencoClients client:elencoClients)
-				{
-					nome=client.getTipologiaClient().getNome_tipologia();
-					num=map.get(nome)+1;
-					map.put(nome, num);
+				types = tipologieClientRepository.getTipologie();
+
+				for(TipologiaClient type: types) {
+					idx=0;
+					for(ElencoClients client: elencoClients) {
+						if(client.getTipologiaClient().getNome_tipologia() == type.getNome_tipologia()) {
+							idx++;
+						}
+					}
+					categories_list.add(new TipologiaClientCount(type.getNome_tipologia(),idx));
 				}
+				
+
+//				types.forEach(type -> map.put(type.getNome_tipologia(), 0));
+//
+//				for(ElencoClients client:elencoClients)
+//				{
+//					nome=client.getTipologiaClient().getNome_tipologia();
+//					num=map.get(nome)+1;
+//					map.put(nome, num);
+//				}
 				
 				String newToken=Services.checkThreshold(id_company, token);
 
-				response.setCategories(map);
+				response.setCategories(categories_list);
 				response.setMessage("Operazione avvenuta con successo");
 				response.setMessageCode(0);
 				response.setToken(newToken);
@@ -841,4 +859,219 @@ public class ClientController {
 		}
 	}
 	
+	@PostMapping(path="/addTier",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> addTier(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		GeneralResponse response = new GeneralResponse();
+		String tier_name;
+		
+		try {
+			token = (String)body.get("token");
+			id_company=Integer.parseInt( (String) body.get("id_company"));
+			validToken = Services.checkToken(id_company, token);
+			tier_name = (String)body.get("tier_name");
+			
+			if(validToken.isValid()) {
+				
+				tipologieClientRepository.addTier(tier_name, id_company);
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.ok(response);
+			}
+			
+			response.setMessage("OK");
+			response.setMessageCode(0);
+			return ResponseEntity.ok(response);
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/removeTier",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> removeTier(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		GeneralResponse response = new GeneralResponse();
+		String tier_name;
+
+		try {
+			token = (String)body.get("token");
+			id_company=Integer.parseInt( (String) body.get("id_company"));
+			validToken = Services.checkToken(id_company, token);
+			tier_name = (String)body.get("tier_name");
+			
+			if(validToken.isValid()) {
+				
+				if(tipologieClientRepository.getNumOfClientFromType(tier_name, id_company) > 0) {
+					response.setMessageCode(-3);
+					response.setMessage("Impossibile eliminare");
+					return ResponseEntity.ok(response);
+				} else {
+					tipologieClientRepository.removeTier(tier_name, id_company);
+					response.setMessageCode(0);
+					response.setMessage("Tier rimosso correttamente");
+					return ResponseEntity.ok(response);
+				}
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.ok(response);
+			}
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/getTierFromClient",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> getTierFromClient(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_client;
+		Integer id_company;
+		String token;
+		GetTypesFromClientResponse response = new GetTypesFromClientResponse();
+		String tier_name;
+
+		try {
+			token = (String)body.get("token");
+			id_client=Integer.parseInt( (String) body.get("id_client"));
+			id_company = elencoClientsRepository.getIdCompany(id_client);
+			validToken = Services.checkToken(id_company, token);
+			
+			if(validToken.isValid()) {
+				
+				tier_name = tipologieClientRepository.getTypeFromClient(id_client);
+				
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				response.setNome_tipologia(tier_name);
+				return ResponseEntity.ok(response);
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.ok(response);
+			}
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/getClientOfTier",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GetAllClientOfTierResponse> getClientOfTier(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		Integer id_company;
+		String token;
+		GetAllClientOfTierResponse response = new GetAllClientOfTierResponse();
+		int tier_id;
+		String tier_name = null;
+		List<ElencoClients> elencoClients = new ArrayList<ElencoClients>();
+
+		try {
+			
+			token = (String)body.get("token");
+			id_company=Integer.parseInt( (String) body.get("id_company"));
+			validToken = Services.checkToken(id_company, token);
+			tier_name= (String) body.get("tier_name");
+
+			if(validToken.isValid()) {
+				
+				tier_id = tipologieClientRepository.getTypeIdFromClient(id_company, tier_name);
+				elencoClients = elencoClientsRepository.getClientFromTier(id_company,tier_id);
+				System.out.println(elencoClients);
+				
+				response.setClientsOfTier(elencoClients);
+				response.setMessage("OK");
+				response.setMessageCode(0);
+				return ResponseEntity.ok(response);
+				
+			} else {
+				response.setMessage("Autenticazione fallita ");
+				response.setMessageCode(-2);
+				return ResponseEntity.ok(response);
+			}
+			
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PostMapping(path="/updateTier",produces=MediaType.APPLICATION_JSON_VALUE)
+	@CrossOrigin
+	public ResponseEntity<GeneralResponse> updateTier(@RequestBody Map<String,Object> body)
+	{
+		ValidToken validToken=new ValidToken();
+		List<String> ids_client = new ArrayList<String>();
+		String token;
+		GeneralResponse response = new GeneralResponse();
+		int tier_id;
+		String tier_name = null;
+		Integer id_company;
+
+		try {
+			
+			token = (String)body.get("token");
+			ids_client= (List<String>) body.get("ids_client");
+			if (ids_client.size() > 0) {
+				id_company = elencoClientsRepository.getIdCompany(Integer.parseInt(ids_client.get(0)));
+				validToken = Services.checkToken(id_company, token);
+				tier_name= (String) body.get("tier_name");
+	
+				if(validToken.isValid()) {
+					tier_id = tipologieClientRepository.getTypeIdFromClient(id_company, tier_name);
+					ids_client.forEach(client -> {
+						int client_int;
+						client_int = Integer.parseInt(client);
+						tipologieClientRepository.updateTier(tier_id, client_int);
+					});
+	
+					response.setMessage("OK");
+					response.setMessageCode(0);
+					return ResponseEntity.ok(response);
+					
+				} else {
+					response.setMessage("Autenticazione fallita ");
+					response.setMessageCode(-2);
+					return ResponseEntity.ok(response);
+				}
+			} else {
+				response.setMessage("Selezionare almeno un elemento");
+				response.setMessageCode(-3);
+				return ResponseEntity.ok(response);
+			}
+		} catch (Exception e) {
+			response.setMessage(e.getMessage());
+			response.setMessageCode(-1);
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
 }

@@ -58,5 +58,7 @@ public interface ElencoClientsRepository extends CrudRepository<ElencoClients,In
 			+ "FROM elenco_clients "
 			+ "WHERE id= :id_client", nativeQuery=true)
 	Integer getTipoFromIdClient(@Param("id_client") int id_client);
-
+	
+	@Query(value="SELECT * FROM elenco_clients WHERE tipologia_client= :tier_id AND id_company= :id_company", nativeQuery=true)
+	List<ElencoClients> getClientFromTier(@Param ("id_company") Integer id_company, @Param ("tier_id") Integer tier_id);
 }

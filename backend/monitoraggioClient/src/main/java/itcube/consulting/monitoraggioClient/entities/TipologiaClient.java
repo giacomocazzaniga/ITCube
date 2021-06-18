@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -19,6 +21,10 @@ public class TipologiaClient {
 	private List<ElencoClients> elencoClients;
 	
 	private String nome_tipologia;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_company")
+	private ElencoCompanies company;
 	
 	public TipologiaClient() {
 
@@ -42,6 +48,12 @@ public class TipologiaClient {
 	}
 	public void setNome_tipologia(String nome_tipologia) {
 		this.nome_tipologia = nome_tipologia;
+	}
+	public ElencoCompanies getId_company() {
+		return company;
+	}
+	public void setId_company(ElencoCompanies id_company) {
+		this.company = id_company;
 	}
 	
 	
