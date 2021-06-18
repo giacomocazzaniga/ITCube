@@ -467,6 +467,40 @@ export function rootReducer(state = initialState, action) {
       }
     });
   }
+  if(action.type === types.ADDTIER) {
+    return Object.assign({}, state, {
+      categories_list: [...state.categories_list, {nome_categoria: action.tier, count_categoria: 0}]
+    });
+  }
+  if(action.type === types.REMOVETIER) {
+    const new_categories_list = state.categories_list.filter( (category) => {if(category.nome_categoria !== action.tier) return category} )
+    return Object.assign({}, state, {
+      categories_list: new_categories_list
+    });
+  }
+  if(action.type === types.UPDATETIER) {
+    let i=0;
+    const new_client_list = state.client_list.filter( (client) => {
+      if(action.ids_client.includes(String(client.id_client))) {
+        state.categories_list.forEach( category => {
+          if(category.nome_categoria === client.tipo_client) {
+            category.count_categoria--;
+            i++;
+          }
+        })
+        client.tipo_client = action.tier_name;
+      }
+      return client;
+    })
+    state.categories_list.forEach( category => {
+      if(category.nome_categoria === action.tier_name) {
+        category.count_categoria = category.count_categoria  + i;
+      }
+    }) 
+    return Object.assign({}, state, {
+      client_list: new_client_list
+    });
+  }
   //returning the state
   return state;
 }

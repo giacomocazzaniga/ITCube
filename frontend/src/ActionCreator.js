@@ -185,3 +185,19 @@ export const getLastMailDate = (last_mail_date) => ({
   type: types.GETLASTMAILDATE,
   last_mail_date: last_mail_date
 })
+
+export const addTier = (tier) => ({
+  type: types.ADDTIER,
+  tier: tier
+})
+
+export const removeTier = (tier) => ({
+  type: types.REMOVETIER,
+  tier: tier
+})
+
+export const updateTier = (tier_name, ids_client) => ({
+  type: types.UPDATETIER,
+  tier_name: tier_name,
+  ids_client: ids_client
+})

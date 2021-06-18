@@ -336,3 +336,18 @@ input:checked + .slider:before {
 }
 
 /*End notify toggle style*/
+
+.btns-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0px;
+}
+
+@media screen and (max-width: 1090px) {
+  .btns-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 10px;
+    height: 140px;
+  }
+}

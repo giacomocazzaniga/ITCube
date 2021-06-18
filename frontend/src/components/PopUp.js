@@ -55,8 +55,15 @@ const PopUp = (props) => {
   }
   return (
     <>
-      {props.messageLink==null ? <a onClick={launchAction()} className={props.linkClass}>Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>
-      : <a onClick={launchAction()} className={props.linkClass}>{props.messageLink}</a>
+      {(props.messageLink==null) 
+      ? 
+        <a onClick={launchAction()} className={props.linkClass}>Altro <FontAwesomeIcon icon={["fas", "arrow-circle-right"]} /></a>
+      : 
+      (props.messageLink.includes("Tier")) 
+      ?
+          <button onClick={launchAction()} className="btn btn-primary btn-tier">{props.messageLink}</button>
+      :
+        <a onClick={launchAction()} className={props.linkClass}>{props.messageLink}</a>
       }
       <Modal
         id="any-unique-identifier"

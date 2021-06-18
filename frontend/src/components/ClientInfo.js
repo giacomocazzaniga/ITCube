@@ -153,11 +153,6 @@ const ClientInfo = (props) => {
           })
         })
       }
-
-
-
-
-
         stopLoadingToast(loadingToast);
         let token = (response.data.token=="" || response.data.token==null) ? props.token : response.data.token;
         //props.UpdateCompanyData(ragioneSociale, email, emailAlert, token);

@@ -13,6 +13,7 @@ import { idToNomeLicenza, idToNomeSede } from './Tools';
 import UnsubscribeAlertMessage from './components/UnsubscribeAlertMessage';
 import RichiediPassword from './components/RichiediPassword';
 import ChangePassword from './components/ChangePassword';
+import PopUp from './components/PopUp';
 
 /**
  * connect the actions to the component
@@ -64,109 +65,159 @@ const App = (props) => {
     props.Search(event.target.value);
   }
 
-  // useEffect(() => {
-  //   document.getElementsByClassName("sidebar-menu")[0].getElementsByTagName("li")[0].getElementsByTagName("a")[0].click();
-  // },[])
+  useEffect(() => {
+    if(window.location.pathname != "/changePassword")
+      document.getElementsByClassName("sidebar-menu")[0].getElementsByTagName("li")[0].getElementsByTagName("a")[0].click();
+  },[])
 
-  const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
-    /**
-     * {"Client": 1,
-     * "Server": 2}
-     */
-    let categories = ["Client","Server"];
-    let categoriesIcons = ["fa-desktop","fa-server"]
-    let lastComponent = [];
-    if(props.lista_id_sedi != undefined){ 
-      props.lista_id_sedi.map((sede, j) => {
-      (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
-      ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) {return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede) }).length+")"}>
-        {categories.map((category,i) => {
-          return (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede) && o.tipo_client==category)}).length > 0 && client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
-          ? <Item icon="fa-users" text={category+ " ("+client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.tipo_client==category)}).length+")"}>
-          {props.client_list.map((client) => {
-            //if((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category)){
-            //    console.log(client.sede)
-            //  console.log(props.lista_nomi_sedi[j])
-            //  console.log(sede)
-            //}
+  const getSidebarWithTier = (categories_list, searched_client) => {
+
+    const RenderChilds = (category) => {
+      const arr = [];
+      props.client_list && props.client_list.map( (client) => {
+        const client_data = {
+          name :'',
+          company_name: '',
+          id_client: ''
+        }
+
+      if(client.tipo_client === category) {
+        client_data.name = client.nome_client;
+        client_data.company_name = props.nome_company;
+        client_data.id_client = client.id_client;
+        arr.push(client_data)
+      }
+      })
+      return arr;
+    }
+    
+    const hasChildren = [];
+    const items = categories_list.map((category, idx1) => {
+      hasChildren.push(false);
+      if(searched_client == "") {
+        hasChildren[idx1] = true;
+      }
+      const client_available = RenderChilds(category.nome_categoria);
+      return (
+        <Item icon="fa-map-marker-alt" text={category.nome_categoria +" ("+ category.count_categoria +")"} key={idx1}>
+          {client_available
+          .filter( client => { if(client.name.includes(searched_client)) return client})
+          .map( (el, idx2) => {
+              if(idx2==0) {
+                hasChildren[idx1] = true;
+              }
+              return <Item icon="fa-desktop" text={el.name} to={"/company"+el.company_name+"user"+el.id_client} key={idx2}/>
+          })}
+        </Item> 
+      )
+    })
+    .filter( (dom_node,i) => {
+      if(hasChildren[i])
+        return dom_node;
+    })
+
+    return items;
+  }
+
+  // const getSidebarByType = (client_list, nome_company, searched_client, categories_list) =>{
+  //   /**
+  //    * {"Client": 1,
+  //    * "Server": 2}
+  //    */
+  //   let categories = ["Client","Server"];
+  //   let categoriesIcons = ["fa-desktop","fa-server"]
+  //   let lastComponent = [];
+  //   if(props.lista_id_sedi != undefined){ 
+  //     props.lista_id_sedi.map((sede, j) => {
+  //     (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
+  //     ? lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) {return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede) }).length+")"}>
+  //       {categories.map((category,i) => {
+  //         return (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede) && o.tipo_client==category)}).length > 0 && client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
+  //         ? <Item icon="fa-users" text={category+ " ("+client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.tipo_client==category)}).length+")"}>
+  //         {props.client_list.map((client) => {
+  //           //if((client.sede == sede && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category)){
+  //           //    console.log(client.sede)
+  //           //  console.log(props.lista_nomi_sedi[j])
+  //           //  console.log(sede)
+  //           //}
             
-            return (((client.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || client.sede == sede) && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category))
-            ? (searched_client=="")
-              ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
-              : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
-            : <></>
-            })
-          }
-          </Item>
-        : <></>  
-        })}
-      </Item>]
-      : lastComponent = lastComponent;
-    })
-  }
-    return lastComponent;
-  }
+  //           return (((client.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || client.sede == sede) && client.tipo_client===category) || (client.sede == props.lista_nomi_sedi[j]  && client.tipo_client===category))
+  //           ? (searched_client=="")
+  //             ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+  //             : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon={categoriesIcons[i]} key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+  //           : <></>
+  //           })
+  //         }
+  //         </Item>
+  //       : <></>  
+  //       })}
+  //     </Item>]
+  //     : lastComponent = lastComponent;
+  //   })
+  // }
+  //   return lastComponent;
+  // }
 
-  const getSidebarByLicense = (client_list, nome_company, searched_client, licenses_list) =>{
-    /**
-     * {"1": 1,
-     * "2": 2,
-     * ...}
-     */
-    let categories = [1,2,3,4,5];
-    let lastComponent = [];
-    if(props.lista_id_sedi != undefined){ 
-      props.lista_id_sedi.map((sede, j) => {
-      (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
-      ? 
-        lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { 
-          return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede)
-           }).length+")"}>
-          {categories.map((category) => {
-            return (client_list.filter(function(o) { 
-              return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.classe_licenza.includes(category))}).length > 0 && client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
-            ? <Item icon="fa-users" text={idToNomeLicenza(category)+ " ("+client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.classe_licenza.includes(category))}).length+")"}>
-            {props.client_list.map((client) => {
-              return (((client.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| client.sede == sede) && client.classe_licenza.includes(category)) || (client.sede == props.lista_nomi_sedi[j] && client.classe_licenza.includes(category)))
-              ? (searched_client=="")
-                ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
-                : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
-              : <></>
-              })
-            }
-          </Item>
-        : <></>  
-        })}
-      </Item>]
-      : lastComponent = lastComponent;
-    })
-  }
-    return lastComponent;
-  }
+  // const getSidebarByLicense = (client_list, nome_company, searched_client, licenses_list) =>{
+  //   /**
+  //    * {"1": 1,
+  //    * "2": 2,
+  //    * ...}
+  //    */
+  //   let categories = [1,2,3,4,5];
+  //   let lastComponent = [];
+  //   if(props.lista_id_sedi != undefined){ 
+  //     props.lista_id_sedi.map((sede, j) => {
+  //     (client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0 || searched_client==="")
+  //     ? 
+  //       lastComponent = [lastComponent,<Item icon="fa-map-marker-alt" text={idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)+" ("+client_list.filter(function(o) { 
+  //         return (o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi) || o.sede == sede)
+  //          }).length+")"}>
+  //         {categories.map((category) => {
+  //           return (client_list.filter(function(o) { 
+  //             return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.classe_licenza.includes(category))}).length > 0 && client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.nome_client.includes(searched_client.toUpperCase()))}).length > 0)
+  //           ? <Item icon="fa-users" text={idToNomeLicenza(category)+ " ("+client_list.filter(function(o) { return ((o.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| o.sede == sede) && o.classe_licenza.includes(category))}).length+")"}>
+  //           {props.client_list.map((client) => {
+  //             return (((client.sede == idToNomeSede(sede, props.lista_nomi_sedi, props.lista_id_sedi)|| client.sede == sede) && client.classe_licenza.includes(category)) || (client.sede == props.lista_nomi_sedi[j] && client.classe_licenza.includes(category)))
+  //             ? (searched_client=="")
+  //               ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} />
+  //               : (client.nome_client.toUpperCase().includes(searched_client.toUpperCase())) ? <Item icon="fa-desktop" key={client.id_client} text={<>{client.nome_client} <FontAwesomeIcon icon={["far", "dot-circle"]} /></>} to={"/company"+nome_company+"user"+client.id_client} /> : <></>
+  //             : <></>
+  //             })
+  //           }
+  //         </Item>
+  //       : <></>  
+  //       })}
+  //     </Item>]
+  //     : lastComponent = lastComponent;
+  //   })
+  // }
+  //   return lastComponent;
+  // }
 
   return (
 
     <div>
-        {(window.location.pathname=="/unsubscribeAlert")
-        ?
-          <UnsubscribeAlertMessage path="/unsubscribeAlert" />
-        :
-          <>
-            {toaster}
-            {props.logged==true 
-            ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{(props.category_vs_place) ? getSidebarByType(props.client_list, props.nome_company, props.searched_client, props.categories_list) : getSidebarByLicense(props.client_list, props.nome_company, props.searched_client, props.places_list)}<a id="logoutButton" onClick={() => {props.TotalReset()}}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> </>}>
-                <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
-                {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
-              </AdminLTE>
-            : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
-                <div path="/accedi" title="Accedi"><LoginPage /></div>
-                <div path="/registrati" title="Registrati"><SignUpPage /></div>
-                <div path="/richiediPassword" title="Richiedi nuova password"><RichiediPassword /></div>
-                <div path="/changePassword" title="Cambio password"><ChangePassword /></div>
-              </AdminLTE>
-            }
-          </>
-        }
+      {(window.location.pathname=="/unsubscribeAlert")
+      ?
+        <UnsubscribeAlertMessage path="/unsubscribeAlert" />
+      :
+        <>
+          {toaster}
+          {props.logged==true 
+          ? <AdminLTE title={[<FontAwesomeIcon icon={["fas", "home"]} />, " Home"]} homeTo={"/"+props.id_company} titleShort={<FontAwesomeIcon icon={["fas", "home"]} />} theme="blue" sidebar={<><Item icon="fa-user-alt" key="-1" text="Account" to={"/"+props.id_company} /><Searchbar onChange={handleChange} includeButton="true" placeholder="Cerca..." />{getSidebarWithTier(props.categories_list, props.searched_client)}<a id="logoutButton" onClick={() => {props.TotalReset()}}><Item className="clickable" icon="fas-sign-out-alt" text={"Logout"} to={"/accedi"}></Item></a> </>}>
+              <DashboardHome path={"/"+props.id_company} title={props.nome_company} />
+              {props.client_list.map((item) => <Dashboard path={"/company"+props.nome_company+"user"+item.id_client} id_client={item.id_client} id_company={props.id_company} token={props.token} client={item} title={item.nome_client} />)}  
+            </AdminLTE>
+          : <AdminLTE title={["IT Sentinel"]} titleShort={["ITS"]} theme="blue" sidebar={getSidebarUnlogged()}>
+              <div path="/accedi" title="Accedi"><LoginPage /></div>
+              <div path="/registrati" title="Registrati"><SignUpPage /></div>
+              <div path="/richiediPassword" title="Richiedi nuova password"><RichiediPassword /></div>
+              <div path="/changePassword" title="Cambio password"><ChangePassword /></div>
+            </AdminLTE>
+          }
+        </>
+      }
   </div>
       
   );

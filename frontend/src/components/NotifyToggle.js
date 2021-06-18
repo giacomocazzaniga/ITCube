@@ -25,27 +25,27 @@ import { getConfigurazioneAlert } from "../ActionCreator";
 
 const NotifyToggle = (props) => {
 
-    const changeNotifiche = (status) => {
-        const loadingToast = getLoadingToast("Attendere...")
-        _changeMonitoraClient(props.token,props.id_client,status)
-        .then( response => {
-            stopLoadingToast(loadingToast);
-            status ? getSuccessToast("Notifiche abilitate") : getSuccessToast("Notifiche disabilitate");
-        })
-        .catch(function (error) {
-            stopLoadingToast(loadingToast);
-            getErrorToast(String(error));
-          })
-    }
+    // const changeNotifiche = (status) => {
+    //     const loadingToast = getLoadingToast("Attendere...")
+    //     _changeMonitoraClient(props.token,props.id_client,status)
+    //     .then( response => {
+    //         stopLoadingToast(loadingToast);
+    //         status ? getSuccessToast("Notifiche abilitate") : getSuccessToast("Notifiche disabilitate");
+    //     })
+    //     .catch(function (error) {
+    //         stopLoadingToast(loadingToast);
+    //         getErrorToast(String(error));
+    //       })
+    // }
 
-    return (
-        <Box title="Monitoraggio Client" type="primary" collapsable>
-            <label>Disabilita notifiche del client</label>
-            <button className="btn btn-primary" onClick={() => changeNotifiche(false)} >Disabilita</button>
-            <label>Abilita notifiche del client</label>
-            <button className="btn btn-primary" onClick={() => changeNotifiche(true)}>Abilita</button>
-        </Box>
-    )
+    // return (
+    //     <Box title="Monitoraggio Client" type="primary" collapsable>
+    //         <label>Disabilita notifiche del client</label>
+    //         <button className="btn btn-primary" onClick={() => changeNotifiche(false)} >Disabilita</button>
+    //         <label>Abilita notifiche del client</label>
+    //         <button className="btn btn-primary" onClick={() => changeNotifiche(true)}>Abilita</button>
+    //     </Box>
+    // )
 }
 
 export default connect(

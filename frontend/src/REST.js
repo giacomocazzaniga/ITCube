@@ -48,6 +48,11 @@ export const url_cambio_password = buildurl + "changePassword";
 export const url_is_token_valid = buildurl + "isTokenValid";
 export const url_get_last_mail_date_and_time = buildurl + "getLastMailDate";
 export const url_change_monitora_client = buildurl + "changeMonitoraClient";
+export const url_add_tier = buildurl + "addTier";
+export const url_remove_tier = buildurl + "removeTier";
+export const url_update_tier = buildurl + "updateTier";
+export const url_get_type_from_client = buildurl + "getTierFromClient";
+export const url_get_client_of_tier = buildurl + "getClientOfTier";
 
 
 

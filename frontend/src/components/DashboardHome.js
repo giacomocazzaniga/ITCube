@@ -14,6 +14,7 @@ import { getErrorToast, getLoadingToast, stopLoadingToast } from '../toastManage
 import { defaultUpdateInterval } from '../Constants';
 import { updateCompanyTemplateLicenze, updateCompanyOverview, fixSedi, updateCompanyHistory, updateToken, totalReset, getLastMailDate } from '../ActionCreator';
 import { autenticazione_fallita, renewToken } from '../Tools';
+import TierHandler from './TierHandler';
 
 document.body.classList.add('fixed');
 
@@ -213,13 +214,17 @@ const DashboardHome = (props) => {
     <Row>
       <ModalProvider>
       <TrafficLightButtons size={3} titles={["Client con problemi", "Client con warnings", "Client senza problemi e warnings"]} problems={props.company_template.client_overview.n_errori.length} warnings={props.company_template.client_overview.n_warnings.length} running={props.company_template.client_overview.n_running.length} popUpChildsWarnings={[]} popUpChildsProblemi={[]} idClientsWarnings={getChilds(props.company_template.client_overview.n_warnings)} idClientsProblemi={getChilds(props.company_template.client_overview.n_errori)} isHome={true} />
-          <Col xs={6} md={3}>
+        <Col xs={6} md={3}>
             <Box title="Personalizzazione" type="primary" collapsable>
               <Col md={12} xs={12}>
                 <b>Visualizzazione client: </b><ToggleCategoryPlace />
               </Col>
             </Box>
-          </Col>
+        </Col>
+
+        <Col xs={6} md={6}>
+          <TierHandler />
+        </Col>
         
         <Col xs={12} md={6}>
           <LicensesList title="Gestione delle licenze" />
